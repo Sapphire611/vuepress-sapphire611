@@ -1,0 +1,18 @@
+{
+  "name": "vuepress-sapphire611",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "vuepress dev docs --temp .temp",
+    "build": "vuepress build docs"
+  },
+  "author": "Sapphire611",
+  "license": "ISC",
+  "dependencies": {
+    "vuepress": "^1.8.2"
+  },
+  "devDependencies": {
+    "watchpack": "^2.2.0"
+  }
+}
