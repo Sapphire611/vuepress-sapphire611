@@ -1,3 +1,18 @@
 # VuePress-Sapphire611
 
-> For Test
+### linux安装nodeJs
+
+```
+wget https://nodejs.org/dist/v16.13.1/node-v16.13.1-linux-x64.tar.xz
+tar -xvf node-v16.13.1-linux-x64.tar.xz
+sudo mv ./node-v16.13.1-linux-x64 /usr/local/node
+sudo ln -s /usr/local/node/bin/node /usr/bin/node
+sudo ln -s /usr/local/node/bin/npm /usr/bin/npm
+```
+
+### 运行
+
+```
+npm run start
+nohup npm run start >> ./run.log
+```
