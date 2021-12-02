@@ -14,5 +14,5 @@ sudo ln -s /usr/local/node/bin/npm /usr/bin/npm
 
 ```
 npm run start
-nohup npm run start >> ./run.log
+nohup npm run start >> ./run.log & exit
 ```
