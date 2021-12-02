@@ -13,7 +13,7 @@ sudo ln -s /usr/local/node/bin/npm /usr/bin/npm
 ### 运行
 
 ```
-npm run start
+npm run start 11
 nohup npm run start >> ./run.log & exit
 
 # sudo lsof -i:(port)
