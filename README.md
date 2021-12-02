@@ -19,5 +19,5 @@ nohup npm run start >> ./run.log & exit
 # sudo lsof -i:(port)
 # sudo kill -9 (pid)
 # sudo kill -9 $(lsof -i tcp:80 -t)
-kill `netstat -nlp | grep :80 | awk '{print $7}' | awk -F"/" '{ print $1 }'`
+kill -9 $(netstat -nlp | grep :80 | awk '{print $7}' | awk -F"/" '{ print $1 }')
 ```
