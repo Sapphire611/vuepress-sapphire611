@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "vuepress dev docs --temp .temp",
-    "build": "vuepress build docs"
+    "build": "vuepress build docs",
+    "run":"vuepress dev"
   },
   "author": "Sapphire611",
   "license": "ISC",
