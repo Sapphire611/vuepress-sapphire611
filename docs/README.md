@@ -2,7 +2,7 @@
 home: true
 heroImage: /img/logo.jpg
 heroText: Sapphire611
-tagline: 当你想要放弃的时候，不妨想想为什么开始 35
+tagline: 当你想要放弃的时候，不妨想想为什么开始 36.test.success?
 actionText: Next →
 actionLink: /guide/
 footer: MIT Licensed | Copyright © 2021-present Sapphire611
