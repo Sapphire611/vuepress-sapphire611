@@ -7,13 +7,13 @@ module.exports = {
     sidebar: ["/"],
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Guide', link: '/guide/' },
-      { text: 'Node', link: '/node/' },
+      { text: 'Common', link: '/common/' },
+      { text: 'Jenkins2Vuepress', link: '/jenkins2vuepress/' },
     ],
     sidebar: [
       '/',
-      '/guide/',
-      '/node/',
+      '/common/',
+      '/jenkins2vuepress/',
     ]
   },
 };
