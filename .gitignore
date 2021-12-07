@@ -24,5 +24,5 @@ pnpm-debug.log*
 yarn.lock
 
 /.temp
-/docs/.vuepress
+/docs/.vuepress/dist
 /test
