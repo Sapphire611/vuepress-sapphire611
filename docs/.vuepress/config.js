@@ -3,7 +3,8 @@ module.exports = {
   port: "8081",
   description: "Description ... ",
   themeConfig: {
-    displayAllHeaders: true, // 默认值：false
+    logo: '/img/logo.jpg',
+    displayAllHeaders: false, // 默认值：false
     sidebar: ["/"],
     nav: [
       { text: 'Home', link: '/' },
