@@ -7,13 +7,25 @@ module.exports = {
     displayAllHeaders: false, // 默认值：false
     sidebar: ["/"],
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Common', link: '/common/' },
-      { text: 'Jenkins2Vuepress', link: '/jenkins2vuepress/' },
+      { text: 'HomePage', link: '/' },
+      {
+        text: "Life & Me",
+        icon: "info",
+        items: [
+          { text: "About Me", link: "/aboutMe/", icon: "creative" },
+        ],
+      },
+      {
+        text: "Programming",
+        icon: "info",
+        items: [
+          { text: "Jenkins2Vuepress", link: "/jenkins2vuepress/", icon: "creative" },
+        ],
+      },
     ],
     sidebar: [
       '/',
-      '/common/',
+      '/aboutMe/',
       '/jenkins2vuepress/',
     ]
   },
