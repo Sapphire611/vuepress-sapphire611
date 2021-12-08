@@ -40,6 +40,8 @@ Remote Directory：远程目录（上面第二步建的testjenkins文件夹的�
 
 > 目前Gtihub已弃用用户名&密码的认证方式
 
+> 首先 cd ~/.ssh 查看是否有密钥
+ 
 > 概括 ： ssh-keygen 后一路回车，带pub结尾的是公钥，不带的是私钥
 
 ## Tips
