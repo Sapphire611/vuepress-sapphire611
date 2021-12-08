@@ -89,7 +89,10 @@ yarn build
 
 cd docs/.vuepress/dist
 
-nohup serve & >> run.log
+BUILD_ID=dontKillMe # Jenkins默认会杀掉所有衍生进程，需要标识
+
+nohup /usr/local/bin/serve >run.out & # Jenkins走的绝对路径，否则会报错的
 
 exit
 ```
+[jenkins Process leaked file descriptors(默认杀掉所有衍生进程)](https://blog.csdn.net/weixin_36816337/article/details/82055217)
