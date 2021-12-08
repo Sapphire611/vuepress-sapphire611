@@ -38,10 +38,12 @@ Remote Directory：远程目录（上面第二步建的testjenkins文件夹的�
 
 [SSH 密钥登录(用于git中免用户名密码的认证)](https://wangdoc.com/ssh/key.html#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95)
 
+[windows 10 git配置.ssh秘钥](https://blog.csdn.net/aachangs/article/details/80869833)
+
 > 目前Gtihub已弃用用户名&密码的认证方式
 
 > 首先 cd ~/.ssh 查看是否有密钥
- 
+
 > 概括 ： ssh-keygen 后一路回车，带pub结尾的是公钥，不带的是私钥
 
 ## Tips
