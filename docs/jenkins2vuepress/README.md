@@ -77,6 +77,8 @@ sudo ln -s /usr/local/node/bin/npm /usr/bin/npm
 
 ## serve 部署相关 
 
+[【Windows】PowerShell：因为在此系统上禁止运行脚本，解决方法](https://www.jianshu.com/p/4eaad2163567)
+
 [Serve - Npm](https://www.npmjs.com/package/serve)
 
 [linux系统安装yarn](https://blog.csdn.net/weixin_28993311/article/details/116964001)
