@@ -5,7 +5,9 @@ module.exports = {
   themeConfig: {
     logo: '/img/logo.jpg',
     displayAllHeaders: false, // 默认值：false
-    sidebar: ["/"],
+    repo: 'https://github.com/Sapphire611/vuepress-sapphire611',
+    repoLabel: 'GitHub',
+    sidebar: 'auto',
     nav: [
       { text: 'HomePage', link: '/' },
       {
