@@ -12,7 +12,7 @@
 
 > 需要安装Python，Visual Studio 并安装对应包，并且指定VS版本
 
-```
+``` shell
 npm config set msvs_version 2019
 
 yarn config set msvs_version 2019
@@ -25,11 +25,11 @@ yarn config set msbuild_path "C:\Program Files (x86)\Microsoft Visual Studio\201
 
 [multer - npm](https://www.npmjs.com/package/multer)
 
-```
+``` js
 npm install --save multer
 ```
 
-```
+``` js
 const express = require('express')
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })

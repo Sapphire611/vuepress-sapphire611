@@ -16,13 +16,13 @@
 
 > 安装 Generic Webhook Trigger Plugin插件,WEB Hook URL :
 
-```
+``` shell
 http://<User ID>:<API Token>@<Jenkins IP地址>:端口/generic-webhook-trigger/invoke
 ```
 
 > 安装 Publish Over SSH 插件，系统管理-系统设置里找到Publish over SSH这一项：
 
-```
+``` java
 Passphrase：密码（key的密码，没设置就是空）
 Path to key：key文件（私钥）的路径
 Key：将私钥复制到这个框中(path to key和key写一个即可)
@@ -64,7 +64,7 @@ Remote Directory：远程目录（上面第二步建的testjenkins文件夹的�
 
 > 一般对root用户有效，jenkins用户需额外设置
 
-```
+``` shell
 wget https://nodejs.org/dist/v16.13.1/node-v16.13.1-linux-x64.tar.xz
 tar -xvf node-v16.13.1-linux-x64.tar.xz
 sudo mv ./node-v16.13.1-linux-x64 /usr/local/node
@@ -85,7 +85,7 @@ sudo ln -s /usr/local/node/bin/npm /usr/bin/npm
 
 > 以下Shell命令仅供参考：
 
-```
+``` shell
 git stash
 git pull origin master
 

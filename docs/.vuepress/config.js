@@ -9,12 +9,12 @@ module.exports = {
     repoLabel: 'GitHub',
     sidebar: 'auto',
     nav: [
-      { text: 'HomePage', link: '/' },
       {
-        text: "Life & Me",
+        text: "Interview & Me",
         icon: "info",
         items: [
           { text: "About Me", link: "/aboutMe/", icon: "creative" },
+          { text: "Interview", link: "/interview/", icon: "creative" },
         ],
       },
       {
@@ -27,12 +27,5 @@ module.exports = {
         ],
       },
     ],
-    sidebar: [
-      '/',
-      '/aboutMe/',
-      '/jenkins2vuepress/',
-      "/docker/",
-      "/node/"
-    ]
   },
 };

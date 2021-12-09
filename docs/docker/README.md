@@ -9,29 +9,29 @@
 
 ### Redis
 
-```
+``` shell
 docker run -d --name redis -p 6379:6379 --restart always redis
 ```
 
 ### Rabbitmq
 
-```
+``` shell
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 --restart always rabbitmq
 ```
 
 ### Zookeeper
 
-```
+``` shell
 docker run --name zookeeper -d -p 2181:2181 --restart always zookeeper
 ```
 
 ### Emqx
 
-```
+``` shell
 docker run -d --name emqx -p 1883:1883 -p 8081:8081 -p 8083:8083 -p 8883:8883 -p 8084:8084 -p 18083:18083 --restart always emqx/emqx:latest
 ```
 ### Mongodb
 
-```
+``` shell
 docker run --name mongo -d -p 27017:27017 -v /Users/[YourUsername]/db:/data/db --restart always mongo
 ```
