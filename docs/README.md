@@ -7,3 +7,5 @@ actionText: Next →
 actionLink: /aboutMe/
 footer: MIT Licensed | Copyright © 2021-present Sapphire611
 ---
+
+<a style="text-align: center; display: block;" href="https://beian.miit.gov.cn/">沪ICP备2021035470号-1</a>

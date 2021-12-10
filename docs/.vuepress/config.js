@@ -23,6 +23,7 @@ module.exports = {
         items: [
           { text: "Jenkins2Vuepress", link: "/jenkins2vuepress/", icon: "creative" },
           { text: "Docker", link: "/docker/", icon: "creative" },
+          { text: "Nginx", link: "/nginx/", icon: "creative" },
           { text: "Node 库相关", link: "/node/", icon: "creative" },
         ],
       },
