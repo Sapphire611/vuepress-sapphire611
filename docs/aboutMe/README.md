@@ -12,3 +12,9 @@
 </p>
 
 > 一名普通的Node.js后端工程师
+## Navigation
+
+> 内容在导航栏上，手机浏览的话点击左上角的三横线后，点开内容查看即可
+
+<img src="
+https://pic3.zhimg.com/80/v2-a2943c56a25f5fd6f14c2d4a8bbc500e_720w.jpg"  style="margin-top:15px;" height="300px;">

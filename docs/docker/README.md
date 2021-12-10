@@ -3,7 +3,7 @@
 ## 安装相关
 [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
 
-[【Windows】旧版 WSL 的手动安装步骤](https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package)
+[【Windows】旧版 WSL 的手动安装步骤（不装 Docker Desktop 会启动失败）](https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package)
 
 ## 常用后台服务挂载命令
 

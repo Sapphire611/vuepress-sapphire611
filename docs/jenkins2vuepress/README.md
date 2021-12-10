@@ -46,7 +46,7 @@ Remote Directory：远程目录（上面第二步建的testjenkins文件夹的�
 
 > 概括 ： ssh-keygen 后一路回车，带pub结尾的是公钥，不带的是私钥
 
-## Tips
+## Jenkins Tips
 
 [jenkins忘记密码怎么操作](https://blog.csdn.net/weixin_44049466/article/details/102023452?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-1.no_search_link&spm=1001.2101.3001.4242.2)
 
