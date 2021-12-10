@@ -1,4 +1,13 @@
-# Jenkins2Vuepress
+---
+title: 使用Jenkins自动化部署Vuepress项目
+date: 2021-12-10
+categories:
+ - Deploy
+tags:
+ - jenkins2vuepress 
+sidebar: 'auto'
+publish: true
+--- 
 
 > Jenkins自动化部署中踩的坑
 

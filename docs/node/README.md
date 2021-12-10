@@ -1,4 +1,13 @@
-# Node 库相关
+---
+title: Node 库相关
+date: 2021-12-10
+categories:
+ - Backend
+tags:
+ - node
+sidebar: 'auto'
+publish: true
+--- 
 
 ## Node-gyp
 
@@ -34,6 +43,7 @@ npm config set msbuild_path "C:\Program Files (x86)\Microsoft Visual Studio\2019
 [multer - npm（用于文件上传的库）](https://www.npmjs.com/package/multer)
 
 ### Multer 安装
+
 ``` js
 npm install --save multer
 ```

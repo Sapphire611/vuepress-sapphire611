@@ -1,4 +1,13 @@
-# Nginx 
+---
+title: Nginx 简易操作
+date: '2021-12-10'
+categories:
+ - Backend
+tags:
+ - nginx
+sidebar: 'auto'
+publish: true
+--- 
 
 ## 安装 & 启动
 
