@@ -8,7 +8,9 @@
 
 [【linux】安装java步骤](https://www.cnblogs.com/wjup/p/11041274.html)
 
-> 前提是安装了Java，版本至少8，推荐11
+::: warning
+前提要安装Java，版本至少8，推荐11
+:::
 
 ## Jenkins 实操
 
@@ -22,17 +24,23 @@ http://<User ID>:<API Token>@<Jenkins IP地址>:端口/generic-webhook-trigger/i
 
 > 安装 Publish Over SSH 插件，系统管理-系统设置里找到Publish over SSH这一项：
 
-``` java
+::: tip
 Passphrase：密码（key的密码，没设置就是空）
+
 Path to key：key文件（私钥）的路径
+
 Key：将私钥复制到这个框中(path to key和key写一个即可)
 
 SSH Servers的配置：
+
 SSH Server Name：标识的名字（随便你取什么）
+
 Hostname：需要连接ssh的主机名或ip地址（建议ip）
+
 Username：用户名
+
 Remote Directory：远程目录（上面第二步建的testjenkins文件夹的路径）
-```
+:::
 
 ## SSH 密钥登录
 
@@ -40,13 +48,19 @@ Remote Directory：远程目录（上面第二步建的testjenkins文件夹的�
 
 [windows 10 git配置.ssh秘钥](https://blog.csdn.net/aachangs/article/details/80869833)
 
-> 目前Gtihub已弃用用户名&密码的认证方式
+::: danger
+目前Gtihub已弃用用户名&密码的认证方式
+:::
 
-> 首先 cd ~/.ssh 查看是否有密钥
+::: tip
+首先 cd ~/.ssh 查看是否有密钥
 
-> 概括 ： ssh-keygen 后一路回车，带pub结尾的是公钥，不带的是私钥
+概括 ：ssh-keygen 后一路回车，带pub结尾的是公钥，不带的是私钥
+:::
 
 ## Jenkins Tips
+
+::: tip
 
 [jenkins忘记密码怎么操作](https://blog.csdn.net/weixin_44049466/article/details/102023452?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-1.no_search_link&spm=1001.2101.3001.4242.2)
 
@@ -58,8 +72,11 @@ Remote Directory：远程目录（上面第二步建的testjenkins文件夹的�
 
 [Jenkins jenkins添加sudo的执行权限](https://blog.csdn.net/weixin_40123451/article/details/113203225)
 
-> 最后这条比较重要，因为Jenkins用户没有sudo权限
+:::
 
+::: warning
+最后这条比较重要，因为Jenkins用户没有sudo权限
+::: 
 ## linux安装nodeJs
 
 > 一般对root用户有效，jenkins用户需额外设置
@@ -83,7 +100,11 @@ sudo ln -s /usr/local/node/bin/npm /usr/bin/npm
 
 [linux系统安装yarn](https://blog.csdn.net/weixin_28993311/article/details/116964001)
 
-> 以下Shell命令仅供参考：
+[jenkins Process leaked file descriptors(Jenkins会默认杀掉所有衍生进程)](https://blog.csdn.net/weixin_36816337/article/details/82055217)
+
+::: tip
+以下Shell命令仅供参考：
+:::
 
 ``` shell
 git stash
@@ -101,4 +122,7 @@ nohup /usr/local/bin/serve >run.out & # Jenkins走的绝对路径，否则会报
 
 exit
 ```
-[jenkins Process leaked file descriptors(默认杀掉所有衍生进程)](https://blog.csdn.net/weixin_36816337/article/details/82055217)
+
+::: danger
+Jenkins默认会杀掉所有衍生进程，需要标识
+:::

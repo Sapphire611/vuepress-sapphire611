@@ -1,7 +1,8 @@
 module.exports = {
   title: "Sapphire611",
   port: "8081",
-  description: "Description ... ",
+  theme: 'reco',
+  description: "我其实姓柳，但大家喜欢叫我老李...? ",
   themeConfig: {
     logo: '/img/logo.jpg',
     displayAllHeaders: false, // 默认值：false

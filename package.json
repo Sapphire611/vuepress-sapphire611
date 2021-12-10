@@ -6,12 +6,13 @@
   "scripts": {
     "start": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
-    "run":"vuepress dev docs"
+    "run": "vuepress dev docs"
   },
   "author": "Sapphire611",
   "license": "ISC",
   "dependencies": {
-    "vuepress": "^1.8.2"
+    "vuepress": "^1.8.2",
+    "vuepress-theme-reco": "^1.6.10"
   },
   "devDependencies": {
     "watchpack": "^2.2.0"
