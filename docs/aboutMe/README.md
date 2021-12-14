@@ -18,13 +18,9 @@ publish: true
 
 <!-- </p> -->
 
-::: details Introduce
 
-- 1997.12.12 - ?
+####  > 1997.12.12 - ? , 性别男，爱好女，最爱肉宝~
 
-- 性别男，爱好女，最爱肉宝~
-
-:::
 
 ::: right
 来自 [Sapphire611](http://www.sapphire611.com)

@@ -36,7 +36,7 @@ module.exports = {
         { icon: 'reco-github', link: 'https://github.com/sapphire611' },
         { icon: 'reco-bilibili', link: 'https://space.bilibili.com/17383192' },
         { icon: 'reco-zhihu', link: 'https://www.zhihu.com/people/liu-li-yi-30' },
-        
+
       ]
     },
 
@@ -44,6 +44,24 @@ module.exports = {
     recordLink: 'https://beian.miit.gov.cn/',
     startYear: '2021',
     author: 'Sapphire611',
-    codeTheme: 'tomorrow' // default 'tomorrow'
+    codeTheme: 'tomorrow',// default 'tomorrow'
   },
+
+  plugins: [
+    [
+      'meting',
+      {
+        meting: {
+          server: 'netease',
+          type: 'playlist',
+          mid: '2768120286',
+        },
+        aplayer: {
+          lrcType: 3,
+        },
+      },
+    ],
+    ['cursor-effects'],
+    ['ribbon'],
+  ]
 };

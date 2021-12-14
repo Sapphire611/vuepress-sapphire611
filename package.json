@@ -11,10 +11,14 @@
   "author": "Sapphire611",
   "license": "ISC",
   "dependencies": {
+    "@vuepress-reco/vuepress-plugin-bgm-player": "^1.1.4",
     "vuepress": "^1.8.2",
     "vuepress-theme-reco": "^1.6.10"
   },
   "devDependencies": {
+    "vuepress-plugin-cursor-effects": "^1.0.2",
+    "vuepress-plugin-meting": "^0.3.1",
+    "vuepress-plugin-ribbon": "^1.0.4",
     "watchpack": "^2.2.0"
   }
 }

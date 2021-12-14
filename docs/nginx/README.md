@@ -1,5 +1,5 @@
 ---
-title: Nginx 简易操作
+title: Nginx 相关
 date: '2021-12-10'
 categories:
  - Backend
@@ -42,7 +42,58 @@ location / {
 ./nginx -s reload
 ```
 
+## 部署HTTPS访问 (Nginx)
 
+> 前置工作：购买域名，完成基本HTTP访问，申请免费的DV证书并通过验证（具体参考各云服务商教程）
+
+1. 下载证书，上传到你的服务器（你能找到就可以）
+   
+2. Nginx 重新装载SSL模块
+
+[Nginx解决配置SSL证书报错](https://www.jianshu.com/p/00b0f41274f9)
+
+``` shell
+./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module
+make
+```
+
+3. 进入nginx目录配置nginx.conf (找不到可以 whereis nginx)
+
+``` shell
+# HTTPS server
+#
+
+server {
+       	listen       443 ssl;
+       	server_name  yourDomain.com;
+
+       	ssl_certificate      /root/server.pem; #你找的到就可以，注意这是绝对路径
+       	ssl_certificate_key  /root/server.key;
+
+       	ssl_session_cache    shared:SSL:1m; # 下面配置这些抄过去就可以
+      	ssl_session_timeout  5m;
+
+      	ssl_ciphers  ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+       	ssl_prefer_server_ciphers  on;
+       	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+       	location / {
+            	root   html;
+            	index  index.html index.htm;
+		        proxy_pass http://127.0.0.1:3000/; # 这一条是内部转发3000端口用的
+       	}
+    }
+
+# HTTP server
+# 配置 HTTPS重定向~
+server{
+     listen 80;
+     server_name yourDomain.com;
+     rewrite ^(.*)$ https://yourDomain.com;
+}
+```
+
+4. 重启nginx~
 
 
 
