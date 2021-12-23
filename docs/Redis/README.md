@@ -35,7 +35,7 @@ PONG # 看到这个就代表成功了
 - List ，双向链表
 - Set ，自动去重 ，字典 
 - Hash ，类似HashMap，存储键值对
-- Zset ，有序集合
+- Zset ，有序集合，score（从小到大排列）
 
 :::
 
@@ -157,5 +157,23 @@ HSETNX user wife sara # 只有没有此属性，才能设置成功
 ### ZSet 常用命令
 
 ``` shell
-# TBD
+
+zadd top 100 user1 90 user2 80 user3  # 从小到大排列
+
+zrange top 0 -1
+zrange top 0 -1 withscores # withscores 会带上分数一起显示
+
+zrangebyscore top 90 100 # 显示 top 中 90～100 分的
+zrangebyscore top 90 100 withscores
+
+ZREVRANGEBYSCORE top 100 80 # 从大到小排列
+ZREVRANGEBYSCORE top 100 80 withscores
+
+ZINCRBY top 50 user1 # 给top中的user1加50
+
+ZREM top user
+
+ZCOUNT top 70 100
+
+ZRANK top user2
 ```
