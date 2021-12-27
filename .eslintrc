@@ -1,0 +1,22 @@
+{
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "plugins": ["prettier"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2021": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "script"
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "strict": ["error", "global"],
+    "no-undef": ["error"],
+    "no-constant-condition": ["error", { "checkLoops": false }],
+    "no-unused-vars": "off",
+    "require-atomic-updates": "off",
+    "linebreak-style": ["error", "unix"]
+  }
+}
