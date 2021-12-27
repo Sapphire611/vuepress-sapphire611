@@ -21,13 +21,17 @@ module.exports = {
     sidebar: "auto",
     type: "blog",
     authorAvatar: "/img/logo.jpg",
+    valineConfig: {
+      appId: 'qVOKjVcg4c9wX0WR4ObcpJQr-gzGzoHsz',// your appId
+      appKey: 'oWlaFMHfMPLqnnBaV30iNkMo', // your appKey
+    },
     nav: [
       {
-        text: "About Me",
+        text: "Message Board",
         icon: "info",
-        text: "About Me",
+        text: "Message Board",
         link: "/aboutMe/",
-        icon: "reco-other",
+        icon: "reco-message",
       },
     ],
 
@@ -74,5 +78,14 @@ module.exports = {
     ],
     ["cursor-effects"],
     ["ribbon"],
+    [
+      'vuepress-plugin-sponsor',
+      {
+        theme: 'simple',
+        alipay: '/img/alipay.png',
+        wechat: '/img/wechat.png',
+        duration: 2000
+      }
+    ]
   ],
 };
