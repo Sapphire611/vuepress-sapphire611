@@ -1,6 +1,6 @@
 ---
 title: Node 库相关
-date: 2021-12-10
+date: 2022-1-3
 categories:
   - Backend
 tags:
@@ -11,7 +11,7 @@ publish: true
 
 ## Node-gyp
 
-### Node-gyp 安装
+### Node-gyp 安装 (Windows Only)
 
 [安装 node-gyp](https://zhuanlan.zhihu.com/p/164543031)
 
@@ -93,6 +93,12 @@ Sequelize 遵从 语义版本控制. 支持 Node v10 及更高版本以便使用
 使用方法为 连接数据库，创建 Model，调用方法，文档里很详细啦
 :::
 
+::: danger
+Sequelize 对于Node版本有要求(v12.22.0 || v14.17.0 || >= v16)
+
+亲测v14.16.0运行是没有任何响应的，请用nvm更新版本～
+:::
+
 ### Sequlize demo
 
 > 连接 SQL Server
@@ -152,8 +158,35 @@ module.exports = V_Employee;
 // use
 const result = V_Employee.findAll({
   where: {
-    CeibsID: realQuery.CeibsID,
+    ID: realQuery.ID,
   },
-  attributes: ["CeibsID", "SerialNumber"], // 自定义输出内容
+  attributes: ["ID", "Number"], // 自定义输出内容
 });
+```
+## NVM
+
+::: tip
+NVM 全英文也叫node.js version management，是一个nodejs的版本管理工具。nvm和n都是node.js版本管理工具，为了解决node.js各种版本存在不兼容现象可以通过它可以安装和切换不同版本的node.js。
+
+- Windows 安装包下载 : https://github.com/coreybutler/nvm-windows/releases
+
+- Mac (略微复杂) : https://www.jianshu.com/p/622ad36ee020
+:::
+
+### Mac 环境变量文件修改
+
+> (/.bash_profile || /.zshrc ) 之类的
+
+``` shell
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+```
+
+### NVM 运行demo
+
+``` shell
+nvm ls
+nvm install/uninstall v14.17.0
+nvm use v14.17.0
 ```
