@@ -1,6 +1,6 @@
 ---
 title: Node 库相关
-date: 2022-1-3
+date: 2022-1-5
 categories:
   - Backend
 tags:
@@ -189,4 +189,24 @@ export NVM_DIR="$HOME/.nvm"
 nvm ls
 nvm install/uninstall v14.17.0
 nvm use v14.17.0
+```
+
+## Axios
+
+> Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中
+
+### Axios Demo
+
+``` js
+// POST json in body 
+router.post('/', async ctx => {
+	const body = JSON.stringify(ctx.request.body);
+
+	const result = await axios.post('http://127.0.0.1:8082/url',
+		body, {
+			headers: { 'Content-Type': 'application/json' }
+		});
+
+	ctx.body = result.data;
+});
 ```

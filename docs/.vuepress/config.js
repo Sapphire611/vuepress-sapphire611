@@ -1,3 +1,10 @@
+const autometa_options = {
+  site: {
+    name: 'Sapphire611',
+  },
+  canonical_base: 'https://www.sapphire611.com/',
+};
+
 module.exports = {
   title: "Sapphire611",
   port: "8081",
@@ -69,7 +76,7 @@ module.exports = {
         meting: {
           server: "netease",
           type: "playlist",
-          mid: "2768120286",
+          mid: "7195949476",
         },
         aplayer: {
           lrcType: 3,
@@ -86,6 +93,16 @@ module.exports = {
         wechat: '/img/wechat.png',
         duration: 2000
       }
+    ],
+    ['autometa', autometa_options],
+    ['sitemap', {
+      hostname: "https://www.sapphire611.com/",
+      // 排除无实际内容的页面
+      exclude: ["/404.html"]
+    }
+    ],
+    [
+      'vuepress-plugin-baidu-autopush'
     ]
   ],
 };

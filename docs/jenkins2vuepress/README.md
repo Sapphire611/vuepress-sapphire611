@@ -1,6 +1,6 @@
 ---
 title: 使用Jenkins自动化部署Vuepress项目
-date: 2021-12-10
+date: 2022-1-5
 categories:
  - Deploy
 tags:
@@ -51,7 +51,7 @@ Username：用户名
 Remote Directory：远程目录（上面第二步建的testjenkins文件夹的路径）
 :::
 
-## SSH 密钥登录
+### SSH 密钥登录
 
 [SSH 密钥登录(用于git中免用户名密码的认证)](https://wangdoc.com/ssh/key.html#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95)
 
@@ -67,7 +67,7 @@ Remote Directory：远程目录（上面第二步建的testjenkins文件夹的�
 概括 ：ssh-keygen 后一路回车，带pub结尾的是公钥，不带的是私钥
 :::
 
-## Jenkins Tips
+### Jenkins Tips
 
 ::: tip
 
@@ -86,7 +86,7 @@ Remote Directory：远程目录（上面第二步建的testjenkins文件夹的�
 ::: warning
 最后这条比较重要，因为Jenkins用户没有sudo权限
 ::: 
-## linux安装nodeJs
+### linux安装nodeJs
 
 > 一般对root用户有效，jenkins用户需额外设置
 

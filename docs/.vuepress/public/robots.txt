@@ -1,0 +1,3 @@
+Sitemap: https://www.sapphire611.com/sitemap.xml
+
+User-agent: *
