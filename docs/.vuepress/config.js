@@ -34,11 +34,11 @@ module.exports = {
     },
     nav: [
       {
-        text: "Message Board",
+        text: "About Me",
         icon: "info",
-        text: "Message Board",
+        text: "About",
         link: "/aboutMe/",
-        icon: "reco-message",
+        icon: "reco-other",
       },
     ],
 

@@ -20,6 +20,7 @@ publish: true
 ``` shell
 docker run -d --name redis -p 6379:6379 --restart always redis # Aha，顺便设置自启动
 docker exec -it redis redis-cli
+
 ```
 
 ### Redis-Cli-Test
