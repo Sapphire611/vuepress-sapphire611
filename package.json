@@ -6,7 +6,8 @@
   "scripts": {
     "start": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
-    "dev": "vuepress dev docs"
+    "dev": "vuepress dev docs",
+    "test" : "node test/test.js"
   },
   "author": "Sapphire611",
   "license": "ISC",
