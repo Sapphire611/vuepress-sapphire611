@@ -1,6 +1,6 @@
 ---
 title: LeetCode (JS)
-date: 2021-12-10
+date: 2022-1-13
 categories:
   - Interview
 tags:
@@ -10,13 +10,11 @@ sidebar: "auto"
 publish: true
 showSponsor: true
 ---
-
 ## Leetcode 做题记录
-
 
 ### 306. 累加数
 
-``` shell
+```shell
 累加数 是一个字符串，组成它的数字可以形成累加序列。
 
 一个有效的 累加序列 必须 至少 包含 3 个数。除了最开始的两个数以外，字符串中的其他数都等于它之前两个数相加的和。
@@ -48,9 +46,10 @@ num 仅由数字（0 - 9）组成
 链接：https://leetcode-cn.com/problems/additive-number
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 ```
+
 ---
 
-``` js
+```js
 /**
  * @param {string} num
  * @return {boolean}
