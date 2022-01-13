@@ -2,7 +2,7 @@
 title: VSCode & 资源文件相关
 date: 2021-12-27
 categories:
- - Tools
+ - VsCode
 tags:
  - vscode
 sidebar: 'auto'
