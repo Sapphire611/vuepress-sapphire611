@@ -1,19 +1,30 @@
 ---
-title: 面试题目准备
+title: Interview For Javascript
 date: 2021-12-10
 categories:
  - Interview
 tags:
- - interview
+ - interview javascript
 sidebar: 'auto'
 publish: true
 --- 
 
 ## Javascript
 
-[2021前端面试秋招/前端面试春招/前端就业/前端自学必刷](https://www.bilibili.com/video/BV1sN411974w?p=3)
+### js 中什么类型是引用传递, 什么类型是值传递? 如何将值类型的变量以引用的方式传递?
 
-### Pre-compiled (预编译)
+> 简单点说, 对象是引用传递, 基础类型是值传递, 通过将基础类型包装 (boxing) 可以以引用的方式传递.
+
+``` js
+console.log(undefined == null) // true
+console.log(undefined === null) // false
+console.log([1] == [1]) // false
+```
+
+### var & let & const
+
+123 ｜ 456 ｜ 789     ｜ 789
+### eg1.Pre-compiled (预编译)
 
 > Question: what is Output？
 
@@ -73,7 +84,7 @@ f(1, 2);
 
 
 
-### This & Arrow Function
+### eg2.This & Arrow Function
 
 > Question : what is Output?
 
@@ -134,3 +145,5 @@ b.say(); // = b.say.call(b) = 333
 - 这个内部的对象是预编译的时候创建出来的，因为当函数被调用的时候，会先进行预编译
 - 在全局代码执行的前期会创建一个执行期的上下文的对象GO
 ::: 
+
+[2021前端面试秋招/前端面试春招/前端就业/前端自学必刷](https://www.bilibili.com/video/BV1sN411974w?p=3)
