@@ -2,7 +2,7 @@
 title: Docker 相关
 date: 2021-12-10
 categories:
-  - Backend
+  - Deploy
 tags:
   - docker
 sidebar: "auto"
