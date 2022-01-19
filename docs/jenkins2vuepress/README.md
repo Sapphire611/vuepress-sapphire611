@@ -4,7 +4,8 @@ date: 2022-1-5
 categories:
  - Deploy
 tags:
- - jenkins2vuepress 
+ - jenkins
+ - vuepress 
 sidebar: 'auto'
 publish: true
 --- 

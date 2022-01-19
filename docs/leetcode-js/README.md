@@ -1,6 +1,6 @@
 ---
 title: LeetCode (JS)
-date: 2022-1-14
+date: 2022-1-19
 categories:
   - Interview
 tags:
@@ -131,7 +131,7 @@ const lengthOfLongestSubstring = (s) => {
 
 ---
 
-### 4. 寻找两个正序数组的中位数
+### 4. 两个正序数组的中位数
 
 ```js
 给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的 中位数 。
@@ -188,7 +188,7 @@ const longestPalindrome = (s) => {
 
   // 变量提升后提升效率
   for (var i = 0; i < s.length; i++) {
-    let l = r = i; // 左右指针定位至i
+    let l = (r = i); // 左右指针定位至i
 
     while (s[l] === s[r + 1]) r++; // 重复字母也算是回文：bb,bbbb,abbbba...
 
@@ -212,123 +212,242 @@ const longestPalindrome = (s) => {
 
 ---
 
-# 6.Z
-```js
-var convert = function (s, numRows) {
+### 6. Z 字形变换
 
+```js
+将一个给定字符串 s 根据给定的行数 numRows ，以从上往下、从左到右进行 Z 字形排列。
+
+比如输入字符串为 "PAYPALISHIRING" 行数为 3 时，排列如下：
+
+P   A   H   N
+A P L S I I G
+Y   I   R
+之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如："PAHNAPLSIIGYIR"。
+
+请你实现这个将字符串进行指定行数变换的函数：
+
+string convert(string s, int numRows);
+
+
+示例 1:
+输入：s = "PAYPALISHIRING", numRows = 3
+输出："PAHNAPLSIIGYIR"
+
+示例 2:
+输入：s = "PAYPALISHIRING", numRows = 4
+输出："PINALSIGYAHRPI"
+解释：
+P     I    N
+A   L S  I G
+Y A   H R
+P     I
+```
+
+---
+
+```js
+const convert = (s, numRows) => {
   if (s.length < numRows || numRows == 1) {
     return s;
   }
-  let arr = new Array(numRows).fill('');
-  let num = 0;
-  let plus = true;
-  for (let i = 0; i < s.length; i++) {
 
-    arr[num] += s[i];
-    if (plus == true) {
-      num += 1;
+  let arr = new Array(numRows).fill("");
+  let index = 0; // 当前添加内容位置
+  let plus = true; // 控制index的加减
+
+  for (let i = 0; i < s.length; i++) {
+    arr[index] += s[i];
+    if (plus === true) {
+      index += 1;
     } else {
-      num -= 1;
+      index -= 1;
     }
 
-    if (num == 0) {
+    if (index === 0) {
       plus = true;
     }
-    if (num == numRows - 1) {
+    if (index === numRows - 1) {
       plus = false;
     }
   }
 
-  return arr.join('')
+  return arr.join("");
 };
 
-console.log(convert("PAHNAPLSIIGYIR", 3));
+// console.log(convert("PAHNAPLSIIGYIR", 3));
 ```
 
 ---
 
-### 306. 累加数
+### 7. 整数反转
 
 ```js
-累加数 是一个字符串，组成它的数字可以形成累加序列。
+给你一个 32 位的有符号整数 x ，返回将 x 中的数字部分反转后的结果。
 
-一个有效的 累加序列 必须 至少 包含 3 个数。除了最开始的两个数以外，字符串中的其他数都等于它之前两个数相加的和。
+如果反转后整数超过 32 位的有符号整数的范围 [−231,  231 − 1] ，就返回 0。
 
-给你一个只包含数字 '0'-'9' 的字符串，编写一个算法来判断给定输入是否是 累加数 。如果是，返回 true ；否则，返回 false 。
+假设环境不允许存储 64 位整数（有符号或无符号）。
 
-说明：累加序列里的数，除数字 0 之外，不会 以 0 开头，所以不会出现 1, 2, 03 或者 1, 02, 3 的情况。
 
+示例 1:
+输入：x = 123
+输出：321
+
+示例 2:
+输入：x = -123
+输出：-321
+
+示例 3:
+输入：x = 120
+输出：21
+
+示例 4:
+输入：x = 0
+输出：0
+```
+
+```js
+const reverse = (x) => {
+  const res = parseInt(
+    Math.abs(x)
+      .toString()
+      .split("")
+      .reverse()
+      .join("")
+  );
+
+  // if (res > Math.pow(2,31) || res < Math.pow(-2,31) -1 ) return 0;
+  if (res > 2147483648 || res < -2147483647) return 0;
+
+  return x > 0 ? res : -res;
+};
+```
+
+---
+
+### 8. 字符串转换整数 (atoi)
+
+```js
+请你来实现一个 myAtoi(string s) 函数，使其能将字符串转换成一个 32 位有符号整数（类似 C/C++ 中的 atoi 函数）。
+
+函数 myAtoi(string s) 的算法如下：
+
+读入字符串并丢弃无用的前导空格
+检查下一个字符（假设还未到字符末尾）为正还是负号，读取该字符（如果有）。
+确定最终结果是负数还是正数。 如果两者都不存在，则假定结果为正。
+读入下一个字符，直到到达下一个非数字字符或到达输入的结尾。字符串的其余部分将被忽略。
+将前面步骤读入的这些数字转换为整数（即，"123" -> 123， "0032" -> 32）。
+如果没有读入数字，则整数为 0 。必要时更改符号（从步骤 2 开始）。
+如果整数数超过 32 位有符号整数范围 [−231,  231 − 1] ，需要截断这个整数，使其保持在这个范围内。
+具体来说，小于 −231 的整数应该被固定为 −231 ，大于 231 − 1 的整数应该被固定为 231 − 1 。
+返回整数作为最终结果。
+
+注意：
+本题中的空白字符只包括空格字符 ' ' 。
+除前导空格或数字后的其余字符串外，请勿忽略 任何其他字符。
 
 示例 1：
 
-输入："112358"
-输出：true
-解释：累加序列为: 1, 1, 2, 3, 5, 8 。1 + 1 = 2, 1 + 2 = 3, 2 + 3 = 5, 3 + 5 = 8
-示例 2：
-
-输入："199100199"
-输出：true
-解释：累加序列为: 1, 99, 100, 199。1 + 99 = 100, 99 + 100 = 199
- 
-
-提示：
-
-1 <= num.length <= 35
-num 仅由数字（0 - 9）组成
-
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/additive-number
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+输入：s = "42"
+输出：42
+解释：加粗的字符串为已经读入的字符，插入符号是当前读取的字符。
+第 1 步："42"（当前没有读入字符，因为没有前导空格）
+         ^
+第 2 步："42"（当前没有读入字符，因为这里不存在 '-' 或者 '+'）
+         ^
+第 3 步："42"（读入 "42"）
+           ^
+解析得到整数 42 。
+由于 "42" 在范围 [-231, 231 - 1] 内，最终结果为 42 。
 ```
+
+```js
+// 又臭又长的弱智题目
+const myAtoi = (str) => {
+  const max = 2147483648; // 2 ^ 31
+
+  let res = parseInt(str);
+
+  if (isNaN(res)) return 0;
+  if (res > max - 1) return max - 1;
+  if (res < -max) return -max;
+
+  return res;
+};
+```
+---
+
+### 9. 回文数
+
+```js
+给你一个整数 x ，如果 x 是一个回文整数，返回 true ；否则，返回 false 。
+
+回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。
+例如，121 是回文，而 123 不是。
+```
+
+```js
+const isPalindrome = (x) => {  
+  return Number(`${Math.abs(x)}`.split('').reverse().join('')) === x;
+};
+
+```
+### 10. 正则表达式匹配
+
+```js
+给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
+
+'.' 匹配任意单个字符
+'*' 匹配零个或多个前面的那一个元素
+所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
+```
+
+```js
+
+/**
+ * @param {string} s
+ * @param {string} p
+ * @return {boolean}
+ */
+const isMatch = (s, p) => {
+  return new RegExp('^' + p + '$').test(s);
+};
+//用魔法打败魔法
+
+```
+---
+
+### 11. 盛最多水的容器
+
+```js
+给你 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, ai) 和 (i, 0) 。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+
+说明：你不能倾斜容器。
+
+示例 1：
+输入：[1,8,6,2,5,4,8,3,7]
+输出：49 
+解释：在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
+```
+---
+
+![img](https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/07/25/question_11.jpg)
 
 ---
 
 ```js
-/**
- * @param {string} num
- * @return {boolean}
- */
+// 双指针核心思路：min(L,R) * (R-L)
+const maxArea = (height) => {
+  let L = 0, R = height.length - 1;
+  let res = 0;
 
-const isAdditiveNumber = (num) => {
-  if (num.length === 0) return true;
-
-  //   for (let i = 1; i <= num.length - 1; i++) { 累加数，前一个数不可能比后一个数大..
-  for (let i = 1; i <= num.length / 2; i++) {
-    if (num[0] === "0" && i > 1) return false; // “0235813” = false
-
-    for (let j = i + 1; j < num.length; j++) {
-      // j - i 长度有限制，不可能超数组一半
-      if ((num[i] === "0" && j - i > 1) || j - i > num.length / 2) break;
-      s;
-
-      let num1 = Number(num.substring(0, i));
-      let num2 = Number(num.substring(i, j));
-
-      if (recursionJudge(num.substring(j), num1, num2)) return true;
-    }
+  while (L < R) {
+    const sum = Math.min(height[L], height[R]) * (R - L);
+    res = Math.max(res, sum);
+    height[L] > height[R] ? R-- : L++;
   }
+  return res;
+}
 
-  return false;
-};
-
-// 规范 : 数组变量得放在普通数字前
-const recursionJudge = (remain, num1, num2) => {
-  if (remain.length === 0) return true;
-
-  // 1.remain开头是不是累加后的和，2.剩下的内容递归重复
-  return (
-    remain.startsWith(num1 + num2) &&
-    recursionJudge(
-      remain.substring((num1 + num2 + "").length),
-      num2,
-      num1 + num2
-    )
-  );
-};
-
-// console.log(isAdditiveNumber("000"));
+// console.log(maxArea([1,8,6,2,5,4,8,3,7]));
 ```
-
-::: right
-来自 [Sapphire611](http://www.sapphire611.com)
-:::

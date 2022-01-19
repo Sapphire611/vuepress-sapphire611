@@ -2,9 +2,8 @@
 title: About Me
 date: 2021-12-10
 categories:
-  - Life
+  - Me
 tags:
-  - message
   - me
 sidebar: "auto"
 publish: true
