@@ -8,7 +8,6 @@ const autometa_options = {
 module.exports = {
   title: "Sapphire611",
   port: "8081",
-  base: "/vuepress-sapphire611/",
   theme: "reco",
   description: "我其实姓柳，但大家喜欢叫我老李...? ",
   head: [
