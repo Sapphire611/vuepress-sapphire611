@@ -1,6 +1,6 @@
 ---
 title: Redis 学习笔记
-date: 2022-1-7
+date: 2022-1-21
 categories:
   - Backend
 tags:
@@ -183,13 +183,21 @@ ZCOUNT top 70 100
 ZRANK top user2
 ```
 
-## Redis 配置文件 && 发布+订阅
+## Redis 配置文件
 
-[Redis6 篇 （二）配置文件的介绍 + 发布和订阅](https://blog.csdn.net/qq_45408390/article/details/119730969)
+[Redis6 篇 （二）配置文件的介绍](https://blog.csdn.net/qq_45408390/article/details/119730969)
+
+## Redis 发布 & 订阅
+
+```shell
+subscribe channel1 # Terminal 1
+publish channel1 hello #Terminal 2
+```
 
 ## Redis 新数据类型
 
-[Redis6篇 （三）Redis新数据类型](https://blog.csdn.net/qq_45408390/article/details/119731008)
+[Redis6 篇 （三）Redis 新数据类型](https://blog.csdn.net/qq_45408390/article/details/119731008)
+
 ### BitMaps
 
 > 利用二进制扩展成字符串的方式存储数据,可用于查找用户是否访问过某文章
@@ -235,11 +243,11 @@ HyperLogLog 只会根据输入元素来计算基数，而不会储存输入元�
 
 ### Geospatial
 
-> Redis 3.2 中增加了对GEO类型的支持。GEO，Geographic，地理信息的缩写,在地图上就是经纬度。
+> Redis 3.2 中增加了对 GEO 类型的支持。GEO，Geographic，地理信息的缩写,在地图上就是经纬度。
 
-> redis基于该类型，提供了经纬度设置，查询，范围查询，距离查询，经纬度Hash等常见操作。
+> redis 基于该类型，提供了经纬度设置，查询，范围查询，距离查询，经纬度 Hash 等常见操作。
 
-``` shell
+```shell
 127.0.0.1:6379> geoadd city 121.47 31.23 shanghai
 (integer) 1
 127.0.0.1:6379> geoadd city 106.50 29.53 chongqing
@@ -254,4 +262,174 @@ HyperLogLog 只会根据输入元素来计算基数，而不会储存输入元�
 "1447673.6920"
 127.0.0.1:6379> GEORADIUS city 110 30 1000 km
 1) "chongqing"
+```
+
+## Redis 事务操作
+
+[Redis6 篇 （五）Redis 事务操作 + Redis 事务-秒杀案例](https://blog.csdn.net/qq_45408390/article/details/119731054)
+
+### 事务的概述
+
+- Redis 事务是一个单独的隔离操作：事务中的所有命令都会序列化、按顺序地执行。
+- 事务在执行的过程中，不会被其他客户端发送来的命令请求所打断。
+
+### Multi、Exec、discard
+
+- 从输入 Multi 命令开始，输入的命令都会依次进入命令队列中，但不会执行
+- 直到输入 Exec 后，Redis 会将之前的命令队列中的命令依次执行
+- 组队的过程中可以通过 discard
+
+---
+
+![img](https://img-blog.csdnimg.cn/7af10e13b126438f8333e90c11e3e56b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
+
+---
+
+```shell
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379(TX)> flushdb
+QUEUED
+127.0.0.1:6379(TX)> set k1 v1
+QUEUED
+127.0.0.1:6379(TX)> set k2 v2
+QUEUED
+127.0.0.1:6379(TX)> SET k3 v3
+QUEUED
+127.0.0.1:6379(TX)> exec
+1) OK
+2) OK
+3) OK
+4) OK
+```
+
+```shell
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379(TX)> del k1
+QUEUED
+127.0.0.1:6379(TX)> del k2
+QUEUED
+127.0.0.1:6379(TX)> del k3
+QUEUED
+127.0.0.1:6379(TX)> discard # discard后上述命令全部失效
+OK
+127.0.0.1:6379> keys *
+1) "k3"
+2) "k2"
+3) "k1"
+```
+
+### 事务的错误处理
+
+- 组队中某个命令出现了报告错误，执行时整个的所有队列都会被取消
+- 如果执行阶段某个命令报出了错误，则只有报错的命令不会被执行，而其他的命令都会执行，不会回滚。
+
+```shell
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379(TX)> del k1 # 这句执行了
+QUEUED
+127.0.0.1:6379(TX)> del k2 # 这句执行了
+QUEUED
+127.0.0.1:6379(TX)> incr k3 # 这句没执行
+QUEUED
+127.0.0.1:6379(TX)> exec
+1) (integer) 1
+2) (integer) 1
+3) (error) ERR value is not an integer or out of range
+127.0.0.1:6379> keys *
+1) "k3"
+```
+
+### 乐观锁 & 悲观锁
+
+::: tip
+
+- 乐观锁(Optimistic Lock), 顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量。Redis 就是利用这种 check-and-set 机制实现事务的。
+  :::
+
+::: warning
+
+- 悲观锁(Pessimistic Lock), 顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会 block 直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。
+  :::
+
+### WATCH 
+
+- 在执行 multi 之前，先执行 watch key1 [key2],可以监视一个(或多个) key
+- 如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断。
+
+```shell
+127.0.0.1:6379> get k1
+"120"
+127.0.0.1:6379> watch k1 # 监视 k1
+OK
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379(TX)> incrby k1 123
+QUEUED
+
+######### 另一个终端窗口
+127.0.0.1:6379> set k1 111 # 修改了 k1
+OK
+######### 
+
+127.0.0.1:6379(TX)> exec
+(nil) # 在开启事务的时候，在执行前先修改一下信息，就会执行失败，这是watch key的作用
+```
+
+### UNWATCH
+
+- 取消 WATCH 命令对所有 key 的监视。
+- 如果在执行 WATCH 命令之后，EXEC 命令或DISCARD 命令先被执行了的话，那么就不需要再执行UNWATCH了
+
+## Redis 持久化
+
+[Redis6 篇 （六）Redis持久化](https://blog.csdn.net/qq_45408390/article/details/119731077)
+
+> RDB = Redis Database = 在指定的时间间隔内将内存中的数据集快照snapshot写入到磁盘中
+
+> AOF = Append Only File = 以日志形式记录每一个写操作（只许追加不可改写）
+  
+![img](https://img-blog.csdnimg.cn/6a123386c00041e78ac56f4f3f55af86.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
+
+![img](https://img-blog.csdnimg.cn/1f1dde2ddf914e7b89f1571076ef9ed9.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
+
+### AOF和RDB的选择
+> 官方推荐两个都启用。
+
+- 如果对数据不敏感，可以选单独用RDB。
+
+- 不建议单独用 AOF，因为可能会出现Bug。
+
+- 如果只是做纯内存缓存，可以都不用。
+
+::: tip 
+
+- RDB持久化方式能够在指定的时间间隔能对你的数据进行快照存储
+
+- AOF持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据,AOF命令以redis协议追加保存每次写的操作到文件末尾.
+
+- Redis还能对AOF文件进行后台重写,使得AOF文件的体积不至于过大
+
+- 如果你只希望你的数据在服务器运行的时候存在,你也可以不使用任何持久化方式.
+
+:::
+
+### 性能建议
+
+```shell
+因为RDB文件只用作后备用途，建议只在Slave上持久化RDB文件，而且只要15分钟备份一次就够了，只保留save 900 1这条规则。
+
+如果使用AOF，好处是在最恶劣情况下也只会丢失不超过两秒数据，启动脚本较简单只load自己的AOF文件就可以了。
+
+代价,一是带来了持续的IO，二是AOF rewrite的最后将rewrite过程中产生的新数据写到新文件造成的阻塞几乎是不可避免的。
+
+只要硬盘许可，应该尽量减少AOF rewrite的频率，AOF重写的基础大小默认值64M太小了，可以设到5G以上。
+
+默认超过原大小100%大小时重写可以改到适当的数值。
+
+————————————————
+版权声明：本文为CSDN博主「cv展示」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_45408390/article/details/119731077
 ```
