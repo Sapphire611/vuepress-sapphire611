@@ -2,7 +2,7 @@
 title: LeetCode (JS)
 date: 2022-1-19
 categories:
-  - Interview
+  - Algorithm
 tags:
   - leetcode
   - algorithm
@@ -375,6 +375,7 @@ const myAtoi = (str) => {
   return res;
 };
 ```
+
 ---
 
 ### 9. 回文数
@@ -387,10 +388,18 @@ const myAtoi = (str) => {
 ```
 
 ```js
-const isPalindrome = (x) => {  
-  return Number(`${Math.abs(x)}`.split('').reverse().join('')) === x;
+const isPalindrome = (x) => {
+  return (
+    Number(
+      `${Math.abs(x)}`
+        .split("")
+        .reverse()
+        .join("")
+    ) === x
+  );
 };
 ```
+
 ### 10. 正则表达式匹配
 
 ```js
@@ -402,18 +411,17 @@ const isPalindrome = (x) => {
 ```
 
 ```js
-
 /**
  * @param {string} s
  * @param {string} p
  * @return {boolean}
  */
 const isMatch = (s, p) => {
-  return new RegExp('^' + p + '$').test(s);
+  return new RegExp("^" + p + "$").test(s);
 };
-//用魔法打败魔法
-
+// 用魔法打败魔法!
 ```
+
 ---
 
 ### 11. 盛最多水的容器
@@ -425,9 +433,10 @@ const isMatch = (s, p) => {
 
 示例 1：
 输入：[1,8,6,2,5,4,8,3,7]
-输出：49 
+输出：49
 解释：在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
 ```
+
 ---
 
 ![img](https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/07/25/question_11.jpg)
@@ -437,7 +446,8 @@ const isMatch = (s, p) => {
 ```js
 // 双指针核心思路：min(L,R) * (R-L)
 const maxArea = (height) => {
-  let L = 0, R = height.length - 1;
+  let L = 0,
+    R = height.length - 1;
   let res = 0;
 
   while (L < R) {
@@ -446,7 +456,102 @@ const maxArea = (height) => {
     height[L] > height[R] ? R-- : L++;
   }
   return res;
-}
+};
 
 // console.log(maxArea([1,8,6,2,5,4,8,3,7]));
+```
+
+### 12. 整数转罗马数字
+
+```js
+罗马数字包含以下七种字符： I， V， X， L，C，D 和 M。
+
+字符          数值
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
+
+例如， 罗马数字 2 写做 II ，即为两个并列的 1。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。
+
+通常情况下，罗马数字中小的数字在大的数字的右边。
+但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。
+同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：
+
+I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。
+X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。
+C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
+给你一个整数，将其转为罗马数字。
+```
+
+```js
+const intToRoman = (num) => {
+  const weight = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]; // 1 <= num <= 3999
+  const roman = [
+    "M",
+    "CM",
+    "D",
+    "CD",
+    "C",
+    "XC",
+    "L",
+    "XL",
+    "X",
+    "IX",
+    "V",
+    "IV",
+    "I"
+  ];
+
+  let res = "";
+
+  for (let i = 0; i < 13; i++) {
+    while (num >= weight[i]) {
+      res += roman[i];
+      num -= weight[i];
+    }
+  }
+
+  return res;
+};
+```
+
+### 13. 罗马数字转整数
+
+```js
+罗马数字包含以下七种字符: I， V， X， L，C，D 和 M。
+
+...参考12题的题目😄
+```
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const romanToInt = (s) => {
+  const map = {
+    I: 1,
+    V: 5,
+    X: 10,
+    L: 50,
+    C: 100,
+    D: 500,
+    M: 1000
+  };
+
+  let sum = 0;
+
+  for (let i = 0; i < s.length; i++) {
+    // sum += cur 后面的 比 cur 罗马值大 ？ 后 - cur , i+1 : cur (cur = 当前值)
+    sum += map[s[i]] < map[s[i + 1]] ? map[s[i + 1]] - map[s[i++]] : map[s[i]];
+  }
+
+  return sum;
+};
+
+// console.log(romanToInt("MCMXCIV"))
 ```
