@@ -75,7 +75,7 @@ cd -
 ### 4. 运行部署命令
 
 ```shell
-yarn deploy-github
+yarn deploy-github  # 二选一
 npm run deploy-github
 ```
 
