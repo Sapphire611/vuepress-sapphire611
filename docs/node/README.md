@@ -27,7 +27,7 @@ node-gyp 在较新的 Node 版本中都是自带的（平台相关），用来�
 
 :::
 
-### Node-gyp 编译
+### Node-gyp 编译 (Windows Only)
 
 [node-gyp 编译问题](https://www.cnblogs.com/fanqisoft/p/13171657.html)
 
