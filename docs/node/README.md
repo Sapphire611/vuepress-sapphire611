@@ -1,6 +1,6 @@
 ---
 title: Node 库相关
-date: 2022-1-5
+date: 2022-1-25
 categories:
   - Backend
 tags:
@@ -163,7 +163,7 @@ const result = V_Employee.findAll({
   attributes: ["ID", "Number"], // 自定义输出内容
 });
 ```
-## NVM
+## NVM (略麻烦)
 
 ::: tip
 NVM 全英文也叫node.js version management，是一个nodejs的版本管理工具。nvm和n都是node.js版本管理工具，为了解决node.js各种版本存在不兼容现象可以通过它可以安装和切换不同版本的node.js。
@@ -190,6 +190,23 @@ nvm ls
 nvm install/uninstall v14.17.0
 nvm use v14.17.0
 ```
+
+## n (比 NVM 好用！)
+
+[node 版本切换工具 n 的使用](https://www.jianshu.com/p/a2ee8f61a8ca)
+
+```shell
+npm install -g n
+
+n lts     # 自动安装 lts 版本
+n latest  # 自动安装 latest 版本
+n         # 出现已安装node版本列表，上下选择后回车确定
+```
+
+::: warning
+- 更改版本后需要 重新打开Terminal / 重新登录
+- 如果你是mac，所有的命令都要加sudo
+:::
 
 ## Axios
 
