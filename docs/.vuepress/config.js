@@ -2,14 +2,14 @@ const autometa_options = {
   site: {
     name: 'Sapphire611',
   },
-  canonical_base: 'https://www.sapphire611.com/',
+  canonical_base: 'https://sapphire611.github.io/',
 };
 
 module.exports = {
   title: "Sapphire611",
   port: "8081",
   theme: "reco",
-  description: "我其实姓柳，但大家喜欢叫我老李...? ",
+  description: "我叫柳李逸，我妈不姓李，谢谢🙏 ",
   head: [
     [
       "meta",
@@ -36,7 +36,7 @@ module.exports = {
       {
         text: "About Me",
         icon: "info",
-        text: "About",
+        text: "About Me",
         link: "/aboutMe/",
         icon: "reco-other",
       },
@@ -61,7 +61,6 @@ module.exports = {
         },
       ],
     },
-
     record: "沪ICP备2021035470号-1",
     recordLink: "https://beian.miit.gov.cn/",
     startYear: "2021",
@@ -83,7 +82,6 @@ module.exports = {
         },
       },
     ],
-    ["cursor-effects"],
     ["ribbon"],
     [
       'vuepress-plugin-sponsor',
