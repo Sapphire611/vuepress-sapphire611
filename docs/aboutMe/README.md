@@ -55,6 +55,7 @@ My one and only: [Sara](#)
 
 <h1> 💬 How to reach me:</h1>
 <a href="mailto:liuliyi611@gmail.com?Subject=Title" target="_top"><img src="https://img.shields.io/badge/Email-liuliyi611@gmail.com-9400D3?style=flat-square&logo=gmail" lazyload></a>
+<img src="https://img.shields.io/badge/Wechat : liuliyi611-00bc12?logo=wechat" lazyload>
 <a href="https://sapphire611.github.io/"><img src="https://img.shields.io/badge/Sapphire611.github.io-276DC3?logo=google-chrome" lazyload></a>
 <a href="https://github.com/Sapphire611"><img src="https://img.shields.io/badge/Sapphire611-blue?style=flat-square&logo=github" lazyload></a>
 <br/>

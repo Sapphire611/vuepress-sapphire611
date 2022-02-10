@@ -13,6 +13,8 @@ publish: true
 
 [【尚硅谷】Redis 6 入门到精通 超详细 教程](https://www.bilibili.com/video/BV1Rv41177Af)
 
+[cV展示的学习园 (这人笔记写的很好)](https://blog.csdn.net/qq_45408390/category_11225849.html)
+
 > Redis(Remote Dictinary Server),C 语言开发,高性能(key-value)数据库, **单线程 + 多路 IO 复用**
 
 ## Docker & Redis-Cli
@@ -433,3 +435,167 @@ OK
 版权声明：本文为CSDN博主「cv展示」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
 原文链接：https://blog.csdn.net/qq_45408390/article/details/119731077
 ```
+## Redis 主从复制 + Redis集群
+
+[Redis6篇 （七）Redis主从复制 + Redis集群](https://blog.csdn.net/qq_45408390/article/details/119731094)
+
+[Redis.conf 原文件 + 配置详解](https://blog.csdn.net/super1223/article/details/119060113)
+
+![img](https://img-blog.csdnimg.cn/652465d11add436ea377bfe71c983b44.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
+
+### 搭建主从复制
+
+[Error: No such file or directory @ rb_sysopen (缺少某库的解决方法)](https://blog.csdn.net/wq57885/article/details/121392104)
+
+```
+brew install ca-certificates # 看报错，少什么brew
+```
+
+[mac brew安装redis (mac本地安装redis，便于操作)](https://www.cnblogs.com/qianmaoliugou/p/15006539.html)
+
+```
+brew install redis
+```
+
+---
+
+
+<img style="border:2;" src="/img/redis-test.jpg">
+
+---
+
+```shell
+###################### redis6379.conf #######################
+include myredis/redis.conf # 测试中没使用绝对路径，否则前面增加‘/’
+pidfile /var/run/redis_6379.pid
+port 6379
+dbfilename dump6379.rdb
+
+###################### redis6380.conf #######################
+include myredis/redis.conf
+pidfile /var/run/redis_6380.pid
+port 6380
+dbfilename dump6380.rdb
+
+###################### redis6381.conf #######################
+include myredis/redis.conf
+pidfile /var/run/redis_6381.pid
+port 6381
+dbfilename dump6381.rdb
+```
+```shell
+liuliyi@liuliyideMacBook-Pro redis-test % redis-server redis6379.conf
+liuliyi@liuliyideMacBook-Pro redis-test % redis-server redis6380.conf
+liuliyi@liuliyideMacBook-Pro redis-test % redis-server redis6381.conf
+
+liuliyi@liuliyideMacBook-Pro redis-test % ps -ef | grep redis
+  501  8617     1   0  3:23下午 ??         0:00.63 /opt/homebrew/opt/redis/bin/redis-server 127.0.0.1:6379
+  501  8685     1   0  3:30下午 ??         0:00.51 redis-server 127.0.0.1:6380
+  501  8687     1   0  3:30下午 ??         0:00.50 redis-server 127.0.0.1:6381
+  501  8841  3363   0  3:32下午 ttys001    0:00.00 grep redis
+
+liuliyi@liuliyideMacBook-Pro redis-test % redis-cli -p 6379 # 进入指定端口的redis服务
+127.0.0.1:6379> info replication
+# Replication
+role:master
+connected_slaves:0 # 现在没有附属机
+master_failover_state:no-failover
+master_replid:e44ac240b5de658e4541aa0bddf6645325214997
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:0
+second_repl_offset:-1
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+
+liuliyi@liuliyideMacBook-Pro redis-test % redis-cli -p 6380
+127.0.0.1:6380> slaveof 127.0.0.1 6379 # 设置主人为6379
+OK
+
+liuliyi@liuliyideMacBook-Pro redis-test % redis-cli -p 6381
+127.0.0.1:6381> slaveof 127.0.0.1 6379
+OK
+
+liuliyi@liuliyideMacBook-Pro redis-test % redis-cli -p 6379
+127.0.0.1:6379> info replication
+# Replication
+role:master
+connected_slaves:2 # 有两台从机了
+slave0:ip=127.0.0.1,port=6380,state=online,offset=28,lag=0
+slave1:ip=127.0.0.1,port=6381,state=online,offset=28,lag=1
+master_failover_state:no-failover
+master_replid:0146ab97e819f0c04303677fc70f451a3f1aa244
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:28
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:1
+repl_backlog_histlen:28
+```
+::: warning Q & A
+- 从机会【全量】复制主机的内容
+- 在主机上写，在从机上可以读取数据，在从机上写数据报错
+- 主机挂掉，重启就行，一切如初，从机重启需重设：slaveof 127.0.0.1 6379
+- 主机shutdown后，从机原地待命，等待主机重新启动，一切回复正常
+:::
+
+::: tip 复制原理
+- Slave启动成功连接到master后会发送一个sync命令
+- Master接到命令启动后台的存盘进程，同时收集所有接收到的用于修改数据集命令， 在后台进程执行完毕之后，master将传送整个数据文件到slave,以完成一次完全同步
+- 全量复制：而slave服务在接收到数据库文件数据后，将其存盘并加载到内存中。
+- 增量复制：Master继续将新的所有收集到的修改命令依次传给slave,完成同步
+- 但是只要是重新连接master,一次完全同步（全量复制)将被自动执行
+:::
+
+### 反客为主
+
+> 从机也可以有从机，还可以在主机挂掉的时候反客为主
+
+``` shell
+slaveof no one # 反客为主
+```
+
+### 哨兵模式
+
+> 反客为主的自动版，能够后台监控主机是否故障，如果故障了根据投票数自动将从库转换为主库
+
+> 先搭建一主二从的环境，自定义的/myredis目录下新建sentinel.conf文件
+
+```shell
+###################### sentinel.conf #######################
+# 其中mymaster为监控对象起的服务器名称， 1 为至少有多少个哨兵同意迁移的数量。
+sentinel monitor mymaster 127.0.0.1 6379 1
+```
+
+![img](https://img-blog.csdnimg.cn/06d6391b367d46309376900f9962e3cc.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
+
+## Redis集群
+
+::: warning 集群之前遇到的问题
+1. 容量不够，redis如何进行扩容？
+2. 并发写操作， redis如何分摊？
+3. 主从模式，薪火相传模式，主机宕机，导致ip地址发生变化，应用程序中配置需要修改对应的主机地址、端口等信息。
+
+redis3.0中提供了解决方案。就是无中心化集群配置。
+:::
+
+### 集群概述
+
+- Redis 集群实现了对Redis的水平扩容
+- 即启动N个redis节点，将整个数据库分布存储在这N个节点中，每个节点存储总数据的1/N。
+
+- Redis 集群通过分区（partition）来提供一定程度的可用性（availability）
+- 即使集群中有一部分节点失效或者无法进行通讯， 集群也可以继续处理命令请求。
+  
+![img](https://img-blog.csdnimg.cn/a119e8e84725496b9cc8022f62f98260.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
+
+::: danger 总结：Redis部署的四种模式
+1. 单机模式 💻
+2. 主从模式 💻 - 💻 - 💻
+3. 哨兵模式 🪖 - ?>> 💻
+4. 集群模式 💻💻💻💻💻💻 !>> 💻
+:::
+
+[具体命令点击查看，没往下写了](https://blog.csdn.net/qq_45408390/article/details/119731094)
