@@ -7,7 +7,7 @@
     "start": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
     "deploy-github": "GH=1 yarn build && bash scripts/deploy-github.sh",
-    "test" : "node test/test.js"
+    "test": "node test/test.js"
   },
   "author": "Sapphire611",
   "license": "ISC",
