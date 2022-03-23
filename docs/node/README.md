@@ -100,9 +100,7 @@ Sequelize 对于Node版本有要求(v12.22.0 || v14.17.0 || >= v16)
 亲测v14.16.0运行是没有任何响应的，请用nvm更新版本～
 :::
 
-### Sequlize demo
-
-> 连接 SQL Server
+### Sequlize demo (Sql Server)
 
 ```js
 "use strict";
@@ -111,20 +109,15 @@ const Sequelize = require("sequelize");
 const config = require("../configs");
 
 const sequelize = new Sequelize(
-  config.mssqlDatabase,
-  config.mssqlUsername,
-  config.mssqlPassword,
+  database,
+  username,
+  password,
   {
     host: "123.45.67.89",
-    port: 1433,
-    dialect: "mssql",
-    dialectOptions: {
-      options: {
-        encrypt: false, // 这个必须是false，只有Azure平台是true
-        useUTC: false,
-        dateFirst: 1,
-      },
-    },
+    dialect: "mysql",
+    define: {
+				timestamps: false,
+		},
   }
 );
 
