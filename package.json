@@ -15,6 +15,8 @@
   "dependencies": {
     "@vuepress-reco/vuepress-plugin-bgm-player": "^1.1.4",
     "csv-writer": "^1.6.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.3",
     "vuepress": "^1.8.2",
     "vuepress-plugin-autometa": "^0.1.13",
     "vuepress-plugin-sitemap": "^2.3.1",

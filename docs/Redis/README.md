@@ -43,8 +43,9 @@ PONG # 看到这个就代表成功了
 
 ### Medis
 
-[Medis For Redis GUI](https://getmedis.com/)
+[【Mac】Medis For Redis GUI](https://getmedis.com/)
 
+[【Windows】Another Redis Desktop Manager](https://github.com/qishibo/AnotherRedisDesktopManager/releases/tag/v1.5.5)
 ## Redis 基本操作
 
 ### Key 常用命令
