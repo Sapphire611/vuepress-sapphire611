@@ -6,7 +6,7 @@ categories:
 tags:
   - guide
 sidebar: "auto"
-publish: true
+publish: false
 showSponsor: true
 ---
 
