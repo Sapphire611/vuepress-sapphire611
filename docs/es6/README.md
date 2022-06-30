@@ -16,6 +16,7 @@ showSponsor: true
 
 [ES6 入门教程 - 阮一峰 (yyds)](https://es6.ruanyifeng.com/#README)
 
+[ES6学习笔记 - 看这个也行](https://www.aliyundrive.com/s/exVukKetCKw)
 ## var && let && const 
 
 
