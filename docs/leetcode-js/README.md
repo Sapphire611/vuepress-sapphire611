@@ -1,6 +1,6 @@
 ---
 title: LeetCode (JS)
-date: 2022-2-7
+date: 2022-7-1
 categories:
   - Algorithm
 tags:
@@ -489,34 +489,37 @@ C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
 
 ```js
 const intToRoman = (num) => {
-  const weight = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]; // 1 <= num <= 3999
-  const roman = [
-    "M",
-    "CM",
-    "D",
-    "CD",
-    "C",
-    "XC",
-    "L",
-    "XL",
-    "X",
-    "IX",
-    "V",
-    "IV",
-    "I"
-  ];
+    const map = {
+        M: 1000,
+        CM: 900,
+        D: 500,
+        CD: 400,
+        C: 100,
+        XC: 90,
+        L: 50,
+        XL: 40,
+        X: 10,
+        IX: 9,
+        V: 5,
+        IV: 4,
+        I: 1
+    };
 
-  let res = "";
+    let res = "";
 
-  for (let i = 0; i < 13; i++) {
-    while (num >= weight[i]) {
-      res += roman[i];
-      num -= weight[i];
+    const keys = Object.keys(map);
+
+    for (const key of keys) {
+        while(num >= map[key]) {
+            res += key;
+            num -= map[key];
+        }
     }
-  }
 
-  return res;
+    return res;
 };
+
+// console.log(intToRoman(1994));
 ```
 
 ### 13. 罗马数字转整数
@@ -526,6 +529,8 @@ const intToRoman = (num) => {
 
 ...参考12题的题目😄
 ```
+
+> 方法一 : 高端截取
 
 ```js
 /**
@@ -556,6 +561,45 @@ const romanToInt = (s) => {
 // console.log(romanToInt("MCMXCIV"))
 ```
 
+> 方案二 : 暴力截取
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const romanToInt = (s) => {
+
+    const map = {
+        M: 1000,
+        CM: 900,
+        D: 500,
+        CD: 400,
+        C: 100,
+        XC: 90,
+        L: 50,
+        XL: 40,
+        X: 10,
+        IX: 9,
+        V: 5,
+        IV: 4,
+        I: 1
+    };
+
+    let sum = 0;
+
+    const keys = Object.keys(map);
+
+    for (const key of keys) {
+        if (s.startsWith(key)) {
+            sum += map[key];
+            s = s.slice(key.length);
+        }
+    }
+
+    return sum;
+};
+```
 ---
 
 ### 14. 最长公共前缀
@@ -576,6 +620,10 @@ const romanToInt = (s) => {
 ```
 
 ```js
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
 const longestCommonPrefix = (strs) => {
   if(strs.length < 1) return strs[0];
 
@@ -642,4 +690,90 @@ const threeSum = (nums) => {
 };
 
 // console.log(threeSum([-1, 0, 1, 2, -1, -4]));
+```
+
+### 16. 最接近的三数之和
+```js
+给你一个长度为 n 的整数数组 nums 和 一个目标值 target。请你从 nums 中选出三个整数，使它们的和与 target 最接近。
+
+返回这三个数的和。
+
+假定每组输入只存在恰好一个解。
+
+示例 1：
+
+输入：nums = [-1,2,1,-4], target = 1
+输出：2
+解释：与 target 最接近的和是 2 (-1 + 2 + 1 = 2) 。
+
+示例 2：
+输入：nums = [0,0,0], target = 1
+输出：0
+```
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+const threeSumClosest = (nums, target) => {
+    let res = nums[0] + nums[1] + nums[2];
+    nums = nums.sort((a, b) => a - b);
+    for (let i = 0; i < nums.length - 2; i++) {
+        let left = i + 1;
+        let right = nums.length - 1;
+        while (left < right) {
+            let sum = nums[i] + nums[left] + nums[right];
+            if (Math.abs(sum - target) < Math.abs(res - target)) {
+                res = sum;
+            }
+            if (sum > target) right--;
+            if (sum < target) left++;
+            if (sum == target) return target;
+        }
+    }
+    return res;
+};
+```
+
+### 17. 电话号码的字母组合
+
+```js
+给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
+
+给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+```
+
+```js
+//输入：digits = "23"
+//输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
+const letterCombinations = (digits) => {
+    if (digits.length == 0) return [];
+    const res = [];
+    const map = {//建立电话号码和字母的映射关系
+        2: "abc",
+        3: "def",
+        4: "ghi",
+        5: "jkl",
+        6: "mno",
+        7: "pqrs",
+        8: "tuv",
+        9: "wxyz",
+    };
+
+    const dfs = (curStr, i) => {//curStr是递归每一层的字符串，i是扫描的指针
+        if (i > digits.length - 1) {//边界条件，递归的出口
+            res.push(curStr); //其中一个分支的解推入res
+            return; //结束递归分支，进入另一个分支
+        }
+        const letters = map[digits[i]]; //取出数字对应的字母
+        for (const l of letters) {
+            //进入不同字母的分支
+            dfs(curStr + l, i + 1); //参数传入新的字符串，i右移，继续递归
+        }
+    };
+    dfs("", 0); // 递归入口，传入空字符串，i初始为0的位置
+    return res;
+};
 ```

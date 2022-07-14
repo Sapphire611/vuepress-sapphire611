@@ -31,6 +31,7 @@ docker run -d --name redis -p 6379:6379 --restart always redis
 
 ```shell
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 --restart always rabbitmq
+docker run -d --restart=always -p 15672:15672 -p 5672:5672 -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:management # 这个可以进ui界面
 ```
 
 ### Zookeeper

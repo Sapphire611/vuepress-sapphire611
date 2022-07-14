@@ -25,4 +25,4 @@ yarn.lock
 
 /.temp
 /docs/.vuepress/dist
-/test
+/test/
