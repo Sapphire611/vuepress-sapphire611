@@ -1,6 +1,6 @@
 ---
-title: Mongodb 学习笔记
-date: 2022-6-23
+title: Mongodb 备份 & 恢复 & 增加密码
+date: 2022-7-3
 categories:
   - Backend
 tags:
@@ -23,11 +23,11 @@ showSponsor: true
 mongodb将主体与插件进行了分离，需要额外下载插件包MongoDB Database Tools 下载地址: [下载地址](https://www.mongodb.com/try/download/database-tools)
 :::
 
-``` linux
+``` shell
 tar -zxvf mongodb.tools.xxxxxxx.tgz # 解压
 ```
 
-``` linux
+``` shell
 cd /bin # 解压后进入 /bin 目录
 ./mongodump
 ./mongodump --forceTableScan -d [database_name] # 因mongodb版本不一致导致的导出失败解决方案:

@@ -1,16 +1,16 @@
 ---
 title: Node 文档学习
-date: 2022-2-14
+date: 2022-7-14
 categories:
   - Backend
 tags:
   - node
   - doc
 sidebar: "auto"
-publish: false
+publish: true
 ---
 
-[Node.js v16.14.0 文档 - ZH](http://nodejs.cn/api/)
+[Node.js v16.16.0 documentation ](https://nodejs.org/dist/latest-v16.x/docs/api/)
 
 ## Assert
 
