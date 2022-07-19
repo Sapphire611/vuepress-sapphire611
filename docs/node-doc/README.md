@@ -10,7 +10,7 @@ sidebar: "auto"
 publish: true
 ---
 
-[Node.js v16.16.0 documentation ](https://nodejs.org/dist/latest-v16.x/docs/api/)
+[Node.js v16.16.0 documentation](https://nodejs.org/dist/latest-v16.x/docs/api/)
 
 ## Assert
 

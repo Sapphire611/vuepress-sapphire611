@@ -1,6 +1,6 @@
 module.exports = {
   // 字符串使用单引号
-  singleQuote: false,
+  singleQuote: true,
   // 每行末尾自动添加分号
   semi: true,
   // tab缩进大小,默认为2

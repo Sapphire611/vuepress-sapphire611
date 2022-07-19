@@ -1,6 +1,6 @@
 ---
-title: linux服务器下 nginx && pm2 部署记录
-date: 2022-7-15
+title: linux 部署实战
+date: 2022-7-19
 categories:
   - deploy
 tags:
@@ -11,19 +11,9 @@ publish: true
 showSponsor: true
 ---
 
-## 2/17 Work Note
+## nginx 部署记录
 
-今天被 cwj 秀了一脸，特此记录
-
-::: right
-Goto his blog >> [CanMusic](https://github.com/CanMusic/me/issues)
-:::
-
----
-
-### nginx 部署记录
-
-```shell
+``` shell
 apt install nginx
 # nginx -v
 # nginx version: nginx/1.18.0 (Ubuntu) 老版本
@@ -34,7 +24,7 @@ cd /etc/nginx/ # nginx目录在此
 
 > 查看 主配置文件 nginx.conf
 
-```shell
+``` shell
 user www-data;
 worker_processes auto;
 pid /run/nginx.pid;
@@ -61,13 +51,13 @@ http {
 
 > 进入 conf.d 目录创建自定义配置文件
 
-```shell
+``` shell
 cd conf.d/
 touch default.conf # touch 是新建文件
 vi default.conf
 ```
 
-```shell
+``` shell
 # default.conf
 server {
         listen 80;
@@ -80,12 +70,12 @@ server {
     }
 ```
 
-```shell
+``` shell
 nginx -t
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 ```
 
-### space365 项目部署记录
+## space365 项目部署记录
 
 1. 拉取项目，切换到对应分支
 
@@ -135,4 +125,145 @@ pm2 list
 
 pm2 start/restart 1  // cluster 部署
 pm2 start src/index.js // fork 部署
+```
+
+
+## docker 本地打包并推送到阿里云
+
+### 1. 项目根目录下准备Dockerfile
+
+``` dockerfile
+# Dockerfile demo
+
+FROM node:lts
+
+ENV NODE_ENV=production \
+    PORT=19008
+
+WORKDIR /backend
+
+COPY ./dist /backend
+
+RUN npm install yarn --registry https://registry.npm.taobao.org/; \
+    yarn --registry https://registry.npm.taobao.org/
+
+EXPOSE $PORT
+CMD [ "node", "./bundle.js" ]
+```
+
+### 2.  docker build
+
+[Docker Buildx | Docker Documentation](https://docs.docker.com/buildx/working-with-buildx/)
+``` shell
+gulp build # 先自己把项目打包了
+
+# 然后用 docker 打包成本地镜像
+docker buildx build --platform linux/amd64 -t s365-bytedance-apps:x.x.x .
+# docker buildx build --platform linux/amd64 -t registry.cn-shanghai.aliyuncs.com/space365/s365-bytedance-apps:x.x.x .
+
+docker images # 打包好了，本地就能看到
+```
+
+
+
+### 3. 本地镜像 push 到云端
+
+``` shell
+docker login registry.cn-shanghai.aliyuncs.com --username xxxxx --password xxxxx
+
+docker tag [imageId] registry.cn-shanghai.aliyuncs.com/xxx/xxx-xxx:x.x.x
+
+docker push registry.cn-shanghai.aliyuncs.com/xxx/xxx-xxx:x.x.x
+
+docker save -o  s365-xxx-backend.tar  s365-xxx-backend:x.x.x
+
+```
+
+[Linux scp命令](https://www.runoob.com/linux/linux-comm-scp.html)
+
+> scp 是 secure copy 的缩写, scp 是 linux 系统下基于 ssh 登陆进行安全的远程文件拷贝命令。
+
+``` shell
+# scp [可选参数] file_source file_target 
+scp -r docker-deploy root@[ip]:/home/xxx/
+cd docker-deploy
+docker-compose up -d
+
+# k8s操作,注意缩进2个空格
+kubectl apply -f xxx.yaml
+kubectl -n space365-xxx get configmap
+
+kubectl apply -f xxx.yaml
+# 命名空间中创建仓库key，并在deployment.yaml中加入
+imagePullSecrets:
+        - name: xxx
+
+kubectl -n xxx-xxx get pod
+kubectl -n xxx-xxx describe pod backend-xxxxx-xxxx
+kubectl delete -f deployment.yaml
+kubectl -n xxx-xxx logs -f backend-xxxxx-xxxx
+kubectl replace --force -f deployment.yaml
+```
+
+
+## docker 部署实战
+
+> 2022/7/18 Work Note From Cwj
+
+::: right
+Goto his blog >> [CanMusic](https://github.com/CanMusic/me/issues)
+:::
+
+::: tip
+前置条件：本地已docker build，docker login后推送到云端
+:::
+#### 1. 进入到 docker-compose.yaml的目录下
+
+``` shell
+root@space-node2:/home/xxxxxx/space365 ls
+app.conf  conf/  docker-compose.yaml  log/  nginx.conf
+
+root@space-node2:/home/xxxxxx/space365 vi docker-compose.yaml 
+```
+
+#### 2. 停止原有容器
+``` shell
+root@space-node2:/home/xxxxxx/space365 docker compose stop health
+
+[+] Running 1/1
+ ⠿ Container health2  Stopped                                                                                                                                                                        0.4s
+
+root@space-node2:/home/xxxxxx/space365 docker compose stop health1
+
+[+] Running 1/1
+ ⠿ Container health3  Stopped                                                                                                                                                                        0.3s
+
+root@space-node2:/home/xxxxxx/space365 docker compose rm -f health
+
+Going to remove health2
+[+] Running 1/0
+ ⠿ Container health2  Removed                                                                                                                                                                        0.0s
+
+root@space-node2:/home/xxxxxx/space365 docker compose rm -f health1
+Going to remove health3
+[+] Running 1/0
+ ⠿ Container health3  Removed                                                                                                                                                                        0.0s
+```
+
+#### 3. 更新容器
+
+``` shell
+root@space-node2:/home/shgbit/space365# docker compose up health -d
+
+[+] Running 13/13
+ ⠿ health           complete                                                                                                                                                                     14.1s
+
+[+] Running 1/1
+ ⠿ Container health2  Started                                                                                                                                                                        0.9s
+ 
+root@space-node2:/home/shgbit/space365# docker compose up health1 -d
+[+] Running 1/1
+ ⠿ Container health3  Started                                                                                                                                                                        0.4s
+root@space-node2:/home/shgbit/space365# docker ps 
+
 ```
