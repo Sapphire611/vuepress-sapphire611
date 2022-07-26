@@ -103,4 +103,12 @@ module.exports = {
       'vuepress-plugin-baidu-autopush'
     ]
   ],
+
+  configureWebpack: {
+    node: {
+      global: true,
+      process: true
+    },
+  },
+  
 };
