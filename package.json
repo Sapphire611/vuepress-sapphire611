@@ -22,8 +22,10 @@
     "vuepress": "^1.8.2",
     "vuepress-plugin-autometa": "^0.1.13",
     "vuepress-plugin-nuggets-style-copy": "^1.0.3",
+    "vuepress-plugin-sakura": "^1.2.1",
     "vuepress-plugin-sitemap": "^2.3.1",
     "vuepress-plugin-sponsor": "^1.0.0",
+    "vuepress-theme-jabinblog": "^0.0.1",
     "vuepress-theme-reco": "^1.6.10"
   },
   "devDependencies": {
