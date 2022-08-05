@@ -673,7 +673,7 @@ PAD图数据结构化设计的工具
 
 > 使用McCabe 方法可以计算程序流程图的环形复杂度，下图的环形复杂度为( )
 
-<img style="border:2;" src="/ruankao_2021/30/30.png">
+<img style="border:2;" src="/ruankao_2021/01/30.png">
 
 ---
 
