@@ -16,7 +16,8 @@ showSponsor: true
 
 > 前趋图 (Precedence Graph)是一个有向无环图，记为:→=(Pi,Pj)Pi must complete before Pj may strat),假设系统中进程P={P1, P2, P3, P4, P5, P6, P7, P8}，且进程的前驱图如下:
 
-<img style="border:2;" src="/ruankao_2021/01/1.png">
+
+![img](https://shgbit-liuliyi.oss-cn-shanghai.aliyuncs.com/vuepress-pic/ruankao_2021/01/1.png)
 
 A. => ((P1, P2),(P3, P1),(P4, P1),(P5, P2),(P5, P3), (P6, P4),(P7, P5), (P7, P6),(P5, P6), (P4, P5), (P6, P7),(P7, P6) ]
 
@@ -673,7 +674,7 @@ PAD图数据结构化设计的工具
 
 > 使用McCabe 方法可以计算程序流程图的环形复杂度，下图的环形复杂度为( )
 
-<img style="border:2;" src="/ruankao_2021/01/30.png">
+![img](https://shgbit-liuliyi.oss-cn-shanghai.aliyuncs.com/vuepress-pic/ruankao_2021/01/30.png)
 
 ---
 
