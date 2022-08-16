@@ -10,7 +10,7 @@ publish: true
 showSponsor: true
 ---
 
-## Mongodb 学习笔记
+## Mongodb 不能裸奔
 
 > 某次工作途中测试服务器的mongodb没有上密码，直接被人清库了两次，特此记录
 
@@ -73,6 +73,28 @@ bye
 ::: tip
 其实到这一步，就可以了，不一定要针对单数据库创建特定的管理员，用一个就行
 :::
+
+--- 
+``` js
+// 更新权限
+db.updateUser(
+ "root",
+        {
+            roles : 
+            [
+                  {"role" : "userAdminAnyDatabase","db" : "admin"},
+                  {"role" : "dbOwner","db" : "admin"},
+                  {"role" : "clusterAdmin", "db": "admin"}
+             ]
+        }
+) 
+
+// 授予备份，恢复数据权限
+db.grantRolesToUser("root",[{role:”backup”,db:"admin"}])
+db.grantRolesToUser("root",[{role:"restore",db:"admin"}])
+```
+
+---
 
 ```
 # mongodb链接url
