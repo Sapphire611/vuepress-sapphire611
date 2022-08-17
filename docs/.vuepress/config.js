@@ -2,14 +2,14 @@ const autometa_options = {
   site: {
     name: 'Sapphire611'
   },
-  canonical_base: 'https://sapphire611.github.io/'
+  canonical_base: 'https://www.sapphire611.com/'
 };
 
 module.exports = {
   title: 'Sapphire611',
   port: '8081',
   theme: 'reco',
-  description: '我叫柳李逸，我妈不姓李，谢谢🙏 ',
+  description: '感谢来访🙏 ',
   head: [
     [
       'meta',
