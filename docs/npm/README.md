@@ -68,3 +68,11 @@ yarn 可以用来发布包，和npm二者选其一即可
 
 npm 上的内容和yarn上的内容是一样的，每次发布记得改package.json里的版本号 
 ::: 
+
+::: warning 可能会遇到的问题
+1. npm 需要更新
+> sudo npm install -g npm //npm update
+
+2. 设置 npm registry
+> npm config set registry https://registry.npmjs.org //set https origin
+:::
