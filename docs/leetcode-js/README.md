@@ -1,6 +1,15 @@
 ---
+marp: true
+theme: gaia
+footer: 'Sapphire611 2020-09-16'
+paginate: true
+style: |
+  section a {
+      font-size: 30px;
+  }
+
 title: LeetCode (JS)
-date: 2022-7-1
+date: 2022-9-16
 categories:
   - Algorithm
 tags:
