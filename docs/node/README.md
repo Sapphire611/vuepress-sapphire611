@@ -54,6 +54,12 @@ npm install --save multer
 
 > 以中间件的形式放在路由中使用
 
+---
+
+#### 如果使用的是Koa框架，请使用 koa-multer
+
+---
+
 ```js
 const express = require("express");
 const multer = require("multer");
