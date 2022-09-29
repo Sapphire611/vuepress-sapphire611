@@ -227,3 +227,21 @@ router.post('/', async ctx => {
 	ctx.body = result.data;
 });
 ```
+
+### Demo: 在Linux服务器上安装node
+
+> From : RuanChuhao
+
+```shell
+sudo p
+cd /tmp
+wget https://nodejs.org/dist/v16.17.1/node-v16.17.1-linux-x64.tar.xz
+tar -xvf ./node-v16.17.1-linux-x64.tar.xz
+cd ./node-v16.17.1-linux-x64/
+cd ./bin
+sudo ln ./node /usr/local/bin/node
+sudo ./npm -g install npm
+sudo npm -g install n 
+sudo n lts
+sudo npm -g install webpack yarn webpack-cli
+```
