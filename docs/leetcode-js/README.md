@@ -1,15 +1,6 @@
 ---
-marp: true
-theme: gaia
-footer: 'Sapphire611 2020-09-16'
-paginate: true
-style: |
-  section a {
-      font-size: 30px;
-  }
-
 title: LeetCode (JS)
-date: 2022-9-16
+date: 2022-11-21
 categories:
   - Algorithm
 tags:
@@ -786,3 +777,79 @@ const letterCombinations = (digits) => {
     return res;
 };
 ```
+---
+
+### 18. 四数之和
+
+```js
+给你一个由 n 个整数组成的数组 nums ，和一个目标值 target
+请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] 
+（若两个四元组元素一一对应，则认为两个四元组重复）：
+
+0 <= a, b, c, d < n
+a、b、c 和 d 互不相同
+nums[a] + nums[b] + nums[c] + nums[d] == target
+你可以按 任意顺序 返回答案 。
+
+
+示例 1：
+
+输入：nums = [1,0,-1,0,-2,2], target = 0
+输出：[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+示例 2：
+
+输入：nums = [2,2,2,2,2], target = 8
+输出：[[2,2,2,2]]
+```
+```js
+const fourSum = (nums, target) => {
+    const len = nums.length;
+
+    if (len < 4) return [];
+
+    nums.sort((a, b) => a - b); // sort
+
+    let res = [];
+
+    for (let i = 0; i < len - 3; i++) {
+        // 定第一位数字
+        if (i > 0 && nums[i] === nums[i - 1]) continue; // 去重1
+        if (nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target) break; // 不可能1
+        if (nums[i] + nums[len - 1] + nums[len - 2] + nums[len - 3] < target) continue; // 跳过1
+
+        for (let j = i + 1; j < len - 2; j++) {
+            // 定第二位数字
+            if (j > i + 1 && nums[j] === nums[j - 1]) continue;
+            if (nums[i] + nums[j] + nums[j + 1] + nums[j + 2] > target) break; // 不可能2
+            if (nums[i] + nums[j] + nums[len - 1] + nums[len - 2] < target) continue; // 跳过2
+
+            let L = j + 1, R = len - 1; // 定三、四位
+            while (L < R) {
+                let sum = nums[i] + nums[j] + nums[L] + nums[R]; // 四位全部确定，开始计算结果
+                if (sum === target) {
+                    res.push([nums[i], nums[j], nums[L], nums[R]]); // correct
+                    while (L < R && nums[L] === nums[L + 1]) L++; // 左去重2
+                    while (L < R && nums[R] === nums[R - 1]) R--; // 右去重3
+                    L++;
+                    R--; // 双指针向中间推进，寻找剩下的结果
+                }
+
+                if (sum > target) {
+                    // sum大了，右指针推进
+                    while (L < R) if (nums[R] !== nums[--R]) break;
+                }
+
+                if (sum < target) {
+                    // sum大了，左指针推进
+                    while (L < R) if (nums[L] !== nums[++L]) break;
+                }
+            }
+        }
+
+    }
+
+    return res;
+}
+// console.log(fourSum([1, 0, -1, 0, -2, 2], 0));
+```
+
