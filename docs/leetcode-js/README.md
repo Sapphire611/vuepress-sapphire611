@@ -819,7 +819,7 @@ const fourSum = (nums, target) => {
 
         for (let j = i + 1; j < len - 2; j++) {
             // 定第二位数字
-            if (j > i + 1 && nums[j] === nums[j - 1]) continue;
+            if (j > i + 1 && nums[j] === nums[j - 1]) continue; // 去重2
             if (nums[i] + nums[j] + nums[j + 1] + nums[j + 2] > target) break; // 不可能2
             if (nums[i] + nums[j] + nums[len - 1] + nums[len - 2] < target) continue; // 跳过2
 
@@ -828,8 +828,8 @@ const fourSum = (nums, target) => {
                 let sum = nums[i] + nums[j] + nums[L] + nums[R]; // 四位全部确定，开始计算结果
                 if (sum === target) {
                     res.push([nums[i], nums[j], nums[L], nums[R]]); // correct
-                    while (L < R && nums[L] === nums[L + 1]) L++; // 左去重2
-                    while (L < R && nums[R] === nums[R - 1]) R--; // 右去重3
+                    while (L < R && nums[L] === nums[L + 1]) L++; // 左去重3
+                    while (L < R && nums[R] === nums[R - 1]) R--; // 右去重4
                     L++;
                     R--; // 双指针向中间推进，寻找剩下的结果
                 }
