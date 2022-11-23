@@ -7,7 +7,7 @@ tags:
   - node
   - lib
 sidebar: "auto"
-publish: true
+publish: false
 ---
 
 ## Node-gyp
