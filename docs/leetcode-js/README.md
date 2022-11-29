@@ -853,3 +853,55 @@ const fourSum = (nums, target) => {
 // console.log(fourSum([1, 0, -1, 0, -2, 2], 0));
 ```
 
+### 20. 有效的括号
+
+```ts
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+
+有效字符串需满足：
+
+左括号必须用相同类型的右括号闭合。
+左括号必须以正确的顺序闭合。
+每个右括号都有一个对应的相同类型的左括号。
+ 
+
+示例 1：
+输入：s = "()"
+输出：true
+
+示例 2：
+输入：s = "()[]{}"
+输出：true
+
+示例 3：
+输入：s = "(]"
+输出：false
+ 
+提示：
+1 <= s.length <= 104
+s 仅由括号 '()[]{}' 组成
+```
+
+```ts
+const isValid = (s: string) => {
+    const map: Map <string, string> = new Map();
+    map.set('}', '{');
+    map.set(')', '(');
+    map.set(']', '[');
+
+    let res: Array<string> = [];
+    for (let i = 0; i < s.length; i++) {
+        if (['(', '[', '{'].includes(s[i])) {
+            res.push(s[i]);
+        } else {
+            if (!res.length) return false;
+            if (res[res.length - 1] !== map.get(s[i])) return false; s
+            res.pop();
+        }
+    }
+
+    return res.length === 0;
+}
+
+console.log(isValid('([)'));
+```

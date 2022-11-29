@@ -8,13 +8,15 @@
     "start": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
     "deploy-github": "GH=1 yarn build && bash scripts/deploy-github.sh",
-    "test": "node test/test.js"
+    "test": "node test/test.js",
+    "ts": "tsnode test/test.ts"
   },
   "author": "Sapphire611",
   "license": "ISC",
   "dependencies": {
     "@vuepress-reco/vuepress-plugin-bgm-player": "^1.1.4",
     "amqplib": "^0.10.1",
+    "aws-sdk": "^2.1261.0",
     "csv-writer": "^1.6.0",
     "lodash": "^4.17.21",
     "mocha": "^10.0.0",
