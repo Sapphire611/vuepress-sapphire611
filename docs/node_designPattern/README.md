@@ -6,7 +6,7 @@ categories:
 tags:
   - node
 sidebar: "auto"
-publish: true
+publish: false
 ---
 
 # Node 设计模式（第二版）
@@ -387,7 +387,7 @@ ES2015中的Proxy对象
 
 适配器模式(Adapter)
 
-“通过文件系统API来使用LevelUP数据库
+通过文件系统API来使用LevelUP数据库
 
 
 扩展

@@ -7,7 +7,6 @@ tags:
   - s3
 sidebar: "auto"
 publish: true
-sticky: 1
 ---
 
 ## 定义

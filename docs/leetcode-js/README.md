@@ -591,7 +591,7 @@ const romanToInt = (s) => {
     const keys = Object.keys(map);
 
     for (const key of keys) {
-        if (s.startsWith(key)) {
+        if (s.leftsWith(key)) {
             sum += map[key];
             s = s.slice(key.length);
         }
@@ -904,4 +904,152 @@ const isValid = (s: string) => {
 }
 
 console.log(isValid('([)'));
+```
+
+### 33. 搜索旋转排序数组
+```js
+整数数组 nums 按升序排列，数组中的值 互不相同 。
+
+在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了 旋转，使数组变为 [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。
+
+给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
+
+你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。
+
+ 
+
+示例 1：
+输入：nums = [4,5,6,7,0,1,2], target = 0
+输出：4
+
+示例 2：
+输入：nums = [4,5,6,7,0,1,2], target = 3
+输出：-1
+
+示例 3：
+输入：nums = [1], target = 0
+输出：-1
+ 
+
+提示：
+
+1 <= nums.length <= 5000
+-104 <= nums[i] <= 104
+nums 中的每个值都 独一无二
+题目数据保证 nums 在预先未知的某个下标上进行了旋转
+-104 <= target <= 104
+```
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+const search = (nums, target) => {
+    // return nums.indexOf(target);
+    let left = 0;
+    let right = nums.length - 1;
+
+    while (left <= right) {
+        let mid = left + right >> 1; // /2
+
+        if (nums[mid] === target) return mid; // goal
+
+        // 中位数小于右指针数，右边是有序的
+        if (nums[mid] < nums[right]) {
+           // 判断target是否在(mid, right]之间
+            if (nums[mid] < target && target <= nums[right]) left = mid + 1;   // 如果在,则中间数右移,即left增大
+            else right = mid - 1;   // 如果不在,则中间数左移,即right减小
+        } else { // 否则,左半边是有序的
+          // 判断target是否在[left, mid)之间
+            if (nums[left] <= target && target < nums[mid]) right = mid - 1; // 如果在，则中间数左移,即right减小
+            else left = mid + 1; // 如果不在，则中间数右移即left增大
+        }
+    }
+
+    return -1;
+
+};
+```
+### 306. 累加数
+
+```js
+累加数 是一个字符串，组成它的数字可以形成累加序列。
+
+一个有效的 累加序列 必须 至少 包含 3 个数。除了最开始的两个数以外，字符串中的其他数都等于它之前两个数相加的和。
+
+给你一个只包含数字 '0'-'9' 的字符串，编写一个算法来判断给定输入是否是 累加数 。如果是，返回 true ；否则，返回 false 。
+
+说明：累加序列里的数，除数字 0 之外，不会 以 0 开头，所以不会出现 1, 2, 03 或者 1, 02, 3 的情况。
+
+
+示例 1：
+
+输入："112358"
+输出：true
+解释：累加序列为: 1, 1, 2, 3, 5, 8 。1 + 1 = 2, 1 + 2 = 3, 2 + 3 = 5, 3 + 5 = 8
+示例 2：
+
+输入："199100199"
+输出：true
+解释：累加序列为: 1, 99, 100, 199。1 + 99 = 100, 99 + 100 = 199
+
+
+提示：
+
+1 <= num.length <= 35
+num 仅由数字（0 - 9）组成
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/additive-number
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+```
+
+---
+
+```js
+/**
+ * @param {string} num
+ * @return {boolean}
+ */
+
+const isAdditiveNumber = (num) => {
+  if (num.length === 0) return true;
+
+  //   for (let i = 1; i <= num.length - 1; i++) { 累加数，前一个数不可能比后一个数大..
+  for (let i = 1; i <= num.length / 2; i++) {
+    if (num[0] === "0" && i > 1) return false; // “0235813” = false
+
+    for (let j = i + 1; j < num.length; j++) {
+      // j - i 长度有限制，不可能超数组一半
+      if ((num[i] === "0" && j - i > 1) || j - i > num.length / 2) break;
+      s;
+
+      let num1 = Number(num.substring(0, i));
+      let num2 = Number(num.substring(i, j));
+
+      if (recursionJudge(num.substring(j), num1, num2)) return true;
+    }
+  }
+
+  return false;
+};
+
+// 规范 : 数组变量得放在普通数字前
+const recursionJudge = (remain, num1, num2) => {
+  if (remain.length === 0) return true;
+
+  // 1.remain开头是不是累加后的和，2.剩下的内容递归重复
+  return (
+    remain.leftsWith(num1 + num2) &&
+    recursionJudge(
+      remain.substring((num1 + num2 + "").length),
+      num2,
+      num1 + num2
+    )
+  );
+};
+
+// console.log(isAdditiveNumber("000"));
 ```

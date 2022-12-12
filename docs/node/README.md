@@ -1,247 +1,833 @@
 ---
-title: Node 库相关
-date: 2022-1-25
+title: Node Notes
+date: 2022-12-5
 categories:
-  - Backend
+  - backend
 tags:
   - node
-  - lib
+  - interview
 sidebar: "auto"
-publish: false
+publish: true
+showSponsor: true
 ---
 
-## Node-gyp
+## 👋  Node.js 题目整理
 
-### Node-gyp 安装 (Windows Only)
-
-[安装 node-gyp](https://zhuanlan.zhihu.com/p/164543031)
-
-[CMake - 编译需要这个，否则出现乱码错误](https://cmake.org/)
-
-::: tip
-
-node-gyp，是由于 node 程序中需要调用一些其他语言编写的工具，甚至是 dll，需要先编译一下，否则就会有跨平台的问题。
-
-例如在 windows 上运行的软件 copy 到 mac 上就不能用了，但是如果源码支持，编译一下，在 mac 上还是可以用的。
-
-node-gyp 在较新的 Node 版本中都是自带的（平台相关），用来编译原生 C++模块。
-
+:::right
+来自 [Sapphire611](http://www.sapphire611.com)
 :::
 
-### Node-gyp 编译 (Windows Only)
+## 1. Koa 和 Express 有哪些不同？
 
-[node-gyp 编译问题](https://www.cnblogs.com/fanqisoft/p/13171657.html)
+> express框架是一个基于 Node.js 平台的极简、灵活的 web 应用开发框架，
 
-> 需要安装 Python，Visual Studio 并安装对应包，并且指定 VS 版本
+> koa是 Express 原班人马基于 ES6 新特性重新开发的框架,框架自身不包含任何中间件，很多功能需要借助第三方中间件解决
 
-```shell
-npm config set msvs_version 2019
+- 由于其基于 ES6 generator 特性的异步流程控制，解决了 "callback hell" 和麻烦的错误处理问题。
 
-npm config set msbuild_path "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
-```
 
-## Multer
+1. express内置了许多中间件 & 模块可供使用，而koa没有。
 
-[multer - npm（用于文件上传的库）](https://www.npmjs.com/package/multer)
+2. express的中间件模型为线型，而koa的中间件模型为U型，也可称为洋葱模型构造中间件。
 
-### Multer 安装
+> Express
+优点：线性逻辑，可用模块丰富，社区活跃
+缺点：callback.hell
 
-```js
-npm install --save multer
-```
-
-### Multer 使用方法
-
-> 以中间件的形式放在路由中使用
+> Koa
+优点：🧅，解决了callback hell，轻量
+缺点：社区相对较小。
 
 ---
 
-#### 如果使用的是Koa框架，请使用 koa-multer
 
----
+## 2. 两个Node.js 进程之间如何通信？
 
-```js
-const express = require("express");
-const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+### 不同电脑上的两个 Node.js 进程间通信
 
-const app = express();
+### 使用 TCP 套接字
 
-// 单个文件上传
-app.post("/profile", upload.single("avatar"), function (req, res, next) {});
-
-// 多个文件上传
-app.post(
-  "/photos/upload",
-  upload.array("photos", 12),
-  function (req, res, next) {}
-);
-
-// 多组文件上传
-app.post(
-  "/cool-profile",
-  upload.fields([
-    { name: "avatar", maxCount: 1 },
-    { name: "gallery", maxCount: 8 },
-  ]),
-  function (req, res, next) {}
-);
-```
-
-## Sequlize
-
-[Sequelize Docs 中文版](https://demopark.github.io/sequelize-docs-Zh-CN/)
-
-::: tip
-Sequelize 是一个基于 promise 的 Node.js ORM 工具, 目前支持 Postgres, MySQL, MariaDB, SQLite 以及 Microsoft SQL Server. 它具有强大的事务支持, 关联关系, 预读和延迟加载,读取复制等功能.
-
-Sequelize 遵从 语义版本控制. 支持 Node v10 及更高版本以便使用 ES6 功能.
-
-使用方法为 连接数据库，创建 Model，调用方法，文档里很详细啦
-:::
-
-::: danger
-Sequelize 对于Node版本有要求(v12.22.0 || v14.17.0 || >= v16)
-
-亲测v14.16.0运行是没有任何响应的，请用nvm更新版本～
-:::
-
-### Sequlize demo (Sql Server)
-
-```js
-"use strict";
-
-const Sequelize = require("sequelize");
-const config = require("../configs");
-
-const sequelize = new Sequelize(
-  database,
-  username,
-  password,
-  {
-    host: "123.45.67.89",
-    dialect: "mysql",
-    define: {
-				timestamps: false,
-		},
-  }
-);
-
-module.exports = sequelize;
-
-// model
-const V_Employee = sequelize.define(
-  "V_Employee",
-  {
-    PersonID: {
-      type: DataTypes.NUMBER(13),
-      primaryKey: true, //主键
-    },
-
-    CeibsID: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    SerialNumber: {
-      type: DataTypes.STRING,
-    },
-  },
-  {
-    // 这是其他模型参数
-    timestamps: false, // 取消 createdAt 和 UpdatedAt
-    freezeTableName: true,
-  }
-);
-
-module.exports = V_Employee;
-
-// use
-const result = V_Employee.findAll({
-  where: {
-    ID: realQuery.ID,
-  },
-  attributes: ["ID", "Number"], // 自定义输出内容
-});
-```
-## NVM (略麻烦)
-
-::: tip
-NVM 全英文也叫node.js version management，是一个nodejs的版本管理工具。nvm和n都是node.js版本管理工具，为了解决node.js各种版本存在不兼容现象可以通过它可以安装和切换不同版本的node.js。
-
-- Windows 安装包下载 : https://github.com/coreybutler/nvm-windows/releases
-
-- Mac (略微复杂) : https://www.jianshu.com/p/622ad36ee020
-:::
-
-### Mac 环境变量文件修改
-
-> (/.bash_profile || /.zshrc ) 之类的
-
-``` shell
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-```
-
-### NVM 运行demo
-
-``` shell
-nvm ls
-nvm install/uninstall v14.17.0
-nvm use v14.17.0
-```
-
-## n (比 NVM 好用！)
-
-[node 版本切换工具 n 的使用](https://www.jianshu.com/p/a2ee8f61a8ca)
-
-```shell
-npm install -g n
-
-n lts     # 自动安装 lts 版本
-n latest  # 自动安装 latest 版本
-n         # 出现已安装node版本列表，上下选择后回车确定
-```
-
-::: warning
-- 更改版本后需要 重新打开Terminal / 重新登录
-- 如果你是mac，所有的命令都要加sudo
-:::
-
-## Axios
-
-> Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中
-
-### Axios Demo
+> TCP 套接字（socket）是一种基于 TCP/IP 协议的通信方式，可以让通过网络连接的计算机上的进程进行通信。一个作为 server 另一个作为 client，server.js 代码如下：
 
 ``` js
-// POST json in body 
-router.post('/', async ctx => {
-	const body = JSON.stringify(ctx.request.body);
+const net = require('net')
+const server = net.createServer(socket => {
+    console.log('socket connected')
+    socket.on('close', () => console.log('socket disconnected'))
+    socket.on('error', err => console.error(err.message))
+    socket.on('data', data => {
+        console.log(`receive: ${data}`)
+        socket.write(data)
+        console.log(`send: ${data}`)
+    })
+})
+server.listen(8887);
 
-	const result = await axios.post('http://127.0.0.1:8082/url',
-		body, {
-			headers: { 'Content-Type': 'application/json' }
-		});
+```
 
-	ctx.body = result.data;
+> client.js 代码:
+
+```js
+const net = require('net')
+const client = net.connect(8887, '127.0.0.1')
+
+client.on('connect', () => console.log('connected.'))
+client.on('data', data => console.log(`receive: ${data}`))
+client.on('end', () => console.log('disconnected.'))
+client.on('error', err => console.error(err.message))
+
+setInterval(() => {
+    const msg = 'hello'
+    console.log(`send: ${msg}`)
+    client.write(msg)
+}, 3000)
+```
+
+``` js
+运行效果：
+
+$ node server.js
+client connected
+receive: hello
+send: hello
+
+$ node client.js
+connect to server
+send: hello
+receive: hello
+```
+---
+
+### 使用 HTTP 协议
+> 因为 HTTP 协议也是基于 TCP 的，所以从通信角度看，这种方式本质上并无区别，只是封装了上层协议。server.js 代码为：
+
+``` js
+const http = require('http')
+http.createServer((req, res) => res.end(req.url)).listen(8888)
+```
+
+```js
+const http = require('http')
+const options = {
+  hostname: '192.168.10.105',
+  port: 8888,
+  path: '/hello',
+  method: 'GET',
+}
+const req = http.request(options, res => {
+  console.log(`statusCode: ${res.statusCode}`)
+  res.on('data', d => process.stdout.write(d))
+})
+req.on('error', error => console.error(error))
+req.end()
+```
+---
+
+### 同一台电脑上两个 Node.js 进程间通信
+
+> 虽然网络 socket 也可用于同一台主机的进程间通讯（通过 loopback 地址 127.0.0.1），但是这种方式需要经过网络协议栈、需要打包拆包、计算校验和、维护序号和应答等，就是为网络通讯设计的。
+
+### 使用内置 IPC 通道
+
+> 如果是跟自己创建的子进程通信，是非常方便的，child_process模块中的 fork 方法自带通信机制，无需关注底层细节，例如父进程 parent.js 代码：
+
+```js
+const fork = require("child_process").fork
+const path = require("path")
+const child = fork(path.resolve("child.js"), [], { stdio: "inherit" });
+child.on("message", (message) => {
+  console.log("message from child:", message)
+  child.send("hi")
+})
+```
+
+> 子进程 child.js 代码：
+
+```js
+process.on("message", (message) => {
+  console.log("message from parent:", message);
+})
+
+if (process.send) {
+  setInterval(() => process.send("hello"), 3000)
+}
+```
+
+### 使用自定义管道
+> 如果是两个独立的 Node.js 进程，如何建立通信通道呢？在 Windows 上可以使用命名管道（Named PIPE），在 unix 上可以使用 unix domain socket，也是一个作为 server，另外一个作为 client，其中 server.js 代码如下：
+
+``` js
+const net = require('net')
+const fs = require('fs')
+
+const pipeFile = process.platform === 'win32' ? '\\\\.\\pipe\\mypip' : '/tmp/unix.sock'
+
+const server = net.createServer(connection => {
+  console.log('socket connected.')
+  connection.on('close', () => console.log('disconnected.'))
+  connection.on('data', data => {
+    console.log(`receive: ${data}`)
+    connection.write(data)
+    console.log(`send: ${data}`)
+  })
+  connection.on('error', err => console.error(err.message))
+})
+
+try {
+  fs.unlinkSync(pipeFile)
+} catch (error) {}
+
+server.listen(pipeFile)
+```
+
+> client.js 代码如下：
+
+``` js
+const net = require('net')
+
+const pipeFile = process.platform === 'win32' ? '\\\\.\\pipe\\mypip' : '/tmp/unix.sock'
+
+const client = net.connect(pipeFile)
+client.on('connect', () => console.log('connected.'))
+client.on('data', data => console.log(`receive: ${data}`))
+client.on('end', () => console.log('disconnected.'))
+client.on('error', err => console.error(err.message))
+
+setInterval(() => {
+  const msg = 'hello'
+  console.log(`send: ${msg}`)
+  client.write(msg)
+}, 3000)
+```
+
+```js
+运行效果：
+
+$ node server.js 
+socket connected.
+receive: hello
+send: hello
+
+$ node client.js
+connected.
+send: hello
+receive: hello
+```
+
+## 3. 浏览器和Node中的事件循环有什么区别？
+
+> 关于微任务和宏任务在浏览器的执行顺序是这样的：
+
+### Node 11以后： 和浏览器的行为统一了
+- 执行一只task（宏任务）
+- 执行完micro-task队列 （微任务）
+- 如此循环往复下去...
+
+> 常见的 task（宏任务） 比如：
+- setTimeout
+- setInterval
+- script（整体代码）
+- I/O 操作、UI 渲染等。 
+
+> 常见的 micro-task 比如: 
+- new Promise().then(回调)
+- MutationObserver(html5新特性) 等。
+
+### Node 10以前：
+- 执行完一个阶段的所有任务
+- 执行完nextTick队列里面的内容
+- 然后执行完微任务队列的内容
+
+
+## 如何实现JWT鉴权机制？
+
+### JWT是什么
+
+JWT（JSON Web Token）分成了三部分，头部（Header）、载荷（Payload）、签名（Signature），并以.进行拼接。其中头部和载荷都是以JSON格式存放数据，只是进行了编码
+
+ 
+1. header
+每个JWT都会带有头部信息，这里主要声明使用的算法。声明算法的字段名为alg，同时还有一个typ的字段，默认JWT即可。以下示例中算法为HS256
+
+``` js
+{  "alg": "HS256",  "typ": "JWT" } 
+```
+
+- 因为JWT是字符串，所以我们还需要对以上内容进行Base64编码，编码后字符串如下：
+
+```js
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9        
+```
+
+2. payload
+   
+载荷即消息体，这里会存放实际的内容，也就是Token的数据声明，例如用户的id和name，默认情况下也会携带令牌的签发时间iat，通过还可以设置过期时间，如下：
+
+```js
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022
+}
+```
+
+- 同样进行Base64编码后，字符串如下：
+
+```js
+eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ
+```
+
+3. Signature
+
+签名是对头部和载荷内容进行签名，一般情况，设置一个secretKey，对前两个的结果进行HMACSHA25算法，公式如下：
+
+> Signature = HMACSHA256(base64Url(header)+.+base64Url(payload),secretKey)
+
+一旦前面两部分数据被篡改，只要服务器加密用的密钥没有泄露，得到的签名肯定和之前的签名不一致
+
+### 如何实现JWT
+
+```js
+Token的使用分成了两部分：
+
+生成token：登录成功的时候，颁发token
+验证token：访问某些资源或者接口时，验证token
+生成 token
+借助第三方库jsonwebtoken，通过jsonwebtoken 的 sign 方法生成一个 token：
+
+第一个参数指的是 Payload
+
+第二个是秘钥，服务端特有
+
+第三个参数是 option，可以定义 token 过期时间
+```
+
+```js
+const moment = require('moment');
+const jwt = require('jsonwebtoken');
+
+jwt.sign(payload, secret, options, callback);
+// option :{ expiresIn: moment().add(1, 'days').valueOf() }
+```
+- 在前端接收到token后，一般情况会通过localStorage进行缓存，然后将token放到HTTP请求头Authorization 中，关于Authorization的设置，前面要加上 Bearer ，注意后面带有空格
+
+### 校验token
+
+```js
+const jwt = require('jsonwebtoken');
+return jwt.decode(token);
+```
+### 优缺点
+
+优点：
+
+- json具有通用性，所以可以跨语言
+
+- 组成简单，字节占用小，便于传输
+
+- 服务端无需保存会话信息，很容易进行水平扩展
+
+- 一处生成，多处使用，可以在分布式系统中，解决单点登录问题
+
+- 可防护CSRF攻击
+
+缺点：
+
+- payload部分仅仅是进行简单编码，所以只能用于存储逻辑必需的非敏感信息
+
+- 需要保护好加密密钥，一旦泄露后果不堪设想
+
+- 为避免token被劫持，最好使用https协议
+
+## 4. Node性能如何监控以及优化?
+
+### 性能优化是什么？
+
+> Node作为一门服务端语言，性能方面尤为重要，其衡量指标一般有如下：
+
+- CPU
+  
+- 内存
+  
+- I/O
+  
+- 网络
+
+> CPU 主要有两个量化指标：
+
+- CPU负载：在某个时间段内，占用以及等待CPU的进程总数
+
+- CPU使用率：CPU时间占用状况，等于 1 - 空闲CPU时间(idle time) / CPU总时间
+
+:::right
+———— Node应用一般不会消耗很多的CPU，如果CPU占用率高，则表明应用存在很多同步操作，导致异步任务回调被阻塞
+:::
+
+
+```js
+'use strict';
+
+// /app/lib/memory.js
+const os = require('os');
+// 获取当前Node内存堆栈情况
+// rss：表示node进程占用的内存总量。
+// heapTotal：表示堆内存的总量。
+// heapUsed：实际堆内存的使用量。
+// external ：外部程序的内存使用量，包含Node核心的C++程序的内存使用量
+const { rss, heapUsed, heapTotal } = process.memoryUsage();
+// 获取系统空闲内存
+const sysFree = os.freemem();
+// 获取系统总内存
+const sysTotal = os.totalmem();
+
+const res = {
+  sys: 1 - sysFree / sysTotal, // 系统内存占用率
+  heap: heapUsed / heapTotal, // Node堆内存占用率
+  node: rss / sysTotal, // Node占用系统内存的比例
+};
+
+console.log(res);
+
+// {
+//   sys: 0.9960613250732422,
+//   heap: 0.825187360036645,
+//   node: 0.0016584396362304688
+// }
+```
+
+:::right
+———— 在Node中，一个进程的最大内存容量为1.5GB。因此我们需要减少内存泄露
+:::
+
+---
+
+> 硬盘的 IO 开销是非常昂贵的，硬盘 IO 花费的 CPU 时钟周期是内存的 164000 倍
+
+> 内存 IO 比磁盘 IO 快非常多，所以使用内存缓存数据是有效的优化方法。常用的工具如 **redis**、**memcached** 等
+
+### 如何监控？
+
+```js
+const easyMonitor = require('easy-monitor');
+easyMonitor('你的项目名称');
+```
+
+### 优化代码
+
+> 正确使用Stream
+
+```js
+const http = require('http');
+const fs = require('fs');
+
+// bad
+http.createServer(function (req, res) {
+    fs.readFile(__dirname + '/data.txt', function (err, data) {
+        res.end(data);
+    });
+});
+
+// good
+http.createServer(function (req, res) {
+    const stream = fs.createReadStream(__dirname + '/data.txt');
+    stream.pipe(res);
 });
 ```
 
-### Demo: 在Linux服务器上安装node
+### 内存管理优化
 
-> From : RuanChuhao
+> 在 V8 中，主要将内存分为新生代和老生代两代：
 
-```shell
-sudo p
-cd /tmp
-wget https://nodejs.org/dist/v16.17.1/node-v16.17.1-linux-x64.tar.xz
-tar -xvf ./node-v16.17.1-linux-x64.tar.xz
-cd ./node-v16.17.1-linux-x64/
-cd ./bin
-sudo ln ./node /usr/local/bin/node
-sudo ./npm -g install npm
-sudo npm -g install n 
-sudo n lts
-sudo npm -g install webpack yarn webpack-cli
+- 新生代：对象的存活时间较短。新生对象或只经过一次垃圾回收的对象
+
+- 老生代：对象存活时间较长。经历过一次或多次垃圾回收的对象
+
+- 若新生代内存空间不够，直接分配到老生代
+
+- 通过减少内存占用，可以提高服务器的性能。如果有内存泄露，也会导致大量的对象存储到老生代中，服务器性能会大大降低
+
+如下面情况：
+
+```js
+const buffer = fs.readFileSync(__dirname + '/source/index.htm');
+
+app.use(
+    mount('/', async (ctx) => {
+        ctx.status = 200;
+        ctx.type = 'html';
+        ctx.body = buffer;
+        leak.push(fs.readFileSync(__dirname + '/source/index.htm'));
+    })
+);
+
+const leak = [];
+// leak的内存非常大，造成内存泄露，应当避免这样的操作，通过减少内存使用，是提高服务性能的手段之一
+// 而节省内存最好的方式是使用池，其将频用、可复用对象存储起来，减少创建和销毁操作
+```
+## 5. 如何封装Node.js中间件？
+
+> 在NodeJS中，中间件主要是指封装http请求细节处理的方法
+
+- 例如在express、koa等web框架中，中间件的本质为一个回调函数，参数包含请求对象、响应对象和执行下一个中间件的函数
+
+- 在这些中间件函数中，我们可以执行业务逻辑代码，修改请求和响应对象、返回响应数据等操作
+
+```js
+exports.validate = (schema) => {
+	if (!schema) {
+		return function (ctx, next) {
+			return next();
+		};
+
+    // ...
+	
+		return next();
+	};
+};
+```
+
+## 6. NodeJs 中 require('...') 函数的顺序
+
+- 缓存的模块 > 内置模块(fs/path) > 相对/绝对路径(有文件后缀 > 无文件后缀) > 相对/绝对路径(无文件后缀) > 目录/第三方模块
+
+- 如果是目录，则根据 package.json的main属性值决定目录下入口文件，默认情况为 index.js
+
+- 如果文件为第三方模块，则会引入 node_modules 文件，如果不在当前仓库文件中，则自动从上级递归查找，直到根目录
+
+
+## 7. Node.js 事件循环机制
+
+> 事件循环是基于libuv实现，libuv是一个多平台的专注于异步IO的库，具体流程如下：
+
+```
+     ┌────────────────┐
+┌───►│     timers     │ // setTimeout、setInterval
+│    └────────┬───────┘
+│             │
+│    ┌────────┴───────┐
+│    │  I/O callback  │ // 上一轮循环未被执行的一些 I/O 回调
+│    └────────┬───────┘
+│             │
+│    ┌────────┴───────┐
+│    │  idle,prepare  │ // 闲置阶段
+│    └────────┬───────┘              ┌────────────────┐
+│             │                      │                │ // 检索、执行I/O  
+│    ┌────────┴───────┐              │    incoming    │ // 除了 setImmediate()
+│    │      poll      │◄─────────────┤                │ // 适当阻塞
+│    └────────┬───────┘              │   connections  │
+│             │                      │                │
+│    ┌────────┴───────┐              └────────────────┘
+│    │     check      │// setImmediate()
+│    └────────┬───────┘
+│             │
+│    ┌────────┴───────┐
+└────┤ close callback │ // socket.on('close', ...)
+     └────────────────┘
+```
+
+- 每个阶段对应一个队列，当事件循环进入某个阶段时, 将会在该阶段内执行回调，直到队列耗尽或者回调的最大数量已执行, 那么将进入下一个处理阶段
+
+- 除了上述6个阶段，还存在**process.nextTick**，其不属于事件循环的任何一个阶段，它属于该阶段与下阶段之间的过渡, 即本阶段执行结束, 进入下一个阶段前, 所要执行的回调，类似插队。
+
+---
+
+### 题目
+```js
+'use strict';
+
+async function async1() {
+  console.log('async1 start'); // 2
+  await async2();
+  console.log('async1 end'); // 9
+}
+
+async function async2() {
+  console.log('async2'); // 3
+}
+
+console.log('script start'); // 1
+
+setTimeout(function () {
+  console.log('setTimeout0'); // 11
+}, 0);
+
+setTimeout(function () {
+  console.log('setTimeout2'); // 13
+}, 300);
+
+setImmediate(() => console.log('setImmediate')); // 12
+
+process.nextTick(() => console.log('nextTick1')); // 7
+
+async1();
+
+process.nextTick(() => console.log('nextTick2')); // 8
+
+new Promise(function (resolve) {
+  console.log('promise1'); // 4
+  resolve();
+  console.log('promise2'); // 5
+}).then(function () {
+  console.log('promise3'); // 10
+});
+
+console.log('script end'); // 6
+```
+---
+
+```js
+分析过程：
+
+先找到同步任务，输出script start
+
+遇到第一个 setTimeout，将里面的回调函数放到 timer 队列中
+
+遇到第二个 setTimeout，300ms后将里面的回调函数放到 timer 队列中
+
+遇到第一个setImmediate，将里面的回调函数放到 check 队列中
+
+遇到第一个 nextTick，将其里面的回调函数放到本轮同步任务执行完毕后执行
+
+执行 async1函数，输出 async1 start
+
+执行 async2 函数，输出 async2，async2 后面的输出 async1 end进入微任务，等待下一轮的事件循环
+
+遇到第二个，将其里面的回调函数放到本轮同步任务执行完毕后执行
+
+遇到 new Promise，执行里面的立即执行函数，输出 promise1、promise2
+
+then里面的回调函数进入微任务队列
+
+遇到同步任务，输出 script end
+
+执行下一轮回到函数，先依次输出 nextTick 的函数，分别是 nextTick1、nextTick2
+
+然后执行微任务队列，依次输出 async1 end、promise3
+
+执行timer 队列，依次输出 setTimeout0
+
+接着执行 check 队列，依次输出 setImmediate
+
+300ms后，timer 队列存在任务，执行输出 setTimeout2
+```
+
+---
+
+## 8. Node中的EventEmmiter是什么？
+
+> Node 的events模块提供了一个 EventEmitter，这个类实现了Node异步事件驱动架构的基本模式——观察者模式
+
+> 在这种模式中，被观察者(主体)维护着一组其他对象派来(注册)的观察者，有新的对象对主体感兴趣就注册观察者，不感兴趣就取消订阅，主体有更新的话就依次通知观察者们
+
+```js
+const EventEmitter = require('events')
+
+class MyEmitter extends EventEmitter {}
+const myEmitter = new MyEmitter();
+
+function callback() {
+    console.log('触发了event事件！')
+}
+myEmitter.on('event', callback) // 注册event事件
+myEmitter.emit('event') // 通过emit触发
+myEmitter.removeListener('event', callback); // 通过RemoveListener取消注册
+```
+``` js
+// 常见方法:
+emitter.addListener/on(eventName, listener) // 添加类型为 eventName 的监听事件到事件数组尾部
+emitter.prependListener(eventName, listener) // 添加类型为 eventName 的监听事件到事件数组头部
+emitter.emit(eventName[, ...args]) // 触发类型为 eventName 的监听事件
+emitter.removeListener/off(eventName, listener) // 移除类型为 eventName 的监听事件
+emitter.once(eventName, listener) // 添加类型为 eventName 的监听事件，以后只能执行一次并删除
+emitter.removeAllListeners([eventName]) // 移除全部类型为 eventName 的监听事件
+```
+
+### 实现一个EventEmmiter
+
+```js
+class EventEmitter {
+    constructor() {
+        this.events = {};
+    }
+
+    on(type, handler) {
+        if (!this.events[type]) {
+            this.events[type] = [];
+        }
+        this.events[type].push(handler);
+    }
+
+    addListener(type,handler){
+        this.on(type,handler)
+    }
+
+    prependListener(type, handler) {
+        if (!this.events[type]) {
+            this.events[type] = [];
+        }
+        this.events[type].unshift(handler);
+    }
+
+    removeListener(type, handler) {
+        if (!this.events[type]) {
+            return;
+        }
+        this.events[type] = this.events[type].filter(item => item !== handler);
+    }
+
+    off(type,handler){
+        this.removeListener(type,handler)
+    }
+
+    emit(type, ...args) {
+        this.events[type].forEach((item) => {
+            Reflect.apply(item, this, args);
+        });
+    }
+
+    once(type, handler) {
+        this.on(type, this._onceWrap(type, handler, this));
+    }
+
+    _onceWrap(type, handler, target) {
+        const state = { fired: false, handler, type , target};
+        const wrapFn = this._onceWrapper.bind(state);
+        state.wrapFn = wrapFn;
+        return wrapFn;
+    }
+
+    _onceWrapper(...args) {
+        if (!this.fired) {
+            this.fired = true;
+            Reflect.apply(this.handler, this.target, args);
+            this.target.off(this.type, this.wrapFn);
+        }
+    }
+}
+```
+
+## 9. 说说对Node中Stream的理解？
+
+> 流（Stream），是一个数据传输手段，是端到端信息交换的一种方式，而且是有顺序的,是逐块读取数据、处理内容，以 Buffer 为单位
+
+- 流可以分成三部分：source、dest、pipe
+
+- 在source和dest之间有一个连接的管道pipe,它的基本语法是source.pipe(dest)，source和dest就是通过pipe连接，让数据从source流向了dest，如下图所示:
+
+```
+┌──────────────┐                ┌──────────────┐
+│              │      pipe      │              │
+│    source    ├───────────────►│     dest     │
+│              │                │              │
+└──────────────┘                └──────────────┘
+```
+
+### Stream 的种类 
+
+> 在NodeJS，几乎所有的地方都使用到了流的概念，分成四个种类：
+
+- 可读流： 可读取数据的流。例如fs.createReadStream() 可以从文件读取内容
+
+- 可写流：可写入数据的流。例如 fs.createWriteStream() 可以使用流将数据写入文件
+
+- 双工流： 既可读又可写的流。例如 net.Socket
+
+- 转换流： 可以在数据写入和读取时修改或转换数据的流。
+  - 例如，在文件压缩操作中，可以向文件写入压缩数据，并从文件中读取解压数据
+
+
+```
+在NodeJS中HTTP服务器模块中，request 是可读流，response 是可写流。
+还有fs 模块，能同时处理可读和可写文件流
+
+可读流和可写流都是单向的，比较容易理解，而另外两个是双向的
+```
+### 双工流 demo
+
+> 比如 websocket 通信，是一个全双工通信，发送方和接受方都是各自独立的方法，发送和接收都没有任何关系
+
+```js
+const { Duplex } = require('stream');
+
+const myDuplex = new Duplex({
+  read(size) {
+    // ...
+  },
+  write(chunk, encoding, callback) {
+    // ...
+  }
+});
+
+```
+---
+### 转换流 demo
+
+```js
+const { Transform } = require('stream');
+
+const myTransform = new Transform({
+  transform(chunk, encoding, callback) {
+    // ...
+  }
+});
+```
+
+### 主要应用场景
+
+stream的应用场景主要就是处理IO操作，而http请求和文件操作都属于IO操作
+
+思想一下，如果一次IO操作过大，硬件的开销就过大，而将此次大的IO操作进行分段操作，让数据像水管一样流动，知道流动完成
+
+常见的场景有：
+
+```js
+// 文件操作
+// 创建一个可读数据流readStream，一个可写数据流writeStream，通过pipe管道把数据流转过去
+
+const fs = require('fs')
+const path = require('path')
+
+// 两个文件名
+const fileName1 = path.resolve(__dirname, 'data.txt')
+const fileName2 = path.resolve(__dirname, 'data-bak.txt')
+// 读取文件的 stream 对象
+const readStream = fs.createReadStream(fileName1)
+// 写入文件的 stream 对象
+const writeStream = fs.createWriteStream(fileName2)
+// 通过 pipe执行拷贝，数据流转
+readStream.pipe(writeStream)
+// 数据读取完成监听，即拷贝完成
+readStream.on('end', function () {
+    console.log('拷贝完成')
+})
+```
+
+```js
+// 读取minioClient的图片(ReadableStream)，然后转换成base64
+const readable = await S3FileAdapter.minioClient.getObject(config.bucketName,each);
+
+const chunks = [];
+readable.on('readable', () => {
+  let chunk;
+  // console.log('Stream is readable (new data received in buffer)');
+  // Use a loop to make sure we read all currently available data
+  while (null !== (chunk = readable.read())) {
+    // console.log(`Read ${chunk.length} bytes of data...`);
+    chunks.push(chunk);
+  }
+});
+
+readable.on('end', async () => {
+  const content = chunks; // [Uint8Array(13343), Uint8Array(27960), Uint8Array(65536), Uint8Array(2114),...]
+
+  let res = []; // 将结果重组成array形式
+  for (let i = 0; i < content.length; i++) {
+    res = [...res, ...content[i]];
+  }
+
+  const base64 = Buffer.from(res, 'utf-8').toString('base64');
+  const thumbnail = 'data:image/jpeg;base64,' + base64; // ok...
+  console.log(`Read data end Length : ${res.length}...`);
+});
+
 ```

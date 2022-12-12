@@ -18,6 +18,7 @@
     "amqplib": "^0.10.1",
     "aws-sdk": "^2.1261.0",
     "csv-writer": "^1.6.0",
+    "easy-monitor": "^2.2.8",
     "lodash": "^4.17.21",
     "mocha": "^10.0.0",
     "moment": "^2.29.3",
