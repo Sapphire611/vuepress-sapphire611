@@ -82,33 +82,28 @@ message Event {
 
 - What is a method stub?
 
-- 在 gRPC 中，方法存根（method stub）是客户端应用程序用来调用远程方法的抽象接口。它使用特定的语言绑定（例如，Java、Python、Go 等）提供，并且是通过使用 gRPC 提供的代码生成工具来生成的。
+  - 在 gRPC 中，方法存根（method stub）是客户端库提供的一个抽象接口，它允许客户端应用程序调用远程服务器上的方法。存根对象包含了方法的名称、参数类型和返回类型的信息，并且可以用来向服务器发送请求并接收响应。
 
-``` graphql
-// The request and response types for the service's method.
-message RequestType {
-  // The fields for the request message go here.
+  - 在 gRPC 中，方法存根是通过 Protocol Buffers 生成的。对于每一个服务，都有一个特定的 .proto 文件，定义了服务的方法及其参数和返回类型。当客户端库与服务端库被构建时，Protocol Buffers 编译器会使用 .proto 文件来生成方法存根。
+
+> 举个例子，假设你有一个叫做 "GreetingService" 的 gRPC 服务，其中包含一个名为 "Greet" 的方法，接受一个名为 "Greeting" 的请求并返回一个名为 "Response" 的响应。你的 .proto 文件可能长这样：
+
+```protobuf
+service GreetingService {
+  rpc Greet(Greeting) returns (Response) {}
 }
 
-message ResponseType {
-  // The fields for the response message go here.
+message Greeting {
+  string first_name = 1;
+  string last_name = 2;
 }
 
-// The gRPC service definition.
-service MyService {
-  // The method that the client can call.
-  rpc MyMethod(RequestType) returns (ResponseType) {};
-}
-
-// The method stub implementation.
-class MyServiceClient {
-  public async Task<ResponseType> MyMethod(RequestType request) {
-    // Code for calling the remote method goes here.
-  }
+message Response {
+  string greeting = 1;
 }
 ```
 
-在这个示例中，MyMethod 是 gRPC 服务中的方法，它接受一个 RequestType 类型的请求并返回一个 ResponseType 类型的响应。在 MyServiceClient 类中，MyMethod 方法存根的实现负责调用远程服务实现的 MyMethod 方法。
+- 当 Protocol Buffers 编译器处理这个文件时，它会为 "GreetingService" 生成一个方法存根，其中包含 "Greet" 方法的信息。客户端应用程序可以使用这个存根来调用 "Greet" 方法
 
 ### 什么是微服务？使用微服务的优势/缺点有哪些？
 
@@ -131,13 +126,40 @@ MySQL、MongoDB 和 Redis 都是常用的数据库系统，它们在不同的应
 
 - Redis 是一种内存型数据库系统，它支持快速读写，具有高吞吐量和低延迟。它适用于缓存、消息队列和其他对实时性要求较高的应用，例如在实时推荐、游戏状态管理等应用中。
 
-### 查找4月份的日志，去重
+### 查找4月份的日志，基于name去重
 
 ```sql 
 Log
 id, name, actions, createdTime, modifiedTime
 ```
-#### mongodb: 纯aggregate没法实现，需要二次处理
+#### mongodb: 
+
+```js
+db.logs.aggregate([
+  {
+    $match:{
+      createdTime:{
+         "$gte": ISODate("2023-04-01T00:00:00.000Z"), // 这里取决于时间戳的格式 ISO/unix
+         "$lt": ISODate("2023-05-01T00:00:00.000Z")
+      }
+    }
+  },
+  {
+    $group: {
+      _id: '$name', // 基于name字段去重
+      original: {
+        $first: '$$ROOT', // 在original中保留$group第一个结果，用于显示。
+        // （$push会保留重复的结果）
+      },
+    },
+  },
+  {
+    $replaceRoot: {
+      newRoot: '$original', // 让original变成根节点
+    },
+  },
+]);
+```
 
 #### mysql: 
 
