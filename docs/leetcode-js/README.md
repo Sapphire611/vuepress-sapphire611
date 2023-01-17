@@ -895,7 +895,7 @@ const isValid = (s: string) => {
             res.push(s[i]);
         } else {
             if (!res.length) return false;
-            if (res[res.length - 1] !== map.get(s[i])) return false; s
+            if (res[res.length - 1] !== map.get(s[i])) return false;
             res.pop();
         }
     }
