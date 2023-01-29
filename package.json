@@ -7,7 +7,7 @@
   "scripts": {
     "start": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
-    "deploy-github": "GH=1 yarn build && bash scripts/deploy-github.sh",
+    "github": "yarn build && bash scripts/deploy-github.sh",
     "test": "node test/test.js",
     "ts": "tsnode test/test.ts"
   },
