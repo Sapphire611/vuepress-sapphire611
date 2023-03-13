@@ -1,44 +1,14 @@
 ---
 title: Node 库相关
-date: 2022-1-25
+date: 2023-3-13
 categories:
   - Backend
 tags:
   - node
   - lib
 sidebar: "auto"
-publish: false
+publish: true
 ---
-
-## Node-gyp
-
-### Node-gyp 安装 (Windows Only)
-
-[安装 node-gyp](https://zhuanlan.zhihu.com/p/164543031)
-
-[CMake - 编译需要这个，否则出现乱码错误](https://cmake.org/)
-
-::: tip
-
-node-gyp，是由于 node 程序中需要调用一些其他语言编写的工具，甚至是 dll，需要先编译一下，否则就会有跨平台的问题。
-
-例如在 windows 上运行的软件 copy 到 mac 上就不能用了，但是如果源码支持，编译一下，在 mac 上还是可以用的。
-
-node-gyp 在较新的 Node 版本中都是自带的（平台相关），用来编译原生 C++模块。
-
-:::
-
-### Node-gyp 编译 (Windows Only)
-
-[node-gyp 编译问题](https://www.cnblogs.com/fanqisoft/p/13171657.html)
-
-> 需要安装 Python，Visual Studio 并安装对应包，并且指定 VS 版本
-
-```shell
-npm config set msvs_version 2019
-
-npm config set msbuild_path "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
-```
 
 ## Multer
 
@@ -54,17 +24,11 @@ npm install --save multer
 
 > 以中间件的形式放在路由中使用
 
----
-
-#### 如果使用的是Koa框架，请使用 koa-multer
-
----
 
 ```js
 const express = require("express");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
-
 const app = express();
 
 // 单个文件上传
@@ -87,6 +51,46 @@ app.post(
   function (req, res, next) {}
 );
 ```
+
+---
+
+#### 如果使用的是Koa框架，请使用 koa-multer
+
+```js
+/**
+ *  @Author     :   ruanchuhao
+ *  @Date       :   2022/9/26
+ *  @Name       :   auth.js
+ *  @Content    :   ruanchuhao@shgbit.com
+ *  @Desc       :
+ */
+
+'use strict';
+
+const Router = require('koa-router');
+const router = new Router({ prefix: '/api/v1' });
+const multer = require('@koa/multer');
+
+const upload = multer({ dest: 'uploads/', storage: multer.memoryStorage() });
+
+/**
+ * [GET] /users/import 模板导入用户  上限一次一万条
+ * @author liuliyi
+ */
+router.post('/users/import', upload.single('file'), async ctx => {
+    const fileData = ctx.request.file.buffer.toString(); // !!
+    ctx.body = await dingTalkService.import(fileData);
+    ctx.status = 200;
+});
+
+module.exports = router;
+```
+
+---
+
+
+---
+
 
 ## Sequlize
 
@@ -163,35 +167,8 @@ const result = V_Employee.findAll({
   attributes: ["ID", "Number"], // 自定义输出内容
 });
 ```
-## NVM (略麻烦)
-
-::: tip
-NVM 全英文也叫node.js version management，是一个nodejs的版本管理工具。nvm和n都是node.js版本管理工具，为了解决node.js各种版本存在不兼容现象可以通过它可以安装和切换不同版本的node.js。
-
-- Windows 安装包下载 : https://github.com/coreybutler/nvm-windows/releases
-
-- Mac (略微复杂) : https://www.jianshu.com/p/622ad36ee020
-:::
-
-### Mac 环境变量文件修改
-
-> (/.bash_profile || /.zshrc ) 之类的
-
-``` shell
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-```
-
-### NVM 运行demo
-
-``` shell
-nvm ls
-nvm install/uninstall v14.17.0
-nvm use v14.17.0
-```
-
-## n (比 NVM 好用！)
+---
+## n 
 
 [node 版本切换工具 n 的使用](https://www.jianshu.com/p/a2ee8f61a8ca)
 
@@ -215,17 +192,15 @@ n         # 出现已安装node版本列表，上下选择后回车确定
 ### Axios Demo
 
 ``` js
-// POST json in body 
-router.post('/', async ctx => {
-	const body = JSON.stringify(ctx.request.body);
 
-	const result = await axios.post('http://127.0.0.1:8082/url',
-		body, {
-			headers: { 'Content-Type': 'application/json' }
-		});
+const axios = require('axios');
 
-	ctx.body = result.data;
-});
+const result = await axios.post('http://127.0.0.1:8082/url',
+		body, 
+    {
+		  headers: { 'Content-Type': 'application/json' }
+    }
+);
 ```
 
 ### Demo: 在Linux服务器上安装node
@@ -244,4 +219,35 @@ sudo ./npm -g install npm
 sudo npm -g install n 
 sudo n lts
 sudo npm -g install webpack yarn webpack-cli
+```
+
+
+## Node-gyp
+
+### Node-gyp 安装 (Windows Only)
+
+[安装 node-gyp](https://zhuanlan.zhihu.com/p/164543031)
+
+[CMake - 编译需要这个，否则出现乱码错误](https://cmake.org/)
+
+::: tip
+
+node-gyp，是由于 node 程序中需要调用一些其他语言编写的工具，甚至是 dll，需要先编译一下，否则就会有跨平台的问题。
+
+例如在 windows 上运行的软件 copy 到 mac 上就不能用了，但是如果源码支持，编译一下，在 mac 上还是可以用的。
+
+node-gyp 在较新的 Node 版本中都是自带的（平台相关），用来编译原生 C++模块。
+
+:::
+
+### Node-gyp 编译 (Windows Only)
+
+[node-gyp 编译问题](https://www.cnblogs.com/fanqisoft/p/13171657.html)
+
+> 需要安装 Python，Visual Studio 并安装对应包，并且指定 VS 版本
+
+```shell
+npm config set msvs_version 2019
+
+npm config set msbuild_path "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
 ```

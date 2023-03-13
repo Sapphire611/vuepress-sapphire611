@@ -16,7 +16,7 @@ module.exports = {
   // always 总是有括号
   arrowParens: "always",
   // 换行长度，默认80
-  printWidth: 80,
+  printWidth: 140,
 
   // 设置为true时,将多行JSX元素的 > 放在最后一行的末尾，而不是单独放在下一行
   /* 
