@@ -284,10 +284,6 @@ HyperLogLog 只会根据输入元素来计算基数，而不会储存输入元�
 
 ---
 
-![img](https://img-blog.csdnimg.cn/7af10e13b126438f8333e90c11e3e56b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
-
----
-
 ```shell
 127.0.0.1:6379> multi
 OK
@@ -394,20 +390,26 @@ OK
 
 > AOF = Append Only File = 以日志形式记录每一个写操作（只许追加不可改写）
   
-![img](https://img-blog.csdnimg.cn/6a123386c00041e78ac56f4f3f55af86.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
 
-![img](https://img-blog.csdnimg.cn/1f1dde2ddf914e7b89f1571076ef9ed9.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
+### Redis 持久化 AOF/ RDB的区别和选择
+1. RDB持久化
 
-### AOF和RDB的选择
-> 官方推荐两个都启用。
+- RDB持久化是将Redis中的数据保存到磁盘中的一种方式。当配置了RDB持久化后，Redis会定期将内存中的数据快照写入到磁盘中，形成一个RDB文件。RDB文件是一个二进制文件，包含了Redis在某个时间点上的所有数据，可以用于恢复Redis的数据。
 
-- 如果对数据不敏感，可以选单独用RDB。
+> RDB持久化的优点是占用空间小，数据恢复速度快，适合于备份和灾难恢复。缺点是在持久化过程中可能会丢失一些数据，因为它只能定期将数据快照写入磁盘，如果在快照写入磁盘之前Redis发生了崩溃，那么内存中未保存到磁盘的数据将会丢失。
 
-- 不建议单独用 AOF，因为可能会出现Bug。
+2. AOF持久化
 
-- 如果只是做纯内存缓存，可以都不用。
+- AOF持久化是将Redis中的操作记录保存到磁盘中的一种方式。当配置了AOF持久化后，Redis会将每个写入命令追加到一个文件中，称为AOF文件。AOF文件是一个文本文件，包含了Redis所有的写入操作，可以用于恢复Redis的数据。
+
+> AOF持久化的优点是可以保证数据的完整性和一致性，因为它会记录每个写入操作。缺点是占用空间大，恢复速度较慢，适合于数据重要性较高的应用场景。另外，由于AOF文件中记录了所有的写入操作，如果写入操作非常频繁，AOF文件可能会变得非常大，影响性能。
+
+**综上所述，RDB持久化适合于数据量较大、写入操作不频繁、数据恢复速度要求较高的场景，而AOF持久化适合于数据重要性较高、写入操作较为频繁的场景。可以根据实际的业务需求选择适合自己的持久化方式。**
 
 ::: tip 
+
+> 官方推荐两个都启用。
+> 如果对数据不敏感，可以选单独用RDB。不建议单独用 AOF，因为可能会出现Bug。如果只是做纯内存缓存，可以都不用。
 
 - RDB持久化方式能够在指定的时间间隔能对你的数据进行快照存储
 

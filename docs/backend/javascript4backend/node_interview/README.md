@@ -1,6 +1,6 @@
 ---
 title: Node.js Backend Developer
-date: 2023-1-17
+date: 2023-4-27
 categories:
   - Backend
 tags:
@@ -345,5 +345,36 @@ async function runTask() {
 
 > 需要注意的是使用 Redis 分布式锁时，要尽量避免死锁的情况，如果锁被占用过长可以在超时时间后自动释放锁或者人工释放。
 
+---
 
+## ShuRui
 
+### 1. Node 和 Ajax 有什么区别？
+
+> Node.js 和 Ajax 是两个不同的概念。
+
+- Node.js 是一个基于 JavaScript 的运行时环境，用于在服务器端运行 JavaScript 代码。它使得开发者能够使用 JavaScript 编写服务器端应用程序，并提供了一系列的内置模块和扩展库，用于简化服务器端应用程序的开发。
+
+- Ajax 是一种基于 JavaScript 和 XML（或 JSON）的技术，用于实现客户端和服务器端之间的异步通信。Ajax 可以在不刷新整个页面的情况下更新部分页面内容，从而提高了网站的响应速度和用户体验。Ajax 主要是在客户端使用的技术，通过浏览器内置的 **XMLHttpRequest** 对象来实现与服务器端的异步通信。
+
+> 因此，Node.js 和 Ajax 是两个不同的概念。Node.js 主要是用于在服务器端运行 JavaScript 代码，而 Ajax 主要是用于在客户端和服务器端之间进行异步通信。
+
+### Node Stream 是什么？有哪些种类的Stream？
+
+> 在Node.js中，Stream是一种用于**处理流数据的抽象接口**。它提供了一种处理大量数据的方式，以及对数据进行流式传输和处理的能力。Stream可以通过**读取、写入、转换、过滤**等方式来处理数据，而不需要一次性加载全部数据到内存中。这使得处理大文件或大量数据变得更加高效和可行。Node.js中的Stream有四种类型：
+
+1. Readable Stream：用于读取数据的Stream，例如从文件、网络等源读取数据。
+
+2. Writable Stream：用于写入数据的Stream，例如将数据写入文件、发送数据到网络等。
+
+3. Duplex Stream：可同时读取和写入数据的Stream，例如网络套接字等。
+
+4. Transform Stream：是一种特殊的Duplex Stream，用于处理和转换数据流。例如，可以使用Transform Stream将文件内容进行加密或解密，或将CSV数据转换为JSON格式。
+
+### fs.readFile() 和 fs.readFileStream() 有什么区别？
+
+| 区别     | fs.readFile()          | fs.createReadStream()                    |
+| -------- | ---------------------- | ---------------------------------------- |
+| 读取到   | 全部读取到内存         | 分成一系列小块（缓冲区），逐块读取和处理 |
+| 适用于   | 较小的文件或数据       | 大型文件或数据集                         |
+| callback | 作为回调函数的参数返回 | 通过监听完成读取操作                     |
