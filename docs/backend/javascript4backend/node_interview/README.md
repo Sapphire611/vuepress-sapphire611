@@ -441,7 +441,6 @@ join scores on scores.student_id = students.id
 GROUP BY name
 ORDER BY total desc
 limit 3
-
 ```
 
 ---
