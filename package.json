@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@vuepress-reco/vuepress-plugin-bgm-player": "^1.1.4",
+    "moment": "^2.29.4",
     "sapphire611": "^0.0.3",
     "vuepress": "^1.8.2",
     "vuepress-plugin-autometa": "^0.1.13",

@@ -1,6 +1,6 @@
 ---
 title: Node.js Backend Developer
-date: 2023-4-27
+date: 2023-5-29
 categories:
   - Backend
 tags:
@@ -378,3 +378,89 @@ async function runTask() {
 | 读取到   | 全部读取到内存         | 分成一系列小块（缓冲区），逐块读取和处理 |
 | 适用于   | 较小的文件或数据       | 大型文件或数据集                         |
 | callback | 作为回调函数的参数返回 | 通过监听完成读取操作                     |
+
+---
+
+# MiaoDian 
+
+### node 语言的劣势
+
+1. 单线程：Node.js采用**单线程**的事件驱动模型，这意味着它只能处理一个请求或事件的同时。这在处理计算密集型任务或长时间运行的操作时可能导致性能问题
+
+::: warning
+尽管Node.js通过异步非阻塞的方式来处理I/O操作，但如果应用程序需要进行大量的计算，会阻塞整个应用程序的执行。
+::: 
+
+2. 内存占用：Node.js在处理大规模并发请求时可能会**占用较多的内存**。每个请求都需要一定的内存分配，因此当同时处理大量请求时，Node.js应用程序的内存消耗会增加。这对于内存有限的服务器来说可能是一个问题。
+
+3. 回调地狱：Node.js采用回调函数来处理异步操作，这可能导致嵌套的回调函数，也被称为"回调地狱"。当处理复杂的异步操作时，代码的可读性和可维护性可能会变差。为了解决这个问题，可以使用Promise、Async/Await等方式来处理异步操作。
+
+4. 缺乏成熟的库和工具：相对于其他后端语言，Node.js的生态系统可能相对较年轻，一些领域的库和工具可能还不如其他语言丰富和成熟。尽管Node.js拥有许多优秀的库和框架，但在某些特定的应用场景中，你可能需要额外的努力来找到适合的解决方案。
+
+::: tip
+需要注意的是，尽管Node.js有这些劣势，它在处理**高并发**、**I/O密集型任务**和**构建实时应用**等方面仍然表现出色。选择使用Node.js还是其他后端语言，取决于具体的应用需求和团队的技术栈。
+:::
+
+### mongodb的劣势
+
+1. 高存储空间需求：相比于传统的关系型数据库，MongoDB在存储数据时通常**需要更多的磁盘空间**。
+
+> 这是因为MongoDB使用了一些额外的数据结构和索引来提供高效的查询和灵活的数据模型。
+
+2. 缺乏事务支持：MongoDB在早期版本中缺乏原生的多文档事务支持，尽管在后续版本中引入了一些事务功能，但相对于传统的关系型数据库，它的事务支持还不够成熟和强大。这可能对某些需要严格事务处理的应用场景造成限制。
+
+::: tip
+Mongodb 4.0 之后支持事务
+:::
+
+3. 不适合复杂的关系型查询：MongoDB是一种文档数据库，其设计目标主要是为了支持灵活的数据模型和大规模的水平扩展。然而，对于需要执行复杂的关系型查询（例如多表连接、聚合等）的应用，MongoDB的查询能力相对较弱。在这种情况下，传统的关系型数据库可能更适合。
+
+4. 较小的社区和生态系统：相对于一些传统的关系型数据库，MongoDB的社区和生态系统相对较小。这可能意味着在解决问题、找到支持和寻找第三方工具时，可能需要付出更多的努力。
+
+### Mysql 查询学生三门科目总分最高的 前三名
+
+1. 学生和成绩分表
+  
+```sql
+CREATE TABLE students (
+  id INT PRIMARY KEY,
+  name VARCHAR(50)
+);
+
+CREATE TABLE scores (
+  student_id INT,
+  subject VARCHAR(50),
+  score INT
+);
+```
+
+```sql
+select name,sum(score) as total
+from students
+join scores on scores.student_id = students.id
+GROUP BY name
+ORDER BY total desc
+limit 3
+
+```
+
+---
+
+2. 学生和成绩合表
+
+```sql
+CREATE TABLE students (
+  id INT PRIMARY KEY,
+  name VARCHAR(50),
+  subject1_score INT,
+  subject2_score INT,
+  subject3_score INT
+);
+```
+
+```sql
+select name,(subject1_score + subject2_score + subject3_score) as total
+from student
+ORDER BY total desc
+limit 3
+```
