@@ -254,9 +254,9 @@ main()
 ```
 ### 算法题：括号匹配 leetcode 20 
 
-[算法题：括号匹配 leetcode 20](/leetcode-js/#_20-有效的括号)
+[算法题：括号匹配 leetcode 20](/backend/javascript4backend/leetcode-js/#_20-有效的括号)
 
-[算法题：搜索旋转排序数组 leetcode 33](http://localhost:8082/leetcode-js/#_33-搜索旋转排序数组)
+[算法题：搜索旋转排序数组 leetcode 33](/backend/javascript4backend/leetcode-js/#_33-搜索旋转排序数组)
 
 ## NGA
 

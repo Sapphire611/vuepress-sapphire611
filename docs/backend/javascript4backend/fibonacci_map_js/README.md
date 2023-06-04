@@ -2,9 +2,9 @@
 title: 通过Map让Fibonacci递归不会栈溢出
 date: 2022-9-28
 categories:
-  - alrorithm
+  - algorithm
 tags:
-  - alrorithm
+  - algorithm
 sidebar: "auto"
 publish: true
 showSponsor: true
