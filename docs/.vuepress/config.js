@@ -69,19 +69,19 @@ module.exports = {
   },
 
   plugins: [
-    [
-      'meting',
-      {
-        meting: {
-          server: 'netease',
-          type: 'playlist',
-          mid: '7195949476'
-        },
-        aplayer: {
-          lrcType: 3
-        }
-      }
-    ],
+    // [
+    //   'meting',
+    //   {
+    //     meting: {
+    //       server: 'netease',
+    //       type: 'playlist',
+    //       mid: '367284177'
+    //     },
+    //     aplayer: {
+    //       lrcType: 3
+    //     }
+    //   }
+    // ],
     [
       'vuepress-plugin-sponsor',
       {
