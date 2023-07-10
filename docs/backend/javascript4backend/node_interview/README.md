@@ -1,6 +1,6 @@
 ---
 title: Node.js Backend Developer
-date: 2023-5-29
+date: 2023-7-10
 categories:
   - Backend
 tags:
@@ -462,4 +462,482 @@ select name,(subject1_score + subject2_score + subject3_score) as total
 from student
 ORDER BY total desc
 limit 3
+```
+
+# 心悦互娱
+
+### 1. 如何使用nodejs读取一个本地文件？
+
+> fs.readFile
+> fs.readFileSync
+> fs.promises.readFile
+
+### 3. 如何做到创建nodejs集群并做到不中断重启？
+
+```js
+const cluster = require('cluster');
+const http = require('http');
+const numCPUs = require('os').cpus().length;
+
+if (cluster.isMaster) {
+    console.log(`主进程 ${process.pid} 正在运行`);
+
+    // 创建子进程
+    for (let i = 0; i < numCPUs; i++) {
+        cluster.fork();
+    }
+
+    // 监听子进程退出事件
+    cluster.on('exit', (worker, code, signal) => {
+        console.log(`子进程 ${worker.process.pid} 停止运行`);
+        // 重启子进程
+        cluster.fork();
+    });
+} else {
+    // 在子进程中创建 HTTP 服务器
+    http.createServer((req, res) => {
+        res.writeHead(200);
+        res.end('Hello, World!');
+    }).listen(8000);
+
+    console.log(`子进程 ${process.pid} 正在运行`);
+}
+```
+
+### 4. nodejs集群的优势和限制
+
+#### 优势
+
+1. 高可扩展性：Node.js集群允许在多个进程中并行处理请求，从而提高系统的整体处理能力和吞吐量。每个子进程都可以独立地处理请求，而不会阻塞其他进程。
+
+2. 高可靠性：当一个子进程崩溃或发生异常时，主进程可以检测到并重新启动新的子进程，从而确保应用程序的可用性和稳定性。这种机制可以最大程度地减少因为单个进程故障导致整个应用程序崩溃的风险。
+  
+3. 负载均衡：Node.js集群可以通过将请求分发给不同的子进程来实现负载均衡，确保请求在多个进程之间均匀分布。这样可以充分利用系统资源，提高系统的并发处理能力。
+
+4. 多核利用：Node.js集群可以充分利用多核处理器的优势，每个子进程可以运行在不同的CPU核心上，提高系统的性能和响应能力。
+
+#### 限制
+
+1. 共享状态管理：Node.js集群中的子进程是相互独立的，它们之间无法直接共享内存或状态。如果应用程序依赖于共享状态管理，需要使用其他的机制来实现状态共享，例如使用共享数据库或消息队列等。
+
+2. 内存消耗：每个子进程都会占用一定的内存资源，因此在创建多个子进程时需要考虑内存消耗的增加。如果服务器资源有限，过多的子进程可能会导致内存不足或交换内存频繁，影响性能。
+
+3. 进程间通信：在Node.js集群中，子进程之间的通信需要通过进程间通信（IPC）机制来实现，例如使用消息队列或共享内存。这可能增加一些开发和管理的复杂性。
+
+4. 上下文切换开销：在多个子进程之间切换上下文会带来一些开销，尤其是在大量的请求并发时。因此，在设计和配置Node.js集群时需要平衡并发能力和上下文切换开销。
+
+> 综上所述，Node.js集群在高并发、高可扩展性和高可靠性方面具有优势，但在共享状态管理、内存消耗和进程间通信等方面存在一些限制，需要综合考虑和权衡来选择适合的方案。
+
+### 5. mongo 扣减库存时如何保证原子一致性？
+
+> 这里使用mongoose的版本
+
+```js
+const session = await mongoose.startSession();
+session.startTransaction();
+
+try {
+  // 在 session 中执行操作
+  await InventoryModel.updateOne(
+    { _id: productId, quantity: { $gte: quantity } },
+    { $inc: { quantity: -quantity } },
+    { session }
+  );
+
+  await RecordModel.create(
+    {
+      productId: productId,
+      quantity: -quantity,
+      timestamp: new Date()
+    },
+    { session }
+  );
+
+  await session.commitTransaction();
+  session.endSession();
+} catch (error) {
+  await session.abortTransaction();
+  session.endSession();
+  throw error;
+}
+```
+
+### 6.请写出符合下列要求的 mongodb 查询语句:
+
+> 查询表 user 中，name 是 abc，且 age 大于 30 岁或小于等于 10 岁的数据，跳过 100 条数据之后的 50 条数据，按年龄逆序排列，并仅返回 name 和 age 两个字段
+
+```js
+const query = await User.find({
+  name: 'abc',
+  $or: [
+    { age: { $gt: 30 } },
+    { age: { $lte: 10 } }
+  ]
+})
+  .skip(100)
+  .limit(50)
+  .sort({ age: -1 })
+  .select('name age');
+```
+```js
+const oprs = [
+  {
+    $match: {
+      name: 'abc',
+      $or: [
+        { age: { $gt: 30 } },
+        { age: { $lte: 10 } }
+      ]
+    }
+  },
+  { $sort: { age: -1 } },
+  { $skip: 100 },
+  { $limit: 50 },
+  { $project: { name: 1, age: 1 } }
+];
+
+await User.aggregate(oprs);
+```
+
+### 7. 如何使用redis实现简单的消息队列？
+
+> 要使用 Redis 实现简单的消息队列，你可以借助 Redis 的列表数据结构来实现。
+
+> 以下是一个基本的示例，展示如何使用 Redis 来创建一个简单的消息队列：
+
+
+```js
+const Redis = require('ioredis');
+const client = new Redis();
+
+function sendMessage(message) {
+    client.lpush('message_queue', message)
+        .then(reply => {
+            console.log('Message sent to the queue:', message);
+        })
+        .catch(err => {
+            console.error('Failed to send message:', err);
+        });
+}
+
+async function processMessages() {
+    try {
+        const message = await client.lpop('message_queue');
+        if (message) {
+            console.log('Processing message:', message);
+            // 在这里执行对消息的处理逻辑
+        }
+    } catch (err) {
+        console.error('Failed to process message:', err);
+    }
+    // 继续处理下一个消息
+    process.nextTick(processMessages);
+}
+
+// 开始轮询处理消息
+processMessages();
+
+// 示例发送两条消息
+sendMessage('Hello, World!');
+sendMessage('This is a test message.');
+```
+
+### 8.用 redis 实现一个分数排行榜，并从中查找前十名的数据
+
+```redis
+zadd leaderboard 100 PlayerA
+zadd leaderboard 80 PlayerB
+zadd leaderboard 120 PlayerC
+zrevrange leaderboard 0 9 WITHSCORES
+```
+
+```js
+const redis = require('ioredis');
+const client = redis.createClient();
+
+// 添加成员和分数到排行榜
+function addMemberToLeaderboard(member, score) {
+    client.zadd('leaderboard', score, member, (err, reply) => {
+        if (err) {
+            console.error('Failed to add member to leaderboard:', err);
+        } else {
+            console.log('Member added to leaderboard:', member);
+        }
+    });
+}
+
+// 获取排行榜前十名的数据
+function getTopTenFromLeaderboard() {
+    client.zrevrange('leaderboard', 0, 9, 'WITHSCORES', (err, results) => {
+        if (err) {
+            console.error('Failed to get top ten from leaderboard:', err);
+        } else {
+            console.log('Top ten from leaderboard:');
+            for (let i = 0; i < results.length; i += 2) {
+                const member = results[i];
+                const score = results[i + 1];
+                console.log(`${i / 2 + 1}. Member: ${member}, Score: ${score}`);
+            }
+        }
+    });
+}
+
+// 示例添加成员和分数到排行榜
+addMemberToLeaderboard('PlayerA', 100);
+addMemberToLeaderboard('PlayerB', 80);
+addMemberToLeaderboard('PlayerC', 120);
+
+// 查询排行榜前十名的数据
+getTopTenFromLeaderboard();
+```
+
+### 9.和他人在同一个 git 分支开发，在本地开发好一个功能后，如何提交并上传服务器可以尽可能的减少冲突并保留完整提交历史，列举使用的命令或操作
+
+```bash
+git stash # 保存当前工作区
+git pull # 拉取远程分支
+git stash apply # 恢复工作区
+git add . # 添加修改
+git commit -m 'xxx' # 提交修改
+git push # 推送到远程分支
+```
+
+### 10.列举 js 中数组遍历相关的方法
+
+
+
+
+1. for 循环
+```javascript
+const array = [1, 2, 3, 4, 5];
+for (let i = 0; i < array.length; i++) {  
+  console.log(array[i]);
+}
+```
+
+2. for...of 循环：用于遍历可迭代对象，例如数组、字符串等。
+```javascript
+const array = [1, 2, 3, 4, 5];
+for (const item of array) {  console.log(item);}
+```
+
+3. forEach 方法：
+   
+```javascript 
+const array = [1, 2, 3, 4, 5];
+array.forEach(item => {  console.log(item);});
+```
+
+4. map 方法：返回一个新的数组，其中包含对原始数组每个元素进行处理后的结果。
+```javascript
+const array = [1, 2, 3, 4, 5];
+const newArray1 = array.map(item => item * 2);
+console.log(newArray);
+```
+
+5. filter 方法：返回一个新的数组，其中包含满足特定条件的原始数组元素。
+```javascript
+const array = [1, 2, 3, 4, 5];
+const newArray2 = array.filter(item => item > 2);
+console.log(newArray);
+```
+
+6. reduce 方法：通过对原始数组的累积计算，返回一个单一的值。
+
+> 回调函数（callback function）：这是一个用于处理数组元素的函数，它接受四个参数：累加器（accumulator）、当前值（current value）、当前索引（current index）和原始数组（array）。回调函数在每个数组元素上被调用，可以执行任意操作并返回一个值，该值将作为下一次迭代的累加器的值
+
+> 初始累加器的值（initial accumulator value）：这是可选的参数，指定初始的累加器的值。如果未提供该参数，则将使用数组的第一个元素作为初始累加器的值，并从数组的第二个元素开始迭代。
+
+```javascript
+const array = [1, 2, 3, 4, 5];
+const sum = array.reduce((accumulator, currentValue) => accumulator + currentValue);
+console.log(sum);
+```
+
+
+
+
+### 11.列举几个 es6 以后的新特性
+
+1. 块级作用域（Block Scope）：通过使用 let 和 const 关键字，引入了块级作用域，使得变量和常量的作用域仅限于定义它们的块内部。
+
+2. 箭头函数（Arrow Functions）：使用 => 语法定义函数，可以更简洁地编写函数表达式，并自动绑定函数体内的 this 值。
+
+3. 解构赋值（Destructuring Assignment）：可以从数组或对象中快速提取值，并将它们分配给变量，以便进行更方便的赋值操作。
+
+4. 默认参数（Default Parameters）：在函数定义中，可以为参数设置默认值，当调用函数时没有提供该参数时，将使用默认值。
+
+5. 模板字面量（Template Literals）：使用反引号 包围的字符串，可以包含变量、表达式和换行符，并使用 ${} 语法进行插值。
+
+6. 扩展运算符（Spread Operator）：通过使用 ... 语法，可以将数组或对象在函数调用、数组字面量或对象字面量中展开，使其元素或属性被拆分成独立的项。
+
+7. 类和模块（Classes and Modules）：引入了类和模块的概念，可以更简洁地定义和组织对象的行为和结构。
+
+8. async/await（Promises）：引入了 Promise 对象，用于处理异步操作，使得异步代码更易于编写和管理。
+
+9. for...of 循环（For...of Loop）：提供了一种简单的遍历数组、字符串和其他可迭代对象的方式。
+
+10 模块化导入和导出（Module Import and Export）：通过 import 和 export 关键字，支持模块化的文件导入和导出，方便代码的组织和复用。
+
+### 12.将两个数组的元素合并并去重
+
+```js
+const array1 = [1, 2, 3];
+const array2 = [2, 3, 4];
+
+// 将两个数组合并
+const mergedArray = [...array1, ...array2];
+
+// 去重
+const uniqueArray = [...new Set(mergedArray)];
+
+console.log(uniqueArray);
+```
+
+### 13.列举几个处理异步请求嵌套的方法
+
+```js
+// 嵌套回调函数处理异步请求
+asyncRequest1((err,res) => {
+  asyncRequest2(() => {
+    asyncRequest3(() => {
+      console.log('All requests completed.');
+    });
+  });
+});
+
+function asyncRequest3() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log('Async Request 3 Completed');
+      resolve();
+    }, 1000);
+  });
+}
+
+// 使用 Promise 链式调用处理异步请求
+asyncRequest1()
+  .then(() => asyncRequest2())
+  .then(() => asyncRequest3())
+  .then(() => {
+    console.log('All requests completed.');
+  });
+
+// 使用 async/await 处理异步请求
+async function nestedAsyncRequests() {
+  await asyncRequest1();
+  await asyncRequest2();
+  await asyncRequest3();
+
+  console.log('All requests completed.');
+}
+
+// 使用 Promise.all 并行处理异步请求
+Promise.all([asyncRequest1(), asyncRequest2(), asyncRequest3()])
+  .then(results => {
+    console.log('All requests completed.');
+    console.log('Results:', results);
+  });
+```
+### 14. 用 ts 实现多态，父类 animal，子类 cat 和 dog，包含 name 属性，实现 say 方法
+```ts
+class Animal {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  say(): void {
+    console.log('Animal says...');
+  }
+}
+
+class Cat extends Animal {
+  say(): void {
+    console.log('Meow!');
+  }
+}
+
+class Dog extends Animal {
+  say(): void {
+    console.log('Woof!');
+  }
+}
+
+// 多态性的应用
+const animals: Animal[] = [new Cat('Tom'), new Dog('Max'), new Cat('Kitty')];
+
+animals.forEach((animal) => {
+  console.log(`Name: ${animal.name}`);
+  animal.say();
+  console.log('------------------');
+});
+
+// yarn add global ts-node typescript
+// npx ts-node test.ts
+```
+
+### 15.如何不使用第三个变量来交换两个数的值?
+
+```js
+let a = 10;
+let b = 5;
+
+a = a + b; // 将 a 的值与 b 相加，结果赋给 a
+b = a - b; // 用新的 a 值减去原始的 b 值，结果赋给 b
+a = a - b; // 用新的 a 值减去新的 b 值，结果赋给 a
+
+console.log(a); // 输出 5
+console.log(b); // 输出 10
+```
+
+```js
+let a = 10;
+let b = 5;
+
+a = a ^ b; // 对 a 和 b 进行位异或操作，结果赋给 a
+b = a ^ b; // 用新的 a 值与原始的 b 值进行位异或操作，结果赋给 b
+a = a ^ b; // 用新的 a 值与新的 b 值进行位异或操作，结果赋给 a
+
+console.log(a); // 输出 5
+console.log(b); // 输出 10
+```
+
+### 16.简述负责项目中的跨服设计和存储设计
+
+```js
+当涉及到具体的跨服设计和存储设计时，以下是一些常见的实践和技术：
+
+跨服设计：
+
+通信协议和接口：使用标准的网络协议（如HTTP、WebSocket）或自定义协议进行服务器之间的通信，通过定义清晰的接口规范来实现跨服务器通信和数据交换。
+负载均衡和路由：使用负载均衡器（如Nginx、HAProxy）将请求分发到多个服务器节点，根据负载情况和健康状况来动态调整流量分配。
+数据同步和共享：使用分布式缓存（如Redis）或消息队列（如Kafka、RabbitMQ）来实现数据的同步和共享，确保数据在不同服务器之间的一致性。
+异常处理和故障转移：实施监控和自动化运维策略，当服务器发生故障或异常时，自动进行故障转移和恢复操作，确保系统的高可用性。
+存储设计：
+
+数据库选择：根据项目需求选择适当的数据库类型。例如，关系型数据库（如MySQL、PostgreSQL）适合处理复杂的数据关系，文档数据库（如MongoDB）适合存储灵活的非结构化数据。
+数据库模式设计：根据项目的数据结构和查询需求，设计合理的数据库模式。包括表结构、索引设计、关系定义和数据分片等，以提高查询性能和数据访问效率。
+数据缓存和缓存策略：使用缓存技术（如Redis、Memcached）缓存常用的数据，以减少数据库查询和提高响应速度。选择合适的缓存策略，如过期时间、LRU（最近最少使用）等。
+数据备份和恢复：定期进行数据备份，并制定合适的备份策略（如全量备份、增量备份），以防止数据丢失，并能够快速恢复数据。
+数据安全和权限控制：实施严格的数据安全措施，包括数据加密、访问控制、身份验证和授权等，以保护数据的机密性和完整性。
+这些是跨服设计和存储设计的一些常见实践和技术，具体的实现方式和工具选择会根据项目的需求、规模和技术栈而有所差异。建议在实施具体设计时结合实际情况，进行合理的架构和技术选择。
+```
+
+### 17.现有 1000 个苹果，10 个盒子，问各个盒子内应该分别放入多少个苹果，才能使得用户要买任意1 至 1000 之间的一个苹果数，都可以给他 
+
+> (卖的时候是整个盒子卖，不能拆盒子的包装)。
+
+```js
+盒子1（第1位）放入1个苹果。
+盒子2（第2位）放入2个苹果。
+盒子3（第3位）放入4个苹果。
+盒子4（第4位）放入8个苹果。
+盒子5（第5位）放入16个苹果。
+盒子6（第6位）放入32个苹果。
+盒子7（第7位）放入64个苹果。
+盒子8（第8位）放入128个苹果。
+盒子9（第9位）放入256个苹果。
+盒子10（第10位）放入475个苹果（剩余的苹果数量）。
 ```
