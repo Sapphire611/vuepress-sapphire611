@@ -1,6 +1,6 @@
 ---
 title: Node.js Backend Developer
-date: 2023-7-10
+date: 2023-8-22
 categories:
   - Backend
 tags:
@@ -14,97 +14,6 @@ publish: true
 
 ### 3-minutes self-introduction in English
 
-### Graphql
-
-[Introduction to GraphQL](https://graphql.org/learn)
-
-- What’s the difference between queries and mutations? 
-    - 查询用于获取数据。它们用于查询特定资源或资源列表，并以结构化的方式返回查询结果。查询是安全的，因为它们不会更改服务器端的数据。
-    - 相比之下，变更用于更改数据。它们通常用于创建、更新或删除资源。变更需要被特别许可，因为它们会更改服务器端的数据。
-
-``` graphql
-// This is a query
-query {
-  user(id: 1) {
-    name
-    email
-  }
-}
-
-// This is a mutation
-mutation {
-  createUser(name: "John Doe", email: "johndoe@example.com") {
-    id
-    name
-    email
-  }
-}
-```
-- What’s the meaning of ID(uppercase) with exclamation mark in a graphQL schema?
-
-- 在GraphQL模式中，ID（大写）后面的感叹号表示该字段是必需的。
-
-- 例如，如果定义了一个名为User的对象类型，其中包含一个名为id的字段，并且在字段后面添加了感叹号，那么这个字段就是必需的：
-
-``` graphql
-type User {
-  id: ID!
-  name: String
-  email: String
-}
-```
-在这个例子中，id字段是必需的，而name和email字段是可选的。这意味着在查询User对象时，必须提供id字段的值，但可以选择性地提供name和email字段的值。
-
-总之，在GraphQL模式中，ID（大写）后面的感叹号表示字段是必需的。
-### GRPC
-
-[Documentation](https://grpc.io/docs/)
-
-- What does gRPC use for defining the data structures of its services and messages?    
-    - gRPC使用Protocol Buffers来定义其服务和消息的数据结构。Protocol Buffers是一种结构化数据序列化技术，可以让您定义消息类型和服务接口，并使用这些定义来生成特定语言的代码。
-
-- How can we define a field representing a date in gRPC messages?                                   
-    - gRPC 使用 Protocol Buffers 来定义消息结构。在 Protocol Buffers 中，你可以使用 google.protobuf.Timestamp 类型来定义表示日期的字段。使用这种方法，你可以在定义你的 gRPC 服务时在消息中定义一个表示日期的字段。
-
-```graphql
-syntax = "proto3";
-
-import "google/protobuf/timestamp.proto";
-
-message Event {
-  // The date and time when the event occurred.
-  google.protobuf.Timestamp date_time = 1;
-
-  // Other fields defining the event.
-  // ...
-}
-```
-
-- What is a method stub?
-
-  - 在 gRPC 中，方法存根（method stub）是客户端库提供的一个抽象接口，它允许客户端应用程序调用远程服务器上的方法。存根对象包含了方法的名称、参数类型和返回类型的信息，并且可以用来向服务器发送请求并接收响应。
-
-  - 在 gRPC 中，方法存根是通过 Protocol Buffers 生成的。对于每一个服务，都有一个特定的 .proto 文件，定义了服务的方法及其参数和返回类型。当客户端库与服务端库被构建时，Protocol Buffers 编译器会使用 .proto 文件来生成方法存根。
-
-> 举个例子，假设你有一个叫做 "GreetingService" 的 gRPC 服务，其中包含一个名为 "Greet" 的方法，接受一个名为 "Greeting" 的请求并返回一个名为 "Response" 的响应。你的 .proto 文件可能长这样：
-
-```protobuf
-service GreetingService {
-  rpc Greet(Greeting) returns (Response) {}
-}
-
-message Greeting {
-  string first_name = 1;
-  string last_name = 2;
-}
-
-message Response {
-  string greeting = 1;
-}
-```
-
-- 当 Protocol Buffers 编译器处理这个文件时，它会为 "GreetingService" 生成一个方法存根，其中包含 "Greet" 方法的信息。客户端应用程序可以使用这个存根来调用 "Greet" 方法
-
 ### 什么是微服务？使用微服务的优势/缺点有哪些？
 
 > 微服务是一种软件架构风格，它将一个应用程序拆分成许多独立的服务，每个服务都是一个独立的进程，且与其他服务通信。这种架构风格的目的是让应用程序更容易开发、部署、维护和扩展。
@@ -117,8 +26,8 @@ message Response {
 
 ### SQL
 
-- Mysql & MongoDB & Redis 介绍，分别在哪些场景下发挥优势？
-MySQL、MongoDB 和 Redis 都是常用的数据库系统，它们在不同的应用场景下发挥优势。
+#### Mysql & MongoDB & Redis 介绍，分别在哪些场景下发挥优势？
+> MySQL、MongoDB 和 Redis 都是常用的数据库系统，它们在不同的应用场景下发挥优势。
 
 - MySQL 是一种关系型数据库管理系统，具有高度可移植性、稳定性和安全性。它在处理复杂的关系型数据时表现优越，例如在订单管理、用户管理等应用中。
 
@@ -164,7 +73,10 @@ db.logs.aggregate([
 #### mysql: 
 
 ``` sql
-SELECT name,action,createdTime,modifiedTime from Log WHERE createdTime BETWEEN '2022-04-01' and '2022-04-30' GROUP BY name,action,createdTime,modifiedTime;
+SELECT name,action,createdTime,modifiedTime 
+FROM Log 
+WHERE createdTime BETWEEN '2022-04-01' and '2022-04-30' 
+GROUP BY name,action,createdTime,modifiedTime;
 ```
 
 ### mongodb中索引有哪些类型？分别怎么使用？
@@ -254,9 +166,9 @@ main()
 ```
 ### 算法题：括号匹配 leetcode 20 
 
-[算法题：括号匹配 leetcode 20](/backend/javascript4backend/leetcode-js/#_20-有效的括号)
+[算法题：括号匹配 leetcode 20](/backend/node/leetcode-js/#_20-有效的括号)
 
-[算法题：搜索旋转排序数组 leetcode 33](/backend/javascript4backend/leetcode-js/#_33-搜索旋转排序数组)
+[算法题：搜索旋转排序数组 leetcode 33](/backend/nodeß/leetcode-js/#_33-搜索旋转排序数组)
 
 ## NGA
 
@@ -393,10 +305,6 @@ async function runTask() {
 
 2. 内存占用：Node.js在处理大规模并发请求时可能会**占用较多的内存**。每个请求都需要一定的内存分配，因此当同时处理大量请求时，Node.js应用程序的内存消耗会增加。这对于内存有限的服务器来说可能是一个问题。
 
-3. 回调地狱：Node.js采用回调函数来处理异步操作，这可能导致嵌套的回调函数，也被称为"回调地狱"。当处理复杂的异步操作时，代码的可读性和可维护性可能会变差。为了解决这个问题，可以使用Promise、Async/Await等方式来处理异步操作。
-
-4. 缺乏成熟的库和工具：相对于其他后端语言，Node.js的生态系统可能相对较年轻，一些领域的库和工具可能还不如其他语言丰富和成熟。尽管Node.js拥有许多优秀的库和框架，但在某些特定的应用场景中，你可能需要额外的努力来找到适合的解决方案。
-
 ::: tip
 需要注意的是，尽管Node.js有这些劣势，它在处理**高并发**、**I/O密集型任务**和**构建实时应用**等方面仍然表现出色。选择使用Node.js还是其他后端语言，取决于具体的应用需求和团队的技术栈。
 :::
@@ -510,7 +418,7 @@ if (cluster.isMaster) {
 
 1. 高可扩展性：Node.js集群允许在多个进程中并行处理请求，从而提高系统的整体处理能力和吞吐量。每个子进程都可以独立地处理请求，而不会阻塞其他进程。
 
-2. 高可靠性：当一个子进程崩溃或发生异常时，主进程可以检测到并重新启动新的子进程，从而确保应用程序的可用性和稳定性。这种机制可以最大程度地减少因为单个进程故障导致整个应用程序崩溃的风险。
+2. 高可用性：当一个子进程崩溃或发生异常时，主进程可以检测到并重新启动新的子进程，从而确保应用程序的可用性和稳定性。这种机制可以最大程度地减少因为单个进程故障导致整个应用程序崩溃的风险。
   
 3. 负载均衡：Node.js集群可以通过将请求分发给不同的子进程来实现负载均衡，确保请求在多个进程之间均匀分布。这样可以充分利用系统资源，提高系统的并发处理能力。
 
@@ -644,7 +552,7 @@ sendMessage('This is a test message.');
 
 ### 8.用 redis 实现一个分数排行榜，并从中查找前十名的数据
 
-```redis
+```bash
 zadd leaderboard 100 PlayerA
 zadd leaderboard 80 PlayerB
 zadd leaderboard 120 PlayerC
@@ -672,6 +580,16 @@ function getTopTenFromLeaderboard() {
         if (err) {
             console.error('Failed to get top ten from leaderboard:', err);
         } else {
+            console.debug(results);
+            // [
+            //     'PlayerL', '123',     'PlayerI',
+            //     '122',     'PlayerF', '121',
+            //     'PlayerC', '120',     'PlayerJ',
+            //     '103',     'PlayerG', '102',
+            //     'PlayerD', '101',     'PlayerA',
+            //     '100',     'PlayerK', '83',
+            //     'PlayerH', '82'
+            //   ]
             console.log('Top ten from leaderboard:');
             for (let i = 0; i < results.length; i += 2) {
                 const member = results[i];
@@ -686,6 +604,18 @@ function getTopTenFromLeaderboard() {
 addMemberToLeaderboard('PlayerA', 100);
 addMemberToLeaderboard('PlayerB', 80);
 addMemberToLeaderboard('PlayerC', 120);
+
+addMemberToLeaderboard('PlayerD', 101);
+addMemberToLeaderboard('PlayerE', 81);
+addMemberToLeaderboard('PlayerF', 121);
+
+addMemberToLeaderboard('PlayerG', 102);
+addMemberToLeaderboard('PlayerH', 82);
+addMemberToLeaderboard('PlayerI', 122);
+
+addMemberToLeaderboard('PlayerJ', 103);
+addMemberToLeaderboard('PlayerK', 83);
+addMemberToLeaderboard('PlayerL', 123);
 
 // 查询排行榜前十名的数据
 getTopTenFromLeaderboard();
@@ -941,3 +871,14 @@ console.log(b); // 输出 10
 盒子9（第9位）放入256个苹果。
 盒子10（第10位）放入475个苹果（剩余的苹果数量）。
 ```
+
+---
+
+1. 不能使用 await 的情况下，如何保证串行
+2. node 设置使用内存大小
+3. 如何预防XSS攻击？
+4. http和https的区别？证书认证过程？pki？
+5. 主进程和子进程是否共享内存？
+6. 中量级数据报表导出经验？
+7. OTA？
+8. 递归创建文件夹，深度过大怎么办
