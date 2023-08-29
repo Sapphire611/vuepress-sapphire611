@@ -36,10 +36,9 @@ module.exports = {
       {
         text: 'About Me',
         icon: 'info',
-        text: 'About Me',
         link: '/aboutMe/',
-        icon: 'reco-other'
-      }
+      },
+      { text: 'TimeLine', link: '/timeline/', icon: 'reco-date' }
     ],
 
     blogConfig: {

@@ -7,6 +7,8 @@ tags:
   - node
   - interview
 sidebar: "auto"
+keys:
+ - 6e0dc2521bd023fa6d124a78c1317ab9
 publish: true
 ---
 
@@ -873,12 +875,208 @@ console.log(b); // 输出 10
 ```
 
 ---
+## KeLuoDa
 
-1. 不能使用 await 的情况下，如何保证串行
-2. node 设置使用内存大小
-3. 如何预防XSS攻击？
-4. http和https的区别？证书认证过程？pki？
+### 1. 不能使用 await 的情况下，如何保证串行
+
+> 在不能使用await的情况下，你可以使用回调函数、Promise 链、或者 Generator 函数来保证异步操作的串行执行。这些方法可以帮助你在不阻塞主线程的情况下按顺序执行异步任务。
+
+使用回调函数：
+```js
+function task1(callback) {
+    // 异步任务1
+    setTimeout(() => {
+        console.log("Task 1 complete");
+        callback();
+    }, 1000);
+}
+
+function task2(callback) {
+    // 异步任务2
+    setTimeout(() => {
+        console.log("Task 2 complete");
+        callback();
+    }, 2000);
+}
+
+task1(() => {
+    task2(() => {
+        // 所有任务完成
+        console.log("All tasks complete");
+    });
+});
+
+```
+
+使用Promise链：
+```javascript
+function task1() {
+    return new Promise((resolve) => {
+        // 异步任务1
+        setTimeout(() => {
+            console.log("Task 1 complete");
+            resolve();
+        }, 1000);
+    });
+}
+
+function task2() {
+    return new Promise((resolve) => {
+        // 异步任务2
+        setTimeout(() => {
+            console.log("Task 2 complete");
+            resolve();
+        }, 2000);
+    });
+}
+
+task1()
+    .then(() => task2())
+    .then(() => {
+        // 所有任务完成
+        console.log("All tasks complete");
+    });
+
+```
+
+使用Generator函数：
+
+```javascript
+
+function* main() {
+    yield task1();
+    yield task2();
+    // 所有任务完成
+    console.log("All tasks complete");
+}
+
+function task1() {
+    return new Promise((resolve) => {
+        // 异步任务1
+        setTimeout(() => {
+            console.log("Task 1 complete");
+            resolve();
+        }, 1000);
+    });
+}
+
+function task2() {
+    return new Promise((resolve) => {
+        // 异步任务2
+        setTimeout(() => {
+            console.log("Task 2 complete");
+            resolve();
+        }, 2000);
+    });
+}
+
+const iterator = main();
+
+function run(iterator) {
+    const { value, done } = iterator.next();
+    if (!done) {
+        value.then(() => run(iterator));
+    }
+}
+
+run(iterator);
+```
+::: tip
+这些方法中，回调函数是最基本的方式，但容易导致回调地狱。Promise 链更清晰一些，并且支持更好的错误处理。Generator 函数允许你使用同步的代码结构来编写异步任务。你可以根据具体的需求选择合适的方法来保证异步任务的串行执行。
+::: 
+
+
+### 2. node 设置使用内存大小
+```bash
+node --max-old-space-size=2048 your-app.js
+```
+
+### 3. 如何预防XSS攻击？
+
+> 👀 预防跨站脚本攻击（XSS）是构建安全 web 应用程序的重要一环。XSS 攻击的目标是向网页注入恶意脚本，以便攻击者可以窃取用户的信息或执行恶意操作。以下是一些防止 XSS 攻击的最佳实践：
+
+1. 输入验证和过滤：
+
+对于所有用户输入的数据，包括表单输入、URL 参数和 cookie，都要进行验证和过滤。只允许预期的、合法的字符和数据通过。
+
+2. 转义输出
+在将用户输入显示在网页上之前，确保对其进行适当的转义。这可以通过编程语言的内置函数或模板引擎来完成，以确保任何用户输入都不会被解释为代码。使用安全的 HTML、CSS 和 JavaScript 输出编码方法，
+
+```js
+如 htmlspecialchars()、encodeURIComponent(),md5() 等。
+```
+
+3. 内容安全策略 (CSP)：
+配置 CSP 头，限制浏览器加载和执行的内容。CSP 可以阻止内联脚本和其他不受信任的内容，减少 XSS 攻击的风险。
+在 HTTP 头中包含 Content-Security-Policy 来启用 CSP。
+
+```js
+Content-Security-Policy: same-origin // 只允许加载同源的资源  
+Content-Security-Policy: default-src 'self' www.example.com // 只允许加载同源的资源和 www.example.com 域名下的资源
+Content-Security-Policy: script-src 'none'
+```
+
+4. HTTP Only 和 Secure Cookies：
+使用 HttpOnly 标志来设置 cookie，以防止 JavaScript 访问 cookie 数据。
+在需要安全连接的情况下，设置 Secure 标志来确保 cookie 只通过 HTTPS 连接传输。
+
+```js
+// 服务器端代码（Node.js示例）
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const app = express();
+
+app.use(cookieParser());
+
+app.get('/set-cookie', (req, res) => {
+  // 在服务器端设置一个 HTTP Only 的 cookie
+  res.cookie('myCookie', 'cookieValue', { httpOnly: true });
+  res.send('HTTP Only cookie set.');
+});
+```
+  
+## 4. http和https的区别？证书认证过程？pki？
+
+| http     | https |
+| -------- | ----- | ---- |
+| 传输协议 | 明文  | 加密 |
+| 默认端口 | 80    | 443  |
+| 证书     | 无    | 有   |
+
+HTTPS证书认证过程:
+
+1. 服务器端证书生成:
+服务器管理员生成一个证书请求（CSR），其中包含服务器的公钥。
+证书请求被发送到受信任的证书颁发机构（CA）。
+
+2. 证书颁发机构认证:
+CA 验证证书请求的合法性，并验证服务器所有者的身份。
+CA 签发包含服务器公钥的数字证书，并使用 CA 的私钥进行签名。
+
+3. 服务器配置证书:
+服务器收到 CA 签发的证书后，将其配置到服务器上。
+
+4. 客户端验证:
+当客户端连接到服务器时，服务器会返回证书。
+客户端的浏览器会验证证书的有效性，包括检查 CA 的签名和证书是否在有效期内。
+如果证书有效，客户端会生成一个随机的对称密钥，然后使用服务器的公钥加密它，并将其发送回服务器。
+建立安全通信:
+
+::: tip
+服务器使用其私钥解密客户端发送的随机密钥。
+从此刻起，客户端和服务器之间的通信都使用这个共享的对称密钥进行加密和解密。
+:::
+
+### 公钥基础设施（PKI）:
+
+- PKI 是一种广泛用于加密和认证的体系结构。它包括证书颁发机构（CA）和数字证书，用于确保安全通信。PKI 的基本原理是使用非对称加密，其中每个实体（如服务器或用户）都有一对公钥和私钥。私钥是保密的，而公钥可以公开使用。CA 颁发数字证书，用于验证公钥的真实性和身份。
+
+- 在 HTTPS 中，PKI 用于确保服务器的身份，并协助在客户端和服务器之间建立加密通信。通过 CA 颁发的数字证书，客户端可以验证服务器的身份，从而确保它正在与预期的安全服务器通信。
+
+> 总之，HTTP 是一种不安全的协议，而 HTTPS 使用加密和数字证书来保护通信的安全性和真实性。 PKI 是 HTTPS 的基础，用于验证和加密通信。
+
 5. 主进程和子进程是否共享内存？
-6. 中量级数据报表导出经验？
-7. OTA？
-8. 递归创建文件夹，深度过大怎么办
+
+> 在 Node.js 中，主进程和子进程之间不共享内存。主进程和子进程是独立的进程，它们拥有自己的独立内存空间。这是操作系统级别的分离。
+
+当你在 Node.js 中创建子进程时，每个子进程都有自己的 JavaScript 执行环境和内存空间。这意味着主进程和子进程之间不能直接共享变量或数据，除非你明确地使用进程间通信（Inter-Process Communication，IPC）机制来实现数据传递，例如使用 `child_process` 模块的 `send()`` 和 `on('message')`` 方法。
