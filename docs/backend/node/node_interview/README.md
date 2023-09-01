@@ -273,7 +273,7 @@ async function runTask() {
 
 > 因此，Node.js 和 Ajax 是两个不同的概念。Node.js 主要是用于在服务器端运行 JavaScript 代码，而 Ajax 主要是用于在客户端和服务器端之间进行异步通信。
 
-### Node Stream 是什么？有哪些种类的Stream？
+### 2. Node Stream 是什么？有哪些种类的Stream？
 
 > 在Node.js中，Stream是一种用于**处理流数据的抽象接口**。它提供了一种处理大量数据的方式，以及对数据进行流式传输和处理的能力。Stream可以通过**读取、写入、转换、过滤**等方式来处理数据，而不需要一次性加载全部数据到内存中。这使得处理大文件或大量数据变得更加高效和可行。Node.js中的Stream有四种类型：
 
@@ -285,7 +285,7 @@ async function runTask() {
 
 4. Transform Stream：是一种特殊的Duplex Stream，用于处理和转换数据流。例如，可以使用Transform Stream将文件内容进行加密或解密，或将CSV数据转换为JSON格式。
 
-### fs.readFile() 和 fs.readFileStream() 有什么区别？
+### 3. fs.readFile() 和 fs.createReadStream() 有什么区别？
 
 | 区别     | fs.readFile()          | fs.createReadStream()                    |
 | -------- | ---------------------- | ---------------------------------------- |
@@ -297,7 +297,7 @@ async function runTask() {
 
 # MiaoDian 
 
-### node 语言的劣势
+### 1. node 语言的劣势
 
 1. 单线程：Node.js采用**单线程**的事件驱动模型，这意味着它只能处理一个请求或事件的同时。这在处理计算密集型任务或长时间运行的操作时可能导致性能问题
 
@@ -311,7 +311,7 @@ async function runTask() {
 需要注意的是，尽管Node.js有这些劣势，它在处理**高并发**、**I/O密集型任务**和**构建实时应用**等方面仍然表现出色。选择使用Node.js还是其他后端语言，取决于具体的应用需求和团队的技术栈。
 :::
 
-### mongodb的劣势
+### 2. mongodb的劣势
 
 1. 高存储空间需求：相比于传统的关系型数据库，MongoDB在存储数据时通常**需要更多的磁盘空间**。
 
@@ -327,7 +327,7 @@ Mongodb 4.0 之后支持事务
 
 4. 较小的社区和生态系统：相对于一些传统的关系型数据库，MongoDB的社区和生态系统相对较小。这可能意味着在解决问题、找到支持和寻找第三方工具时，可能需要付出更多的努力。
 
-### Mysql 查询学生三门科目总分最高的 前三名
+### 3. Mysql 查询学生三门科目总分最高的 前三名
 
 1. 学生和成绩分表
   
@@ -378,9 +378,12 @@ limit 3
 
 ### 1. 如何使用nodejs读取一个本地文件？
 
-> fs.readFile
-> fs.readFileSync
-> fs.promises.readFile
+
+> **fs.readFile** 是一个异步方法，它接受一个回调函数作为参数，当文件读取完成时，回调函数会被调用。这种方式适合在非阻塞的情况下执行文件读取操作，不会阻止后续代码的执行。
+
+> **fs.readFileSync** 是一个同步方法，它会阻塞当前线程，直到文件读取完成。这意味着在文件读取完成之前，程序无法执行其他操作。因此，通常不建议在主线程中使用同步方法，特别是在服务器端应用中，因为它可能导致性能问题和阻塞。
+
+> **fs.promises.readFile** 是一个异步 Promise 方法，它返回一个 Promise 对象，允许您使用 async/await 或 Promise 链式调用来处理文件读取操作。这种方式在异步编程中更加方便和可读，不会阻塞主线程。
 
 ### 3. 如何做到创建nodejs集群并做到不中断重启？
 
@@ -518,38 +521,48 @@ await User.aggregate(oprs);
 
 ```js
 const Redis = require('ioredis');
-const client = new Redis();
+const client = new Redis(6379, "127.0.0.1");
 
-function sendMessage(message) {
-    client.lpush('message_queue', message)
-        .then(reply => {
-            console.log('Message sent to the queue:', message);
-        })
-        .catch(err => {
-            console.error('Failed to send message:', err);
-        });
-}
+async function send(msg){
+    const cur = await client.llen('test_queue');
+    console.log(cur); // 设置消息队列上限为5
 
-async function processMessages() {
-    try {
-        const message = await client.lpop('message_queue');
-        if (message) {
-            console.log('Processing message:', message);
-            // 在这里执行对消息的处理逻辑
-        }
-    } catch (err) {
-        console.error('Failed to process message:', err);
+    if(cur > 5){
+        console.error('size more than 5');
+        return;
     }
-    // 继续处理下一个消息
-    process.nextTick(processMessages);
+    await client.lpush('test_queue',msg);
 }
 
-// 开始轮询处理消息
-processMessages();
+async function poll(){
+    try{
+        const message = await client.rpop('test_queue');
+        if(message){
+            console.debug(message);
+        }
+    } catch (err){
+        console.error(err);
+    }
 
-// 示例发送两条消息
-sendMessage('Hello, World!');
-sendMessage('This is a test message.');
+    process.nextTick(poll);
+}
+
+
+poll();
+
+async function main(){
+    await send('111');
+    await send('222');
+    await send('333');
+    await send('444');
+    await send('555');
+    await send('666');
+}
+
+main();
+
+
+
 ```
 
 ### 8.用 redis 实现一个分数排行榜，并从中查找前十名的数据
@@ -987,6 +1000,9 @@ run(iterator);
 
 
 ### 2. node 设置使用内存大小
+
+> 默认为4GB，不同机器可能有不同
+
 ```bash
 node --max-old-space-size=2048 your-app.js
 ```
@@ -1037,11 +1053,11 @@ app.get('/set-cookie', (req, res) => {
   
 ### 4. http和https的区别？证书认证过程？pki？
 
-| http     | https |
-| -------- | ----- | ---- |
-| 传输协议 | 明文  | 加密 |
-| 默认端口 | 80    | 443  |
-| 证书     | 无    | 有   |
+|          | http | https |
+| -------- | ---- | ----- |
+| 传输协议 | 明文 | 加密  |
+| 默认端口 | 80   | 443   |
+| 证书     | 无   | 有    |
 
 HTTPS证书认证过程:
 
@@ -1049,14 +1065,14 @@ HTTPS证书认证过程:
 服务器管理员生成一个证书请求（CSR），其中包含服务器的公钥。
 证书请求被发送到受信任的证书颁发机构（CA）。
 
-2. 证书颁发机构认证:
+1. 证书颁发机构认证:
 CA 验证证书请求的合法性，并验证服务器所有者的身份。
 CA 签发包含服务器公钥的数字证书，并使用 CA 的私钥进行签名。
 
-3. 服务器配置证书:
+1. 服务器配置证书:
 服务器收到 CA 签发的证书后，将其配置到服务器上。
 
-4. 客户端验证:
+1. 客户端验证:
 当客户端连接到服务器时，服务器会返回证书。
 客户端的浏览器会验证证书的有效性，包括检查 CA 的签名和证书是否在有效期内。
 如果证书有效，客户端会生成一个随机的对称密钥，然后使用服务器的公钥加密它，并将其发送回服务器。
