@@ -1101,3 +1101,206 @@ CA 签发包含服务器公钥的数字证书，并使用 CA 的私钥进行签�
 ### ZStack
 
 [Node.js 事件循环机制](/backend/node/node/#%E2%AD%90%EF%B8%8F-%E2%AD%90%EF%B8%8F-7-node-js-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E6%9C%BA%E5%88%B6)
+
+## DAOYOUYUN
+
+### 1. 什么是node.js
+
+- Node.js是一个开源的JavaScript运行环境，它允许开发者在服务器端运行JavaScript代码。它是建立在`Chrome V8` JavaScript引擎之上的，并且提供了一系列的库和工具，使开发者能够轻松地构建高性能的网络应用程序。
+
+- 关键词 `事件驱动` `非阻塞I/O模型` `轻量` `高性能` `跨平台`
+
+### 2. [Node.js 事件循环机制](/backend/node/node/#%E2%AD%90%EF%B8%8F-%E2%AD%90%EF%B8%8F-7-node-js-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E6%9C%BA%E5%88%B6)
+
+### 3. 宏任务 / 微任务
+> 宏任务（Macro Task）和微任务（Micro Task）是与事件循环（Event Loop）相关的概念，用于管理JavaScript代码的执行顺序和异步操作。它们有助于理解JavaScript中的异步编程和事件处理
+
+#### 宏任务
+**宏任务代表一组一起执行的操作**，通常是由开发者定义的异步操作或事件。宏任务包括诸如`setTimeout`、`setInterval`、`I/O`操作等。
+
+当宏任务被添加到执行队列时，它们会被排队等待执行，直到JavaScript引擎可以执行它们。一次只执行一个宏任务。
+
+### 微任务
+
+- 微任务也是异步操作，但它们的**优先级高于宏任务**。微任务包括`new Promise().then`、MutationObserver的回调等。
+
+- 当一个微任务被添加到执行队列时，它会立即被执行，而不需要等待当前的宏任务完成。
+因此，**微任务能够在宏任务之间执行**。
+- 微任务通常用于执行与当前任务相关的清理、回调或更新操作。
+
+::: warning
+事件循环是一个不断运行的循环，它负责执行宏任务和微任务，以确保JavaScript代码能够按照正确的顺序执行。
+
+👀 事件循环的基本流程如下：
+
+1. 从宏任务队列中选择最早的一个任务执行。
+2. 执行完当前宏任务后，检查微任务队列，并依次执行微任务，直到微任务队列为空。
+3. 回到宏任务队列，选择下一个宏任务执行。
+
+重复上述过程，不断循环执行宏任务和微任务，直到所有任务都完成。
+:::
+
+### 4. 范型
+
+> 泛型提供了一种抽象的方式，允许你在不知道具体数据类型的情况下编写通用的算法、数据结构或函数，以适用于不同的数据类型，同时保持类型安全
+
+```ts
+function identity<T>(value: T): T {
+  return value;
+}
+
+let result = identity("Hello, TypeScript"); // result的类型为string
+```
+### 5. 防抖 / 节流
+
+> 防抖（Debouncing）和节流（Throttling）是两种用于控制函数调用频率的常见技术，它们通常用于处理用户输入、浏览器事件或其他需要限制触发频率的场景。Node.js中也可以应用这些技术，尤其是在构建后端应用程序中的一些特定情况下。
+
+#### 防抖（Debouncing）：
+
+> 防抖技术确保在一定时间内只执行一次函数。如果在指定的时间间隔内再次触发函数，计时器将被重置，直到没有新的触发事件。防抖通常用于处理用户输入，以避免在用户持续输入时频繁触发函数。
+
+示例（使用Node.js的setTimeout函数实现防抖）：
+
+```js
+function debounce(func, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+const debouncedFunction = debounce(() => {
+  console.log('Debounced function called');
+}, 1000);
+
+// 调用debouncedFunction，但只有在1秒内没有更多的调用时才会实际执行
+debouncedFunction();
+```
+
+#### 节流（Throttling）：
+节流技术确保在一定时间内执行函数的频率受到限制，无论触发频率如何。例如，你可以设置一个函数每隔一定时间执行一次，而不管触发事件的频率。节流通常用于减少事件处理的频率，以防止过多的计算或请求。
+
+示例（使用Node.js的setInterval函数实现节流）：
+
+```js
+function throttle(func, delay) {
+  let canCall = true;
+  return function (...args) {
+    if (canCall) {
+      func.apply(this, args);
+      canCall = false;
+      setTimeout(() => {
+        canCall = true;
+      }, delay);
+    }
+  };
+}
+
+const throttledFunction = throttle(() => {
+  console.log('Throttled function called');
+}, 1000);
+
+// 调用throttledFunction，但只有在每隔1秒后才能再次执行
+throttledFunction();
+```
+
+> 无论是防抖还是节流，都可以在Node.js中使用，以限制函数调用的频率，从而更好地控制资源的使用或事件的触发。这些技术在前端开发中经常用于优化性能和提高用户体验，也可以在后端应用程序中处理类似的情况。
+
+### 6. 如何 做 http 缓存 ？？
+
+> HTTP缓存是一种用于提高网站性能和减少服务器负载的技术。通过将资源（如网页、图像、样式表和脚本）缓存在客户端浏览器或中间代理服务器上，可以减少重复的请求，从而加快页面加载速度。以下是实施HTTP缓存的一般步骤：
+
+1. 设置HTTP头部：
+在HTTP响应头部中设置缓存相关的HTTP头部是实施HTTP缓存的第一步。以下是常用的HTTP头部：
+
+```bash
+Cache-Control：这个头部用于指定缓存策略。常见的指令包括：
+  max-age=<seconds>：定义资源在客户端缓存中的最大存活时间（秒）。
+  s-maxage=<seconds>：与max-age类似，但仅适用于共享缓存（例如代理服务器）。
+  public：指示响应可以被任何缓存存储。
+  private：指示响应只能被单个用户的私有缓存存储。
+  no-store：禁止缓存，每次请求都必须从服务器获取最新资源。
+  no-cache：缓存资源需要经过重新验证，即需要与服务器确认资源是否过期。
+Expires：定义资源的过期日期，是一个HTTP日期时间格式。
+ETag：给每个资源分配一个唯一的标识符，服务器可以使用它来验证资源是否发生了变化。
+Last-Modified：资源的最后修改日期，也用于验证资源是否发生了变化。
+```
+
+2. 设置合适的缓存策略：
+
+对于不经常更改的静态资源（如图片、样式表、脚本等），可以使用长期缓存，将max-age设置为一个较大的值。
+对于经常更改的资源，可以使用ETag和Last-Modified来验证资源的状态，以决定是否返回新的资源。
+
+3. 服务器端配置：
+
+针对不同类型的资源，服务器端需要相应地配置HTTP头部。
+
+如果需要在服务器端动态生成缓存响应，你可以使用缓存服务器（如Varnish）或CDN来实现。
+
+4. 验证和更新缓存：
+
+当客户端请求资源时，它会发送If-None-Match和If-Modified-Since头部，服务器可以使用这些头部来验证资源是否仍然有效。如果资源未发生变化，服务器可以返回`304 Not Modified`响应，从而避免重新传输整个资源。
+
+5. 清除缓存：
+
+如果需要清除特定资源的缓存，可以通过更改资源的ETag或Last-Modified值来实现。
+请注意，实施HTTP缓存可能因你使用的Web服务器和技术栈而异，具体的配置和操作方式可能会有所不同。确保仔细研究和了解你正在使用的工具和技术，以便有效地实施HTTP缓存。
+
+### 7. TCP / UDP
+
+|        | TCP                        | UDP            |
+| ------ | -------------------------- | -------------- |
+| 安全性 | 可靠性                     | 不可靠         |
+| 连接   | 有，双向，流控制和拥塞控制 | 无连接，低开销 |
+| 适用于 | 可靠性要求高               | 实时应用       |
+
+
+### 算法题目
+
+1. 求x的n次方, 不能用Math.pow(x,n)
+
+```js
+const pow = (x,n) => {
+  if(n === 0) return 1;
+
+  return x * pow(x,n-1);
+}
+```
+
+2. 手写 arr.flat() ,
+
+```js
+const arr = [
+  [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+  ],
+  [
+    [11, 12, 13],
+    [14, 15, 16],
+    [17, 18, 19]
+  ],
+  [
+    [21, 22, 23],
+    [24, 25, 26],
+    [27, 28, 29]
+  ]
+];
+
+const myflat = (arr) => {
+  let result = [];
+  
+  for(const each of arr){
+    if(Array.isArray(each)) result = result.concat(myflat(each))
+    else result.push(each)
+  }
+  return result;
+}
+
+const flattenedArr = myflat(arr);
+console.log(flattenedArr);
+```
