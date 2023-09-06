@@ -1,20 +1,20 @@
 ---
 title: Node.js Backend Developer
-date: 2023-9-1
+date: 2023-9-2
 categories:
   - Backend
 tags:
   - node
   - interview
+  - personal Only
 sidebar: "auto"
 keys:
  - 6e0dc2521bd023fa6d124a78c1317ab9
 publish: true
+sticky: 2
 ---
 
 ## StoreHub
-
-### 3-minutes self-introduction in English
 
 ### 什么是微服务？使用微服务的优势/缺点有哪些？
 
@@ -295,7 +295,7 @@ async function runTask() {
 
 ---
 
-# MiaoDian 
+## MiaoDian 
 
 ### 1. node 语言的劣势
 
@@ -329,7 +329,7 @@ Mongodb 4.0 之后支持事务
 
 ### 3. Mysql 查询学生三门科目总分最高的 前三名
 
-1. 学生和成绩分表
+学生和成绩分表
   
 ```sql
 CREATE TABLE students (
@@ -355,7 +355,7 @@ limit 3
 
 ---
 
-2. 学生和成绩合表
+学生和成绩合表
 
 ```sql
 CREATE TABLE students (
@@ -374,7 +374,7 @@ ORDER BY total desc
 limit 3
 ```
 
-# 心悦互娱
+## 心悦互娱
 
 ### 1. 如何使用nodejs读取一个本地文件？
 
@@ -518,6 +518,7 @@ await User.aggregate(oprs);
 
 > 以下是一个基本的示例，展示如何使用 Redis 来创建一个简单的消息队列：
 
+> DaoyouLun: 实现消息队列长度为5
 
 ```js
 const Redis = require('ioredis');
