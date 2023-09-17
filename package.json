@@ -8,21 +8,12 @@
     "start": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
     "github": "yarn build && bash scripts/deploy-github.sh",
-    "test": "node test/test.js",
-    "ts": "tsnode test/test.ts"
+    "test": "node test/test.js"
   },
   "author": "Sapphire611",
   "license": "ISC",
   "dependencies": {
     "@vuepress-reco/vuepress-plugin-bgm-player": "^1.1.4",
-    "global": "^4.4.0",
-    "ioredis": "^5.3.2",
-    "moment": "^2.29.4",
-    "mongoose": "^7.3.2",
-    "redis": "^4.6.7",
-    "sapphire611": "^0.0.3",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.1.6",
     "vuepress": "^1.8.2",
     "vuepress-plugin-autometa": "^0.1.13",
     "vuepress-plugin-nuggets-style-copy": "^1.0.3",
