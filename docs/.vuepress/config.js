@@ -100,15 +100,6 @@ module.exports = {
       }
     ],
     ['vuepress-plugin-baidu-autopush'],
-    [
-      'vuepress-plugin-nuggets-style-copy',
-      {
-        copyText: '复制代码',
-        tip: {
-          content: '复制成功!'
-        }
-      }
-    ],
     ['ribbon'],
     ["sakura", {
       num: 20,  // 默认数量
