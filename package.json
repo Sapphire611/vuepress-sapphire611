@@ -7,7 +7,7 @@
   "scripts": {
     "start": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
-    "github": "npm run build && bash scripts/deploy-github.sh",
+    "github": "bash scripts/deploy-github.sh",
     "test": "node test/test.js"
   },
   "author": "Sapphire611",
