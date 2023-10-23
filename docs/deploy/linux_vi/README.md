@@ -23,7 +23,7 @@ showSponsor: true
 <img style="border:2;" src="/img/vi-vim-cheat-sheet-sch.gif">
 
 ::: right
-来自 [Sapphire611](http://www.sapphire611.com)
+来自 [Sapphire611](http://sapphire611.github.io)
 :::
 
 > 学习了一番后，决定保存这张图，需要的时候就看看

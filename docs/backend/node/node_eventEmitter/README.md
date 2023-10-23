@@ -15,7 +15,7 @@ publish: true
 > 观察者模式的体现
 
 ::: right
-来自 [Sapphire611](http://www.sapphire611.com)
+来自 [Sapphire611](http://sapphire611.github.io)
 :::
 
 

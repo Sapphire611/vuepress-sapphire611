@@ -41,6 +41,6 @@ console.log(fibonacci(50)); // 没问题了
 ```
 
 ::: right
-来自 [Sapphire611](http://www.sapphire611.com)
+来自 [Sapphire611](http://sapphire611.github.io)
 ::
 

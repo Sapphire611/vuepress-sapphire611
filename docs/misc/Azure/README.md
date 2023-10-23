@@ -12,7 +12,7 @@ publish: true
 ## 👋 Azure 相关调研存档
 
 ::: right
-来自 [Sapphire611](http://www.sapphire611.com)
+来自 [Sapphire611](http://sapphire611.github.io)
 :::
 
 ## 🤖️ Speech to Text 语音转文字

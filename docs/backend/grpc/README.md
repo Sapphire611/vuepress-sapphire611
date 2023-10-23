@@ -16,7 +16,7 @@ showSponsor: true
 [给大家演示下使用Node.js实现grpc服务端和客户端的](https://www.bilibili.com/video/BV17K4y1t753/?spm_id_from=333.337.search-card.all.click)
 
 ::: right
-来自 [Sapphire611](http://www.sapphire611.com)
+来自 [Sapphire611](http://sapphire611.github.io)
 :::
 
 ### hello.proto

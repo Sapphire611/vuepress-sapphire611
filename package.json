@@ -7,12 +7,13 @@
   "scripts": {
     "start": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
-    "github": "yarn build && bash scripts/deploy-github.sh",
+    "github": "npm run build && bash scripts/deploy-github.sh",
     "test": "node test/test.js"
   },
   "author": "Sapphire611",
   "license": "ISC",
   "dependencies": {
+    "moment": "^2.29.4",
     "vuepress": "^1.8.2",
     "vuepress-plugin-autometa": "^0.1.13",
     "vuepress-plugin-sakura": "^1.2.1",

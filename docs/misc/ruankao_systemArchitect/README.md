@@ -15,7 +15,7 @@ showSponsor: true
 > 备战2022下半年软考，高级系统架构师   
 
 ::: right
-来自 [Sapphire611](http://www.sapphire611.com)
+来自 [Sapphire611](http://sapphire611.github.io)
 :::
 ---
 

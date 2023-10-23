@@ -885,7 +885,7 @@ console.log(b); // 输出 10
 盒子10（第10位）放入475个苹果（剩余的苹果数量）。
 ```
 
-### * 18. React Dom渲染顺序
+### \* 18. React Dom 渲染顺序
 
 1. 组件渲染：React 应用开始渲染时，首先渲染根组件。这通常是你的应用的顶层组件，例如 App 组件。
 
@@ -904,11 +904,6 @@ console.log(b); // 输出 10
 需要注意的是，React 可能会对这个流程进行一些优化，例如批处理多个状态更新以减少性能开销，但总体上，React DOM 渲染遵循了上述步骤。此外，React 16 之后引入了 Fiber 架构，它进一步优化了渲染和协调的方式，以提高性能和响应性。
 
 总之，React DOM 渲染是一个高度优化的过程，React 的目标是尽量减少不必要的 DOM 操作，以提高应用的性能和响应性。
-
-
-
-
-
 
 ---
 
@@ -1180,6 +1175,7 @@ const memoizedCallback = useCallback(() => {
 ```js
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 ```
+
 ### 总结
 
 `useMemo` 用于缓存计算结果。
@@ -1333,9 +1329,15 @@ Last-Modified：资源的最后修改日期，也用于验证资源是否发生�
 
 如果需要在服务器端动态生成缓存响应，你可以使用缓存服务器（如 Varnish）或 CDN 来实现。
 
+```js
+response.headers['Cache-Control'] = 'max-age=3600';
+response.headers['Last-Modified'] = 'Sun, 10 Oct 2022 14:00:00 GMT';
+response.headers['ETag'] = '"12345"';
+```
+
 4. 验证和更新缓存：
 
-当客户端请求资源时，它会发送 If-None-Match 和 If-Modified-Since 头部，服务器可以使用这些头部来验证资源是否仍然有效。如果资源未发生变化，服务器可以返回`304 Not Modified`响应，从而避免重新传输整个资源。
+当客户端请求资源时，它会发送 If-None-Match 和 If-Modified-Since 头部，服务器可以使用这些头部来验证资源是否仍然有效。如果资源未发生变化，服务器可以返回 `304 Not Modified`响应，从而避免重新传输整个资源。
 
 5. 清除缓存：
 
