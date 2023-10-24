@@ -1,6 +1,6 @@
 ---
 title: Nginx 相关
-date: '2021-12-10'
+date: 2021-12-10
 categories:
  - Deploy
 tags:

@@ -1148,7 +1148,7 @@ useEffect(() => {
 }, [userStore]);
 ```
 
-### useCallback：
+#### useCallback：
 
 > useCallback 用于**缓存回调函数**，通常用于将回调函数传递给子组件，以确保子组件不会在每次渲染时都重新创建相同的函数。
 
@@ -1163,7 +1163,7 @@ const memoizedCallback = useCallback(() => {
 }, [a, b]);
 ```
 
-### useMemo：
+#### useMemo：
 
 > useMemo 用于在渲染过程中计算并缓存计算结果。它可以帮助你避免不必要的重复计算，特别是在组件渲染时依赖某些值的计算较为昂贵时。
 
@@ -1176,13 +1176,42 @@ const memoizedCallback = useCallback(() => {
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 ```
 
-### 总结
+#### 总结
 
 `useMemo` 用于缓存计算结果。
 `useCallback` 用于缓存回调函数。
 `useEffect` 用于处理副作用。
 
 这些钩子函数的选择取决于你的具体需求和性能优化要求。使用它们可以帮助你更好地管理组件的状态和副作用。
+
+#### 3. 什么是 $facet
+
+> `$facet` 是 MongoDB 聚合管道（aggregation pipeline）中的一个阶段，它允许你在一个聚合管道中执行多个独立的子聚合，并将它们的结果整合到一个单一的文档中。
+
+```json
+{
+  $facet: {
+    "outputField1": [ <stage1>, <stage2>, ... ],
+    "outputField2": [ <stage3>, <stage4>, ... ],
+    // 更多输出字段和子聚合阶段
+  }
+}
+
+```
+
+```json
+{
+    $facet: {
+      "salesByAgent": [
+        { $sort: { totalSales: -1 } },
+        { $limit: 5 }
+      ],
+      "totalSales": [
+        { $group: { _id: null, total: { $sum: "$totalSales" } } }
+      ]
+    }
+  }
+```
 
 ## DAOYOUYUN
 

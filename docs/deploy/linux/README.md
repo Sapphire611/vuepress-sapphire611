@@ -1,6 +1,6 @@
 ---
 title: Linux 相关
-date: '2022-7-15'
+date: 2022-7-15
 categories:
  - Deploy
 tags:
