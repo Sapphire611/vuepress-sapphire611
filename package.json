@@ -9,6 +9,7 @@
     "serve": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
     "github": "bash scripts/deploy-github.sh",
+    "github-win": "npm run build && cd scripts && ./deploy-github.bat",
     "test": "node test/test.js"
   },
   "author": "Sapphire611",
