@@ -6,6 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "vuepress dev docs --temp .temp",
+    "serve": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
     "github": "bash scripts/deploy-github.sh",
     "test": "node test/test.js"
