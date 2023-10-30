@@ -3,10 +3,9 @@ title: ECMAScript6 学习笔记
 date: 2022-2-14
 categories:
   - Backend
-  - FrontEnd
+  - Frontend
 tags:
   - javascript
-  - ecmascript
 sidebar: "auto"
 publish: true
 showSponsor: true

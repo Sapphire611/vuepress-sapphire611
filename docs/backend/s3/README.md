@@ -2,7 +2,7 @@
 title: 5分钟 速通 S3
 date: 2022-11-18
 categories:
-  - research
+  - Other
 tags:
   - s3
 sidebar: "auto"

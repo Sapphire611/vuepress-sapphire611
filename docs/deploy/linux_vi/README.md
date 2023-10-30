@@ -2,7 +2,7 @@
 title: Linux Vi 操作图
 date: 2022-9-29
 categories:
-  - linux
+  - Deploy
 tags:
   - linux
 sidebar: "auto"

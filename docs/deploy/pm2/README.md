@@ -4,7 +4,7 @@ date: 2023-10-24
 categories:
  - Deploy
 tags:
- - PM2
+ - pm2
 sidebar: 'auto'
 publish: true
 --- 

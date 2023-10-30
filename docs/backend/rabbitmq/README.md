@@ -2,9 +2,9 @@
 title: 5分钟速通 RabbitMQ
 date: 2022-9-29
 categories:
-  - backend
+  - Backend
 tags:
-  - rabbitMQ
+  - rabbitmq
 sidebar: "auto"
 publish: true
 showSponsor: true

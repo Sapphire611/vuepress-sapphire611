@@ -2,9 +2,9 @@
 title: 使用JS调用OpenAI API
 date: 2023-2-18
 categories:
-  - Me
+  - Javascript
 tags:
-  - me
+  - OpenAI
 sidebar: "auto"
 publish: true
 showSponsor: true

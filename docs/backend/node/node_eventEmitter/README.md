@@ -5,7 +5,6 @@ categories:
   - Backend
 tags:
   - node
-  - eventLoop
 sidebar: "auto"
 publish: true
 ---

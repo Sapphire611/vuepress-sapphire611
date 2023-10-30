@@ -4,7 +4,7 @@ date: 2022-8-24
 categories:
   - Certificate
 tags:
-  - tools
+  - note
 sidebar: "auto"
 publish: true
 showSponsor: true

@@ -2,7 +2,7 @@
 title: Azure 相关
 date: 2023-3-31
 categories:
-  - backend
+  - Backend
 tags:
   - azure
 sidebar: "auto"

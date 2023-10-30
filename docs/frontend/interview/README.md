@@ -2,7 +2,7 @@
 title: 前端面试题目整理
 date: 2023-10-23
 categories:
-  - frontend
+  - Frontend
 tags:
   - vue
   - interview

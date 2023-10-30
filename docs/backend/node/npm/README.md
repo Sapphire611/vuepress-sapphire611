@@ -2,10 +2,9 @@
 title: 如何在 npm 上发布自己的包
 date: 2022-8-18
 categories:
-  - javascript
+  - Javascript
 tags:
   - npm
-  - yarn
 sidebar: "auto"
 publish: true
 showSponsor: true

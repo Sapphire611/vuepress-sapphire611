@@ -2,7 +2,7 @@
 title: linux 部署实战
 date: 2022-7-19
 categories:
-  - deploy
+  - Deploy
 tags:
   - linux
   - nginx

@@ -5,7 +5,6 @@ categories:
   - Backend
 tags:
   - node
-  - frame
 sidebar: "auto"
 publish: true
 ---

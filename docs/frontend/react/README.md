@@ -2,7 +2,7 @@
 title: React 题目整理
 date: 2023-10-24
 categories:
-  - frontend
+  - Frontend
 tags:
   - react
   - interview

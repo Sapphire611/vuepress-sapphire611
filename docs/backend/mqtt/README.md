@@ -2,7 +2,7 @@
 title: 5分钟速通 MQTT
 date: 2022-9-29
 categories:
-  - backend
+  - Backend
 tags:
   - rabbitmq
 sidebar: "auto"

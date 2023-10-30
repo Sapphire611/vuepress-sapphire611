@@ -6,6 +6,7 @@ categories:
 tags:
   - leetcode
   - algorithm
+  - javascript
 sidebar: "auto"
 publish: true
 showSponsor: true
