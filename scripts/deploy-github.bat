@@ -1,5 +1,7 @@
 @echo off
 
+cd ./docs/.vuepress/dist
+
 echo git Init...
 git init
 
