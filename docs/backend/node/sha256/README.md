@@ -45,3 +45,16 @@ const sha256 = crypto.createHash('sha256').update(binaryStr,'utf-8').digest('hex
 当你提到字符编码时，可能是指将二进制哈希值转为字符串时的默认处理方式。
 通常在计算完SHA-256后，需要以特定的编码格式呈现结果，例如转换为十六进制（Hex）或Base64。
 :::
+
+::: warning
+```js
+const bytes = new Uint8Array(e.target.result) // [72, 101, 108, 108, 111]
+const length = bytes.byteLength
+for (let i = 0; i < length; i++) {
+    binaryStr += String.fromCharCode(bytes[i]) //二进制转换字符串,这是使用UTF-16转换的
+}
+
+const decoder = new TextDecoder("utf-8"); // 创建 UTF-8 解码器
+const binaryUtf8Str = decoder.decode(bytes); // 直接将二进制转换为'utf-8'字符串
+```
+::: 
