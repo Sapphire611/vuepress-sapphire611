@@ -88,3 +88,19 @@ docker run [可选参数] image
 docker ps # 列出所有容器
 
 ```
+
+---
+### Docker 清理容器日志脚本
+
+```
+#!/bin/bash
+logs=$(find /vol/docker/containers/ -name *-json.log)
+for log in $logs
+do
+        echo "clean logs : $log"
+        cat /dev/null > $log
+done
+
+echo "======== end clean docker containers logs ========"
+~
+```

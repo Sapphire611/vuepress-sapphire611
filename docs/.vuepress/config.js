@@ -2,7 +2,7 @@ const autometa_options = {
   site: {
     name: 'Sapphire611'
   },
-  canonical_base: 'https://www.sapphire611.com/'
+  canonical_base: 'https://sapphire611.github.io/'
 };
 
 module.exports = {
