@@ -336,11 +336,11 @@ C.概念视图、用户视图和内部视图
 
 ---
 
-24.在撰写学术论文时，通常需要引用某些文献资料。以下叙述中，( B )是不正确的。
+24.在撰写学术论文时，通常需要引用某些文献资料。以下叙述中，( A )是不正确的。
 
-A.既可引用发表的作品，也可引用未发表的作品
+**A.既可引用发表的作品，也可引用未发表的作品**
 
-**B.不必征得原作者的同意，不需要向他支付报酬**
+B.不必征得原作者的同意，不需要向他支付报酬
 
 C.只能限于介绍、评论作品
 
@@ -419,17 +419,17 @@ C.数据加工
 
 ---
 
-30.结构化设计方法中使用结构图来描述构成软件系统的模块，以及这些模块之间的调用关系结构图的基本成分不包括( D )。
+## 30.结构化设计方法中使用结构图来描述构成软件系统的模块，以及这些模块之间的调用关系结构图的基本成分不包括( C )。
 
 A.模块
 
 B.调用
 
-C.数据
+**C.数据**
 
-**D.控制**
+D.控制
 
-> 和 29 题类似
+> 系统结构图又叫做为模块结构图，是概要设计阶段使用的工具，它反映了系统的功能实现和模块之间的联系与通信，反映了系统的总体结构。模块结构图包括模块、模块之间的调用关系、模块之间的通信和辅助控制符号。
 
 ---
 
@@ -514,6 +514,9 @@ D.实现
 
 :::
 
+聚合关系:整体与部分生命周期不同，属于关联关系。
+依赖关系:一个事物发生变化影响另一个事物
+泛化关系:表示两类事物之间的特殊/一般关系。实现关系:接口和类的关系。
 ---
 
 37.执行以下 Python 语句之后，列表 y 为( B )。
@@ -559,13 +562,13 @@ def divide_numbers(a, b):
 
 39.软件测试过程中的系统测试主要是为了发现( D )阶段的问题
 
-**A.软件实现**
+A.软件实现
 
 B.概要设计
 
 C.详细设计
 
-D.需求分析
+**D.需求分析**
 
 ---
 
@@ -635,11 +638,11 @@ D.集线器 _1_
 
 ---
 
-45.46.以太网交换机属于网络模型中( C )，管理的是( B )
+45.46.以太网交换机属于网络模型中( C )，管理的是( D )
 
 A.网络层 B.传输层 **C.数据链路层** D.物理层
 
-A.IP 地址 **B.mac 地址** C.报文 D.帧
+A.IP 地址 B.mac 地址 C.报文 **D.帧**
 
 ---
 
@@ -936,12 +939,28 @@ A.48 B.55 C.30 D.46
 
 Systems support is the ongoing technical support for user, as well as the maintenance required to fix any erors, omissions, or new requirementsthat may arise. Before an information system can be (A), it must be in operation. System operation is the dayto-day, week-to-week, month-to.month, and year-to-year (C) of an information system's business processes and application programs.Unlike systems analysis, design, and implementation, sytems support cannot sensibly be (D)into actual phases that a suppot projec mustperform, Rather, systems support consists of four ongoing activilies that are program maintenance, svstem recovery, technical suppor., andsystem enhancement. Each activity is a type of suppot project that is (A) by a particular problem, event, or opportunity encountered with theimplemented system.
 
-71. A.designed B.implemented C.investigated D.analyzed
+71. A.designed **B.implemented** C.investigated D.analyzed
 
-72. A.supported B.tested C.implemented D.constructed
+72. **A.supported** B.tested C.implemented D.constructed
 
-73. A.construction B.maintenance C.execution D.implementation
+73. A.construction B.maintenance **C.execution** D.implementation
 
-74. A.broke B.formed C.composed D.decomposed
+74. A.broke B.formed C.composed **D.decomposed**
 
-75. A.triggered B.leaded C.caused D.produced
+75. **A.triggered** B.leaded C.caused D.produced
+
+---
+
+### 数据库设计的6个阶段
+
+- 1.需求分析
+
+- 2.概念结构设计
+
+- 3.逻辑结构设计
+
+- 4.物理结构设计
+
+- 5.数据库实施
+
+- 6.数据库的运行和维护
