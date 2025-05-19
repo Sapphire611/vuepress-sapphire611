@@ -99,17 +99,17 @@ module.exports = {
         exclude: ['/404.html']
       }
     ],
-    ['vuepress-plugin-baidu-autopush'],
-    ['ribbon'],
-    ["sakura", {
-      num: 20,  // 默认数量
-      show: true, //  是否显示
-      zIndex: -1,   // 层级
-      img: {
-        replace: false,  // false 默认图 true 换图 需要填写httpUrl地址
-        httpUrl: '...'     // 绝对路径
-      }     
-  }]
+    // ['vuepress-plugin-baidu-autopush'],
+    // ['ribbon'],
+  //   ["sakura", {
+  //     num: 20,  // 默认数量
+  //     show: true, //  是否显示
+  //     zIndex: -1,   // 层级
+  //     img: {
+  //       replace: false,  // false 默认图 true 换图 需要填写httpUrl地址
+  //       httpUrl: '...'     // 绝对路径
+  //     }     
+  // }]
   ],
 
   configureWebpack: {
