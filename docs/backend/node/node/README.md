@@ -40,203 +40,49 @@ showSponsor: true
 
 ---
 
+## 3. 浏览器和 Node 中 事件循环有什么区别？
 
-## 2. 两个Node.js 进程之间如何通信？
+> 浏览器和 Node.js 都实现了事件循环（Event Loop）来处理异步任务，但它们的实现机制和应用场景有所不同。以下是它们的主要区别：
 
-### 不同电脑上的两个 Node.js 进程间通信
+### 3.1. 运行环境与职责
+浏览器：处理 DOM 事件、UI 渲染、网络请求（如 fetch）、用户交互（如点击）等。
 
-### 使用 TCP 套接字
+Node.js：处理文件 I/O、网络请求（如 http 模块）、子进程等系统级操作。
 
-> TCP 套接字（socket）是一种基于 TCP/IP 协议的通信方式，可以让通过网络连接的计算机上的进程进行通信。一个作为 server 另一个作为 client，server.js 代码如下：
+### 3.2. 事件循环的阶段（Phases）
 
-``` js
-const net = require('net')
-const server = net.createServer(socket => {
-    console.log('socket connected')
-    socket.on('close', () => console.log('socket disconnected'))
-    socket.on('error', err => console.error(err.message))
-    socket.on('data', data => {
-        console.log(`receive: ${data}`)
-        socket.write(data)
-        console.log(`send: ${data}`)
-    })
-})
-server.listen(8887);
+#### 浏览器的事件循环
 
-```
+> 基于 HTML5 规范，分为宏任务（Macro Task）和微任务（Micro Task）：
 
-> client.js 代码:
+宏任务：包括 script（整体代码）、setTimeout、setInterval、I/O、UI 渲染、postMessage 等。
 
-```js
-const net = require('net')
-const client = net.connect(8887, '127.0.0.1')
+微任务：包括 Promise.then、MutationObserver、queueMicrotask 等。
 
-client.on('connect', () => console.log('connected.'))
-client.on('data', data => console.log(`receive: ${data}`))
-client.on('end', () => console.log('disconnected.'))
-client.on('error', err => console.error(err.message))
+执行顺序：
 
-setInterval(() => {
-    const msg = 'hello'
-    console.log(`send: ${msg}`)
-    client.write(msg)
-}, 3000)
-```
+执行一个宏任务 → 清空微任务队列 → 渲染（如有需要）→ 下一个宏任务。
 
-``` js
-运行效果：
+#### Node.js 的事件循环
 
-$ node server.js
-client connected
-receive: hello
-send: hello
+基于 libuv 库，分为 6 个阶段（按顺序执行）：
 
-$ node client.js
-connect to server
-send: hello
-receive: hello
-```
----
+Timers：执行 setTimeout 和 setInterval 的回调。
 
-### 使用 HTTP 协议
-> 因为 HTTP 协议也是基于 TCP 的，所以从通信角度看，这种方式本质上并无区别，只是封装了上层协议。server.js 代码为：
+Pending Callbacks：处理系统操作（如 TCP 错误）的回调。
 
-``` js
-const http = require('http')
-http.createServer((req, res) => res.end(req.url)).listen(8888)
-```
+Idle/Prepare：内部使用（可忽略）。
 
-```js
-const http = require('http')
-const options = {
-  hostname: '192.168.10.105',
-  port: 8888,
-  path: '/hello',
-  method: 'GET',
-}
-const req = http.request(options, res => {
-  console.log(`statusCode: ${res.statusCode}`)
-  res.on('data', d => process.stdout.write(d))
-})
-req.on('error', error => console.error(error))
-req.end()
-```
----
+Poll：检索新的 I/O 事件，执行 I/O 回调（如文件读取、网络请求）。
 
-### 同一台电脑上两个 Node.js 进程间通信
+Check：执行 setImmediate 的回调。
 
-> 虽然网络 socket 也可用于同一台主机的进程间通讯（通过 loopback 地址 127.0.0.1），但是这种方式需要经过网络协议栈、需要打包拆包、计算校验和、维护序号和应答等，就是为网络通讯设计的。
+Close Callbacks：处理关闭事件的回调（如 socket.on('close')）。
 
-### 使用内置 IPC 通道
+微任务（Promise.then、process.nextTick）：
 
-> 如果是跟自己创建的子进程通信，是非常方便的，child_process模块中的 fork 方法自带通信机制，无需关注底层细节，例如父进程 parent.js 代码：
+process.nextTick 在阶段切换前优先执行（优先级高于微任务）。
 
-```js
-const fork = require("child_process").fork
-const path = require("path")
-const child = fork(path.resolve("child.js"), [], { stdio: "inherit" });
-child.on("message", (message) => {
-  console.log("message from child:", message)
-  child.send("hi")
-})
-```
-
-> 子进程 child.js 代码：
-
-```js
-process.on("message", (message) => {
-  console.log("message from parent:", message);
-})
-
-if (process.send) {
-  setInterval(() => process.send("hello"), 3000)
-}
-```
-
-### 使用自定义管道
-> 如果是两个独立的 Node.js 进程，如何建立通信通道呢？在 Windows 上可以使用命名管道（Named PIPE），在 unix 上可以使用 unix domain socket，也是一个作为 server，另外一个作为 client，其中 server.js 代码如下：
-
-``` js
-const net = require('net')
-const fs = require('fs')
-
-const pipeFile = process.platform === 'win32' ? '\\\\.\\pipe\\mypip' : '/tmp/unix.sock'
-
-const server = net.createServer(connection => {
-  console.log('socket connected.')
-  connection.on('close', () => console.log('disconnected.'))
-  connection.on('data', data => {
-    console.log(`receive: ${data}`)
-    connection.write(data)
-    console.log(`send: ${data}`)
-  })
-  connection.on('error', err => console.error(err.message))
-})
-
-try {
-  fs.unlinkSync(pipeFile)
-} catch (error) {}
-
-server.listen(pipeFile)
-```
-
-> client.js 代码如下：
-
-``` js
-const net = require('net')
-
-const pipeFile = process.platform === 'win32' ? '\\\\.\\pipe\\mypip' : '/tmp/unix.sock'
-
-const client = net.connect(pipeFile)
-client.on('connect', () => console.log('connected.'))
-client.on('data', data => console.log(`receive: ${data}`))
-client.on('end', () => console.log('disconnected.'))
-client.on('error', err => console.error(err.message))
-
-setInterval(() => {
-  const msg = 'hello'
-  console.log(`send: ${msg}`)
-  client.write(msg)
-}, 3000)
-```
-
-```js
-运行效果：
-
-$ node server.js 
-socket connected.
-receive: hello
-send: hello
-
-$ node client.js
-connected.
-send: hello
-receive: hello
-```
-
-## 3. 浏览器和Node中的事件循环有什么区别？
-
-> 关于微任务和宏任务在浏览器的执行顺序是这样的：
-
-### Node 11以后： 和浏览器的行为统一了
-- 执行一只task（宏任务）
-- 执行完micro-task队列 （微任务）
-- 如此循环往复下去...
-
-> 常见的 task（宏任务） 比如：
-- setTimeout
-- setInterval
-- script（整体代码）
-- I/O 操作、UI 渲染等。 
-
-> 常见的 micro-task 比如: 
-- new Promise().then(回调)
-- MutationObserver(html5新特性) 等。
-
-### Node 10以前：
-- 执行完一个阶段的所有任务
-- 执行完nextTick队列里面的内容
-- 然后执行完微任务队列的内容
 
 
 ## 如何实现JWT鉴权机制？

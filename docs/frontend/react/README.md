@@ -15,7 +15,68 @@ showSponsor: true
 
 ### 1. React 中, useMemo/ useCallback / useEffect 三者区别
 
-[三者区别](/backend/node/node_interview/#_2-react-中-usememo-usecallback-useeffect-三者区别)
+ `useMemo`, `useCallback`, 和 `useEffect` 都是 **React** 中的钩子函数，用于处理不同方面的逻辑。它们的主要区别在于它们的用途和触发时机：
+
+#### useEffect：
+
+> useEffect 用于处理副作用，例如数据获取、订阅、手动 DOM 操作等。它模拟了生命周期方法，可以在组件渲染后执行特定的操作。
+
+::: tip
+👀useEffect 接受两个参数，第一个参数是一个函数，包含要执行的副作用逻辑；
+
+第二个参数是一个依赖数组，用于指定什么情况下应该重新运行该副作用逻辑。
+
+如果依赖数组为空，副作用将在每次渲染后都运行；如果没有提供依赖数组，副作用将只在组件首次渲染后运行。
+:::
+
+```javascript
+useEffect(() => {
+  // 执行副作用逻辑
+  fetchData();
+}, [dependency]);
+
+useEffect(() => {
+  try {
+    userStore.getUserInfo();
+  } catch {}
+}, [userStore]);
+```
+
+#### useCallback：
+
+> useCallback 用于**缓存回调函数**，通常用于将回调函数传递给子组件，以确保子组件不会在每次渲染时都重新创建相同的函数。
+
+::: tip
+👀 useCallback 接受两个参数，第一个参数是回调函数，第二个参数是一个依赖数组。
+当依赖数组中的值发生变化时，才会重新创建回调函数。这个缓存的回调函数可以用作 props 传递给子组件。
+:::
+
+```js
+const memoizedCallback = useCallback(() => {
+  doSomethingWith(a, b);
+}, [a, b]);
+```
+
+#### useMemo：
+
+> useMemo 用于在渲染过程中计算并缓存计算结果。它可以帮助你避免不必要的重复计算，特别是在组件渲染时依赖某些值的计算较为昂贵时。
+
+::: tip
+👀 useMemo 接受两个参数，第一个参数是一个函数，用于计算结果；
+第二个参数是一个依赖数组，只有在依赖数组中的值发生变化时，才会重新计算结果。这个结果会在组件渲染过程中被缓存，并在需要时返回。
+:::
+
+```js
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+#### 总结
+
+`useMemo` 用于缓存计算结果。
+`useCallback` 用于缓存回调函数。
+`useEffect` 用于处理副作用。
+
+这些钩子函数的选择取决于你的具体需求和性能优化要求。使用它们可以帮助你更好地管理组件的状态和副作用。
 
 ---
 

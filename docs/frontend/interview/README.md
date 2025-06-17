@@ -1,6 +1,6 @@
 ---
 title: 前端面试题目整理
-date: 2023-10-23
+date: 2025-06-15
 categories:
   - Frontend
 tags:
@@ -297,7 +297,7 @@ function customInstanceOf(obj, constructor) {
     proto = Object.getPrototypeOf(proto);
     // console.log('proto2 = ' + JSON.stringify(proto))
   }
-
+a
   return false;
 }
 
@@ -313,7 +313,7 @@ console.log(customInstanceOf(person, Object)); // 输出: true
 console.log(customInstanceOf(person, Array)); // 输出: false
 ```
 
-### 24.实现链表的添加、删除。复杂度多少
+### 13.实现链表的添加、删除。 复杂度多少
 
 ```js
 class Node {
@@ -377,12 +377,94 @@ LinkedList.prototype.deleteNode = function(data) {
 删除特定节点的时间复杂度为 O(n)，因为需要遍历链表以找到要删除的节点。
 ---
 
-9.react hook 的局限性
 
-10.react setState 和 hook 的区别
+### 14.react hook 的局限性
 
-15.react 调用 setState 之后发生了什么
+> 1. 函数组件无法使用 class 组件的 state 属性。
 
-17.pm2 有哪些模式?
+> 2. 函数组件无法使用生命周期方法。
 
-$facet
+> 3. 函数组件无法使用 ref 属性。
+
+
+### 15.react 调用 setState 之后发生了什么
+1. React 调用 setState 之后，React 会将新的 state 和 props 传递给组件的 render 方法，然后 React 会生成新的 DOM 元素。
+2. React 会将新的 DOM 元素渲染到 DOM 中。
+3. React 会将新的 DOM 元素与旧的 DOM 元素进行比较，并生成一个更新计划。
+4. React 会将更新计划应用到旧的 DOM 元素上，从而实现更新。
+
+### 16. 把 callback 改写成 Promise
+
+```js
+function test(arg, callback) {
+  // …
+  if (err) {
+    callback(err);
+  } else {
+    callback(null, arg);
+  }
+}
+
+function testAsync(arg) {
+  //… Write here
+}
+
+const main = async function () {
+  try {
+    const a = await testAsync(arg);
+  } catch (error) {
+    console.error(error);
+  }
+};
+main();
+```
+
+---
+
+```js
+/**
+ *  @Author     :   ruanchuhao
+ *  @Date       :   2022/11/30
+ *  @Name       :   test.js
+ *  @Content    :   ruanchuhao@shgbit.com
+ *  @Desc       :
+ */
+
+'use strict';
+
+// ### 把 callback 改写成 Promise
+
+function test(arg, callback) {
+  const err = undefined;
+  // …
+  if (err) {
+    callback(err);
+  } else {
+    callback(null, arg);
+  }
+}
+
+function testAsync(arg) {
+  return new Promise((resolve, reject) => {
+    test(arg, (err, arg) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(arg);
+      }
+    });
+  });
+}
+
+const main = async function () {
+  try {
+    const arg = {};
+    const a = await testAsync(arg);
+    console.log(a);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+main();
+
