@@ -1,6 +1,6 @@
 ---
 title: 前端面试题目整理
-date: 2025-06-15
+date: 2025-06-23
 categories:
   - Frontend
 tags:
@@ -11,7 +11,7 @@ publish: true
 showSponsor: true
 ---
 
-## 👋 VUE 面试题目整理
+## 👋 前端面试题目整理
 
 :::right
 来自 [Sapphire611](http://sapphire611.github.io)
@@ -375,6 +375,7 @@ LinkedList.prototype.deleteNode = function(data) {
 在链表尾部追加节点的时间复杂度为 O(n)，其中 n 是链表的长度，因为需要遍历链表以找到尾节点。
 
 删除特定节点的时间复杂度为 O(n)，因为需要遍历链表以找到要删除的节点。
+
 ---
 
 
@@ -467,4 +468,30 @@ const main = async function () {
 };
 
 main();
+```
 
+## 手写装饰器
+
+| 装饰器类型   | 语法示例                          | 主要参数                       | 用途说明              |
+| ------------ | --------------------------------- | ------------------------------ | --------------------- |
+| 类装饰器     | `@decorator class MyClass {}`     | `constructor`                  | 修改或替换类定义      |
+| 方法装饰器   | `@decorator myMethod() {}`        | `target, name, descriptor`     | 拦截/修改方法行为     |
+| 属性装饰器   | `@decorator myProperty;`          | `target, name`                 | 修改属性描述符        |
+| 访问器装饰器 | `@decorator get myProp() {}`      | `target, name, descriptor`     | 修改getter/setter行为 |
+| 参数装饰器   | `myMethod(@decorator param) {}`   | `target, name, parameterIndex` | 标记或修改参数        |
+| 装饰器工厂   | `@decoratorFactory(arg) class {}` | 自定义参数                     | 创建可配置的装饰器    |
+
+```js
+function logMethod(target, name, descriptor) {
+    const old = descriptor.value;
+
+    descriptor.value = function (...args) {
+        console.log(`调用方法 ${name} 参数:`, args);
+        const result = old.apply(this, args)
+        console.log(`方法 ${name} 返回值:`, result);
+        return result;
+    }
+
+    return descriptor;
+}
+```

@@ -19,10 +19,15 @@ sticky: 2
 
 
 ## YIKA
-redis 缓存续期（计划任务时间 > 轮询时间）
-Nest.js 中间件/缓存/守卫管道
-手写装饰器
-Rabbitmq/elasticSearch/kafka
+redis 缓存续期/双重缓存（计划任务时间 > 轮询时间）
+
+prisma和typeorm区别
+
+NestJS 被动解决循环依赖的问题
+
+[Nest 守卫、拦截器、中间件 的区别](/backend/node/node_frame/#nest-守卫、拦截器、中间件-的区别)
+
+[手写装饰器](/frontend/interview/#手写装饰器)
 
 ## SHANGHAI LONGYI
 [express 和 koa 中间件的区别(线性 / 洋葱圈)](/backend/node/node/#_1-koa-和-express-有哪些不同)

@@ -1,6 +1,6 @@
 ---
 title: VUE 题目整理
-date: 2025-06-15
+date: 2025-06-23
 categories:
   - Frontend
 tags:
@@ -17,7 +17,137 @@ showSponsor: true
 VUE 是一套用于构建用户界面的**渐进式框架**,采用虚拟 DOM 渲染页面，区分编译时和运行时，组件化（高内聚、低耦合、单向数据流）
 :::
 
-### 谈谈你对 `VUE`的理解
+## Vue2 && Vue3 生命周期
+
+| Vue 2 生命周期钩子 | Vue 3 生命周期钩子 (Composition API) | 触发时机描述                        |
+| ------------------ | ------------------------------------ | ----------------------------------- |
+| `beforeCreate`     | `setup()`                            | 实例初始化后，数据观测/事件配置前   |
+| `created`          | `setup()`                            | 实例创建完成，数据观测/事件配置完成 |
+| `beforeMount`      | `onBeforeMount`                      | 挂载开始之前被调用                  |
+| `mounted`          | `onMounted`                          | 实例挂载完成后调用                  |
+| `beforeUpdate`     | `onBeforeUpdate`                     | 数据更新时，DOM 打补丁前            |
+| `updated`          | `onUpdated`                          | 数据更改导致 DOM 重新渲染后         |
+| `beforeDestroy`    | `onBeforeUnmount`                    | 实例销毁之前调用                    |
+| `destroyed`        | `onUnmounted`                        | 实例销毁后调用                      |
+| `errorCaptured`    | `onErrorCaptured`                    | 捕获子孙组件错误时                  |
+| -                  | `onRenderTracked` (Dev Only)         | 响应式依赖被追踪时                  |
+| -                  | `onRenderTriggered` (Dev Only)       | 响应式依赖触发重新渲染时            |
+| `activated`        | `onActivated`                        | 被 keep-alive 缓存的组件激活时      |
+| `deactivated`      | `onDeactivated`                      | 被 keep-alive 缓存的组件停用时      |
+
+::: tip
+Vue 3 的 setup() 函数替代了 Vue 2 的 beforeCreate 和 created 钩子
+
+销毁相关钩子名称从 destroy 改为 unmount（更语义化）
+
+Vue 3 新增了调试钩子 onRenderTracked 和 onRenderTriggered
+
+如果使用 Options API，Vue 3 仍然支持 Vue 2 的大部分钩子名称（但 beforeDestroy 建议改为 beforeUnmount）
+:::
+
+
+## Composition API vs Options API 
+
+| 对比维度          | Options API                          | Composition API                      | 选择建议                                                                 |
+|-------------------|-------------------------------------|--------------------------------------|--------------------------------------------------------------------------|
+| **代码组织**       | 按选项分组（data/methods/computed） | 按逻辑功能组织（自定义组合函数）       | 复杂逻辑推荐 Composition API，简单逻辑可用 Options API                     |
+| **类型支持**       | TS 支持较弱                         | 完美的 TS 类型推断                    | TS 项目首选 Composition API                                               |
+| **逻辑复用**       | Mixins（有命名冲突风险）            | 自定义组合函数（无命名冲突）           | 需要复用时无条件选择 Composition API                                      |
+| **响应式控制**     | 全自动响应式                        | 可手动控制（ref/reactive）            | 需要精细控制响应式时选 Composition API                                    |
+| **学习成本**       | 入门简单                            | 需要理解响应式 API                     | 新手可从 Options API 开始，逐步过渡                                        |
+| **项目规模**       | 适合中小项目                        | 适合大型复杂应用                      | 新项目推荐 Composition API，老项目可共存                                   |
+| **生命周期**       | 选项式钩子（created/mounted）       | 函数式钩子（onMounted/onUpdated）      | 两种写法效果相同，Composition API 更灵活                                   |
+| **状态管理**       | 依赖 this 上下文                    | 无 this 上下文，更纯净                 | 需要解耦逻辑时选 Composition API                                          |
+| **代码量**         | 简单场景代码更少                    | 复杂场景代码更集中                     | 简单功能可用 Options API，复杂功能 Composition API 更简洁                   |
+| **维护性**         | 逻辑分散在不同选项                  | 相关逻辑集中在一起                     | 长期维护项目推荐 Composition API                                           |
+| **典型场景**       | - 简单表单<br>- 快速原型开发         | - 复杂组件<br>- 逻辑复用需求<br>- TS 项目 | 根据具体场景灵活选择，Vue3 官方推荐新项目使用 Composition API               |
+
+## Vuex 和 Pinia 的核心区别
+
+| 对比维度       | Vuex                          | Pinia                          |
+|---------------|-------------------------------|--------------------------------|
+| **设计理念**   | 严格单向数据流 (Flux 架构)     | 灵活响应式 (Composition API 风格) |
+| **核心概念**   | State → Getters → Mutations → Actions | State → Getters → Actions (无 Mutations) |
+| **TypeScript** | 需要额外配置                   | 原生完美支持                    |
+| **模块系统**   | 嵌套模块 + 命名空间            | 扁平化独立 Store                |
+| **API 风格**   | Options API 风格               | Composition API 风格            |
+| **修改 State** | 必须通过 Mutations             | 可直接修改 (也支持 Actions)      |
+| **体积**       | ~10KB (gzipped)               | ~5KB (gzipped)                 |
+| **Vue 版本**   | Vue 2/3 (兼容)                | 专为 Vue 3 设计                |
+| **官方状态**   | 维护模式                      | 推荐首选                        |
+| **典型代码**   | ```javascript                 | ```javascript                  |
+|               | // Vuex 示例                  | // Pinia 示例                  |
+|               | mutations: {                  | actions: {                     |
+|               |   increment(state) {          |   increment() {                |
+|               |     state.count++             |     this.count++               |
+|               |   }                           |   }                            |
+|               | }                             | }                              |
+|               | ```                           | ```                            |
+
+## ref() && reactive()
+
+> 这两个都是创建响应式数据的API，有一些区别
+
+| **对比项**      | `ref()`                     | `reactive()`                      |
+| --------------- | --------------------------- | --------------------------------- |
+| **数据类型**    | 基本类型 + 引用类型         | 仅引用类型（Object/Array/Map等）  |
+| **访问值**      | 需要通过 `.value` 访问      | 直接访问属性                      |
+| **响应式原理**  | 内部用 `reactive` 包裹对象  | 直接基于 Proxy                    |
+| **TS 类型推断** | `Ref<T>`                    | 原生对象类型                      |
+| **解构响应性**  | 保持响应性（需用 `toRefs`） | 直接解构会丢失响应性              |
+| **模板中使用**  | 自动解包（无需 `.value`）   | 直接使用属性                      |
+| **典型场景**    | 单值、模板引用、函数返回值  | 复杂对象或嵌套数据                |
+| **示例代码**    | `const num = ref(0);`       | `const obj = reactive({ a: 1 });` |
+
+```js
+// 互相转换
+const refObj = ref({ a: 1 }); // 等价于 reactive({ a: 1 })
+const reactiveVal = reactive({ val: ref(0) }); // 自动解包 ref
+```
+
+> 为什么需要 .value？
+答：ref 返回的是一个包装对象，通过 .value 访问内部值，确保基本类型的响应式。
+
+> reactive 的局限性？
+答：对解构不友好（会丢失响应性），适合整体操作对象；ref 更灵活。
+
+## 计算属性 (computed) 和侦听器 (watch/watchEffect) 对比
+
+> 在 Vue 3 中，计算属性和侦听器都是响应式编程的重要工具，但它们有不同的使用场景和特点。
+
+```js
+import { ref, computed } from 'vue'
+
+const count = ref(0)
+const doubleCount = computed(() => count.value * 2)
+
+// watch 示例
+watch(count, (newVal, oldVal) => {
+  console.log(`count changed from ${oldVal} to ${newVal}`)
+})
+
+// watchEffect 示例
+watchEffect(() => {
+  console.log(`count is now ${count.value}`)
+})
+```
+| 特性                | computed          | watch             | watchEffect       |
+|---------------------|-------------------|-------------------|-------------------|
+| **返回值**          | 返回计算值        | 无返回值          | 无返回值          |
+| **缓存**            | ✅ 有缓存         | ❌ 无缓存         | ❌ 无缓存         |
+| **执行时机**        | 依赖变化时        | 依赖变化时        | 立即执行+依赖变化 |
+| **依赖收集方式**    | 显式声明          | 显式声明          | 自动收集          |
+| **适合场景**        | 派生数据          | 副作用/异步操作   | 副作用/同步操作   |
+| **获取旧值**        | ❌ 不支持         | ✅ 支持           | ❌ 不支持         |
+| **立即执行**        | ❌ 不适用         | 可配置(`immediate`)| ✅ 默认立即       |
+| **代码示例**        | `const val = computed(() => a.value + b.value)` | `watch(a, (newVal, oldVal) => {...})` | `watchEffect(() => { console.log(a.value) })` |
+
+> watch 和 watchEffect 如何选择？
+答：需要明确侦听特定数据用 watch；依赖动态或复杂时用 watchEffect。
+
+---
+
+## 谈谈你对 `VUE`的理解
 
 #### `MVVM` VS `MVC`
 
@@ -81,7 +211,7 @@ let oldVDOM = {
 
 ---
 
-### 谈谈你对 SPA 的理解
+## 谈谈你对 SPA 的理解
 
 - SPA (single-page application) 单页应用，默认情况下我们编写 Vue、React 都只有一个 html 页面，并且提供一个挂载点，最终打包后会再此页面中引入对应的资源。 (页面的渲染全部是由 JS 动态进行渲染的)。切换页面时通过监听路由变化，渲染对应的页面
 
@@ -113,7 +243,7 @@ let oldVDOM = {
 
 - 网站 SSR+CSR 的方式，首屏采用服务端渲染的方式，后续交互采用客户端渲染方式。`eg. NuxtJS`
 
-## `v-clock` 的作用是什么？
+### `v-clock` 的作用是什么？
 
 ::: tip
 
@@ -179,6 +309,7 @@ let proxy = new Proxy(data, {
     return true;
   }
 });
+
 ```
 优点：
 
@@ -192,12 +323,16 @@ let proxy = new Proxy(data, {
 
 兼容性问题：不支持 IE11（但Vue3已放弃IE支持）。
 
-特性  | Object.defineProperty	| Proxy
----|---|---
-监听范围|只能监听已有属性|整个对象，包括新增/删除
-数组支持|需重写数组方法|直接监听数组变化
-性能|初始化时递归遍历，性能较差|惰性监听，性能更优
-兼容性|支持IE9+|不支持IE
+| 特性     | Object.defineProperty      | Proxy                   |
+| -------- | -------------------------- | ----------------------- |
+| 监听范围 | 只能监听已有属性           | 整个对象，包括新增/删除 |
+| 数组支持 | 需重写数组方法             | 直接监听数组变化        |
+| 性能     | 初始化时递归遍历，性能较差 | 惰性监听，性能更优      |
+| 兼容性   | 支持IE9+                   | 不支持IE                |
+
+> Vue 2：使用 Object.defineProperty 进行数据劫持
+
+> Vue 3：使用 Proxy 重写了响应式系统，性能更好且能检测更多变化类型
 
 ---
 
@@ -311,7 +446,7 @@ HTTPS额外步骤：若为HTTPS，会在此后进行TLS握手（交换密钥、�
 接收响应：服务器返回响应头和响应体（HTML内容）。
 
 
-5. 动态内容与框架（如React/Vue）
+1. 动态内容与框架（如React/Vue）
 前端框架：
 
 若页面使用框架（如React/Vue），JS会初始化虚拟DOM，绑定事件等。
@@ -373,7 +508,7 @@ Vue.component('functional-component', {
 
 ## 如何实现Vue路由守卫（如权限控制）？Vuex的action和mutation有什么区别？
 
-> 全局前置守卫 (beforeEach)
+> 全局前置守卫 (beforeEach)，是在路由跳转前执行的全局守卫，对所有路由都有效。
 
 ```javascript
 router.beforeEach((to, from, next) => {
@@ -398,7 +533,7 @@ router.beforeEach((to, from, next) => {
 ```
 
 
-> 路由独享守卫 (beforeEnter)
+> 路由独享守卫 (beforeEnter),只对特定路由生效。
 
 ```javascript
 const routes = [
@@ -416,15 +551,19 @@ const routes = [
 ]
 ```
 
+> 全局解析守卫 beforeResolve 是在导航被确认之前，所有组件内守卫和异步路由组件被解析之后调用。
+
+> 全局后置钩子 router.afterEach 在导航被确认之后调用。
+
 ### Vuex的action和mutation有什么区别？
 
-| 区别点     | Mutation                      | Action                                  |
-|------------|-------------------------------|-----------------------------------------|
-| 用途       | 修改state的唯一途径           | 可以包含任意异步操作                    |
-| 调用方式   | 通过`commit`调用              | 通过`dispatch`调用                     |
-| 同步性     | 必须是同步的                  | 可以包含异步操作                        |
-| 执行顺序   | 直接修改state                 | 先处理异步逻辑，再`commit` mutation     |
-| 调试       | 在devtools中可追踪            | 在devtools中不可直接追踪                |
+| 区别点   | Mutation            | Action                              |
+| -------- | ------------------- | ----------------------------------- |
+| 用途     | 修改state的唯一途径 | 可以包含任意异步操作                |
+| 调用方式 | 通过`commit`调用    | 通过`dispatch`调用                  |
+| 同步性   | 必须是同步的        | 可以包含异步操作                    |
+| 执行顺序 | 直接修改state       | 先处理异步逻辑，再`commit` mutation |
+| 调试     | 在devtools中可追踪  | 在devtools中不可直接追踪            |
 
 
 ```javascript
