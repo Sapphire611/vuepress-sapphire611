@@ -1,6 +1,6 @@
 ---
 title: Redis 学习笔记
-date: 2022-1-21
+date: 2025-6-18
 categories:
   - Backend
 tags:
@@ -31,14 +31,14 @@ docker exec -it redis redis-cli
 PONG # 看到这个就代表成功了
 ```
 
-::: warning Redis 五大数据类型
+## Redis 五大数据类型
 
+::: warning 
 - String (90%+) ， 二进制安全
 - List ，双向链表
 - Set ，自动去重 ，字典
 - Hash ，类似 HashMap，存储键值对
 - Zset ，有序集合，score（从小到大排列）
-
 :::
 
 ### Medis
@@ -46,6 +46,7 @@ PONG # 看到这个就代表成功了
 [【Mac】Medis For Redis GUI](https://getmedis.com/)
 
 [【Windows】Another Redis Desktop Manager](https://github.com/qishibo/AnotherRedisDesktopManager/releases/tag/v1.5.5)
+
 ## Redis 基本操作
 
 ### Key 常用命令

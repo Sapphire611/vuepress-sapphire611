@@ -12,6 +12,36 @@ publish: true
 sticky: 2
 ---
 
+### STICKY
+[什么是 nodejs?](/backend/node/node/#_12-什么是nodejs) / 
+[nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) / 
+[nodejs 宏任务微任务](/backend/node/node/#_11-宏任务-微任务)
+
+
+## YIKA
+redis 缓存续期（计划任务时间 > 轮询时间）
+Nest.js 中间件/缓存/守卫管道
+手写装饰器
+Rabbitmq/elasticSearch/kafka
+
+## SHANGHAI LONGYI
+[express 和 koa 中间件的区别(线性 / 洋葱圈)](/backend/node/node/#_1-koa-和-express-有哪些不同)
+
+[Redis 基本数据类型](/backend/redis/#redis-五大数据类型)
+
+[MySQL 和 MongoDB 的索引数据结构](/backend/sql/#mysql-和-mongodb-的索引数据结构)
+
+[B树 和 B+树](/backend/sql/#b-tree)
+
+[Docker 常用的网络模式有哪些?](/backend/docker/#docker-常用的网络模式有哪些)
+
+[Nest 守卫、拦截器、中间件 的区别](/backend/node/node_frame/#nest-守卫、拦截器、中间件-的区别)
+
+---
+
+[算法题:非递减数列](/backend/node/leetcode-js/#_665-非递减数列)
+[微信登陆数据流向](/architecture/#微信扫码登录全流程-前后端数据流向)
+
 ## StoreHub
 
 [什么是微服务？使用微服务的优势/缺点有哪些？](/architecture/#%E4%BB%80%E4%B9%88%E6%98%AF%E5%BE%AE%E6%9C%8D%E5%8A%A1-%E4%BD%BF%E7%94%A8%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%9A%84%E4%BC%98%E5%8A%BF-%E7%BC%BA%E7%82%B9%E6%9C%89%E5%93%AA%E4%BA%9B)
@@ -57,17 +87,8 @@ sticky: 2
 
 > 因此，Node.js 和 Ajax 是两个不同的概念。Node.js 主要是用于在服务器端运行 JavaScript 代码，而 Ajax 主要是用于在客户端和服务器端之间进行异步通信。
 
-### 2. Node Stream 是什么？有哪些种类的 Stream？
 
-> 在 Node.js 中，Stream 是一种用于**处理流数据的抽象接口**。它提供了一种处理大量数据的方式，以及对数据进行流式传输和处理的能力。Stream 可以通过**读取、写入、转换、过滤**等方式来处理数据，而不需要一次性加载全部数据到内存中。这使得处理大文件或大量数据变得更加高效和可行。Node.js 中的 Stream 有四种类型：
-
-1. Readable Stream：用于读取数据的 Stream，例如从文件、网络等源读取数据。
-
-2. Writable Stream：用于写入数据的 Stream，例如将数据写入文件、发送数据到网络等。
-
-3. Duplex Stream：可同时读取和写入数据的 Stream，例如网络套接字等。
-
-4. Transform Stream：是一种特殊的 Duplex Stream，用于处理和转换数据流。例如，可以使用 Transform Stream 将文件内容进行加密或解密，或将 CSV 数据转换为 JSON 格式。
+[Node Stream 是什么？有哪些种类的 Stream？](/backend/node/node/#_10-node-stream-是什么-有哪些种类的-stream)
 
 ### 3. fs.readFile() 和 fs.createReadStream() 有什么区别？
 
@@ -672,38 +693,7 @@ HTTPS 证书认证过程:
 
 ### [2. Node.js 事件循环机制](/backend/node/node/#_7-node-js-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E6%9C%BA%E5%88%B6)
 
-### 3. 宏任务 / 微任务
-
-> 宏任务（Macro Task）和微任务（Micro Task）是与事件循环（Event Loop）相关的概念，用于管理 JavaScript 代码的执行顺序和异步操作。它们有助于理解 JavaScript 中的异步编程和事件处理
-
-#### 宏任务
-
-**宏任务代表一组一起执行的操作**，通常是由开发者定义的异步操作或事件。
-
-宏任务包括诸如`setTimeout`、`setInterval`、`I/O`操作等。
-
-当宏任务被添加到执行队列时，它们会被排队等待执行，直到 JavaScript 引擎可以执行它们。一次只执行一个宏任务。
-
-#### 微任务
-
-- 微任务也是异步操作，但它们的**优先级高于宏任务**。微任务包括`new Promise().then`、MutationObserver 的回调等。
-
-- 当一个微任务被添加到执行队列时，它会立即被执行，而不需要等待当前的宏任务完成。
-  因此，**微任务能够在宏任务之间执行**。
-
-- 微任务通常用于执行与当前任务相关的清理、回调或更新操作。
-
-::: warning
-事件循环是一个不断运行的循环，它负责执行宏任务和微任务，以确保 JavaScript 代码能够按照正确的顺序执行。
-
-👀 事件循环的基本流程如下：
-
-1. 从宏任务队列中选择最早的一个任务执行。
-2. 执行完当前宏任务后，检查微任务队列，并依次执行微任务，直到微任务队列为空。
-3. 回到宏任务队列，选择下一个宏任务执行。
-
-重复上述过程，不断循环执行宏任务和微任务，直到所有任务都完成。
-:::
+### [3. 宏任务 / 微任务](/backend/node/node/#_11-宏任务-微任务)
 
 ### 4. 范型
 
