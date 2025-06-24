@@ -1,6 +1,6 @@
 ---
-title: Node.js Backend Developer
-date: 2023-9-2
+title: 面试真题记录
+date: 2025-6-23
 categories:
   - Backend
 tags:
@@ -18,12 +18,39 @@ sticky: 2
 [nodejs 宏任务微任务](/backend/node/node/#_11-宏任务-微任务)
 
 
+## DEEPSIGHT
+
+[浏览器的事件循环](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别)
+
+[VUE响应式原理](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
+
+---
+
+[70. 爬楼梯](/backend/node/leetcode-js/#_70-爬楼梯)
+
+[867. 转置矩阵](/backend/node/leetcode-js/#_867-转置矩阵)
+
 ## YIKA
-redis 缓存续期/双重缓存（计划任务时间 > 轮询时间）
 
-prisma和typeorm区别
+- Redis 缓存续期问题（计划任务时间大于轮询时间时，双重缓存/缓存续期）
 
-NestJS 被动解决循环依赖的问题
+[prisma和typeorm区别](/backend/node/node_frame/#orm-的选型)
+
+- NestJS 解决循环依赖的问题(forwardRef)
+
+```ts
+// module-a.module.ts
+@Module({
+  imports: [forwardRef(() => ModuleB)],
+})
+export class ModuleA {}
+
+// module-b.module.ts
+@Module({
+  imports: [forwardRef(() => ModuleA)],
+})
+export class ModuleB {}
+```
 
 [Nest 守卫、拦截器、中间件 的区别](/backend/node/node_frame/#nest-守卫、拦截器、中间件-的区别)
 

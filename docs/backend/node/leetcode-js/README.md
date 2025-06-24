@@ -1,6 +1,6 @@
 ---
 title: LeetCode (JS)
-date: 2025-6-22
+date: 2025-6-23
 categories:
   - Algorithm
 tags:
@@ -974,6 +974,72 @@ const search = (nums, target) => {
 
 };
 ```
+
+---
+### 70. 爬楼梯
+```js
+假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+
+每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+
+ 
+
+示例 1：
+
+输入：n = 2
+输出：2
+解释：有两种方法可以爬到楼顶。
+1. 1 阶 + 1 阶
+2. 2 阶
+示例 2：
+
+输入：n = 3
+输出：3
+解释：有三种方法可以爬到楼顶。
+1. 1 阶 + 1 阶 + 1 阶
+2. 1 阶 + 2 阶
+3. 2 阶 + 1 阶
+```
+
+```js
+
+// const f = (n) => {
+//     if (n == 0) return 1;
+//     if (n == 1) return 1;
+//     if (n == 2) return 2;
+//     return f(n - 1) + f(n - 2)
+// } 
+
+// console.log(f(2))
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+
+const map = new Map();
+map.set(0, 1);
+map.set(1, 1);
+map.set(2, 2);
+
+var climbStairs = function (n) {
+
+    const result = map.get(n);
+    if (!result) {
+        // recursion answer
+        const newValue = climbStairs(n - 1) + climbStairs(n - 2);
+        // set result in map to save times
+        map.set(n,newValue);
+        // callback
+        return newValue;
+    } else {
+        // got result
+        return result;
+    }
+};
+```
+
+---
 ### 306. 累加数
 
 ```js
@@ -1100,5 +1166,59 @@ var checkPossibility = function (nums) {
     }
 
     return true;
+};
+```
+
+---
+
+### 867. 转置矩阵
+
+```js
+给你一个二维整数数组 matrix， 返回 matrix 的 转置矩阵 。
+
+矩阵的 转置 是指将矩阵的主对角线翻转，交换矩阵的行索引与列索引。
+
+示例 1：
+
+输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+输出：[[1,4,7],[2,5,8],[3,6,9]]
+示例 2：
+
+输入：matrix = [[1,2,3],[4,5,6]]
+输出：[[1,4],[2,5],[3,6]]
+ 
+
+提示：
+
+m == matrix.length
+n == matrix[i].length
+1 <= m, n <= 1000
+1 <= m * n <= 105
+-109 <= matrix[i][j] <= 109
+```
+
+```js
+/**
+ * @param {number[][]} matrix
+ * @return {number[][]}
+ */
+var transpose = function (matrix) {
+    const arr = matrix;
+    const row = arr.length; // 3
+    const col = arr[0].length; // 4
+    // console.log({row,col})
+
+    const result = [];
+    for (let i = 0; i < col; i++) {
+        let temp = [];
+        for (let j = 0; j < row; j++) {
+            // console.log(arr[j][i])
+            temp.push(arr[j][i]);
+        }
+        // console.log(temp)
+        result.push(temp);
+    }
+    // console.log(result);
+    return result;
 };
 ```

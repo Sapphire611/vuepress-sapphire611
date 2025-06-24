@@ -44,6 +44,18 @@ showSponsor: true
 
 > 浏览器和 Node.js 都实现了事件循环（Event Loop）来处理异步任务，但它们的实现机制和应用场景有所不同。以下是它们的主要区别：
 
+| **特性**           | **浏览器事件循环**                                                                       | **Node.js 事件循环**                                                                 |
+| ------------------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **运行环境**       | 基于 Web APIs（如 `setTimeout`、DOM 事件），由浏览器引擎（如 V8 + Blink）实现。          | 基于 libuv 库，提供非阻塞 I/O（如文件、网络操作），不涉及 DOM。                      |
+| **事件循环阶段**   | 分为宏任务（Macro Task）和微任务（Micro Task），每次循环处理一个宏任务后清空微任务队列。 | 分为 6 个阶段（Timers、Pending、Poll、Check、Close 等），按顺序执行每个阶段的任务。  |
+| **微任务执行时机** | 在每个宏任务执行后立即执行（如 `Promise.then`）。                                        | 在事件循环阶段切换之间执行（Node.js v11+ 后行为与浏览器一致）。                      |
+| **特有 API**       | `requestAnimationFrame`、`MutationObserver`。                                            | `setImmediate`（Check 阶段）、`process.nextTick`（当前操作后立即执行，优先级最高）。 |
+| **I/O 处理**       | 用户交互（点击、网络请求等），依赖 Web APIs。                                            | 系统级 I/O（文件、网络等），依赖 libuv 的线程池和事件驱动。                          |
+|                    | setTimeout(() => console.log('timeout'), 0);                                             | setTimeout(() => console.log('timeout'), 0);                                         |
+|                    | Promise.resolve().then(() => console.log('promise'));                                    | setImmediate(() => console.log('immediate'));                                        |
+|                    | // 输出顺序：promise → timeout                                                           | // 输出顺序可能随机（取决于事件循环启动时间）
+| **关键差异总结**   | 微任务优先级高，与 UI 渲染紧密关联。                                                     | 多阶段处理复杂 I/O，`nextTick` 和 `setImmediate` 是特有机制。                        |
+
 ### 3.1. 运行环境与职责
 浏览器：处理 DOM 事件、UI 渲染、网络请求（如 fetch）、用户交互（如点击）等。
 
@@ -682,12 +694,12 @@ readable.on('end', async () => {
 
 > 在 Node.js 中，Stream 是一种用于**处理流数据的抽象接口**。它提供了一种处理大量数据的方式，以及对数据进行流式传输和处理的能力。Stream 可以通过**读取、写入、转换、过滤**等方式来处理数据，而不需要一次性加载全部数据到内存中。这使得处理大文件或大量数据变得更加高效和可行。Node.js 中的 Stream 有四种类型：
 
-| 类型        | 描述                                                                 | 典型示例                                    | 重要事件                          | 重要方法                     |
-|-------------|--------------------------------------------------------------------|-------------------------------------------|---------------------------------|----------------------------|
-| **Readable** (可读流) | 数据来源，可以被读取                                                  | 文件读取流、HTTP 请求、process.stdin        | `data`, `end`, `error`, `close` | `pipe()`, `read()`, `pause()` |
-| **Writable** (可写流) | 数据目标，可以被写入                                                  | 文件写入流、HTTP 响应、process.stdout      | `drain`, `finish`, `error`      | `write()`, `end()`, `cork()`  |
-| **Duplex** (双工流)  | 同时实现 Readable 和 Writable 接口，读写通道独立                       | TCP sockets、WebSockets、child_process IPC | 包含可读和可写流的所有事件         | 包含可读和可写流的所有方法     |
-| **Transform** (转换流) | 特殊的 Duplex 流，写入和读取时自动转换数据（输出与输入有计算/转换关系） | zlib 压缩流、加密流、CSV 解析器             | `data`, `end`, `finish`         | `_transform()`, `_flush()`    |
+| 类型                   | 描述                                                                    | 典型示例                                   | 重要事件                        | 重要方法                      |
+| ---------------------- | ----------------------------------------------------------------------- | ------------------------------------------ | ------------------------------- | ----------------------------- |
+| **Readable** (可读流)  | 数据来源，可以被读取                                                    | 文件读取流、HTTP 请求、process.stdin       | `data`, `end`, `error`, `close` | `pipe()`, `read()`, `pause()` |
+| **Writable** (可写流)  | 数据目标，可以被写入                                                    | 文件写入流、HTTP 响应、process.stdout      | `drain`, `finish`, `error`      | `write()`, `end()`, `cork()`  |
+| **Duplex** (双工流)    | 同时实现 Readable 和 Writable 接口，读写通道独立                        | TCP sockets、WebSockets、child_process IPC | 包含可读和可写流的所有事件      | 包含可读和可写流的所有方法    |
+| **Transform** (转换流) | 特殊的 Duplex 流，写入和读取时自动转换数据（输出与输入有计算/转换关系） | zlib 压缩流、加密流、CSV 解析器            | `data`, `end`, `finish`         | `_transform()`, `_flush()`    |
 
 ## 11.宏任务 / 微任务
 

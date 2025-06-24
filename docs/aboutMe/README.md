@@ -52,7 +52,7 @@ sticky: 1
 
 ## 💗 My Wife
 
-<img style="border:2;" src="/img/psc.jpeg">
+<!-- <img style="border:2;" src="/img/psc.jpeg"> -->
 
 ::: right
 My one and only: [Sara](#) 
