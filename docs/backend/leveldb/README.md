@@ -28,6 +28,11 @@ const db = new level.Level(dbPath);
 // Using promise-based API (recommended)
 async function main() {
   try {
+
+    // await db.put('key1', 'value1');
+    // await db.put('key2', 'value2');
+    // console.log('Key1 stored successfully.');
+    
     const res = await db.get('key1');
     console.log('Key1 retrieved successfully:', res);
 
