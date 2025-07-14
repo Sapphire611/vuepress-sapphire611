@@ -11,7 +11,7 @@ showSponsor: true
 
 ## MongoDB Shard Demo
 
-:: right
+::: right
 测试环境：Mac
 已安装Docker相关环境
 请确保 27017 ～ 27020 端口没有被占用
