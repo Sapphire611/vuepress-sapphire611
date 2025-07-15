@@ -13,7 +13,7 @@ showSponsor: true
 ## Leveldb 学习笔记
 
 > leveldb是一个写性能十分优秀的存储引擎，是典型的LSM树(Log Structured-Merge Tree)实现。LSM树的核心思想就是放弃部分读的性能，换取最大的写入能力
-> 
+
 [基本概念 — leveldb-handbook 文档](https://leveldb-handbook.readthedocs.io/zh/latest/basic.html)
 
 ### Demo
