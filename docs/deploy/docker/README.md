@@ -52,6 +52,17 @@ docker run -d --name emqx -p 1883:1883 -p 8081:8081 -p 8083:8083 -p 8883:8883 -p
 docker run --name mongo -d -p 27017:27017 -v /Users/[YourUsername]/db:/data/db --restart always mongo
 ```
 
+### PostgreSQL
+```shell
+docker run --name postgres -e POSTGRES_DB=admin_dashboard -e POSTGRES_USER=root -e POSTGRES_PASSWORD=123456 -p 5432:5432 -d postgres:15
+```
+
+### Mysql
+
+```shell
+# -e MYSQL_DATABASE=testdb -v mysql_data:/var/lib/mysql
+docker run -d --name mysql-local -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql:latest
+```
 ## Docker 基本命令
 
 [Docker基础篇 - （二）Docker的常用命令](https://blog.csdn.net/qq_45408390/article/details/120264264)
