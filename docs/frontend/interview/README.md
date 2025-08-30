@@ -1,6 +1,6 @@
 ---
 title: 前端面试题目整理
-date: 2025-06-23
+date: 2025-08-28
 categories:
   - Frontend
 tags:
@@ -17,7 +17,62 @@ showSponsor: true
 来自 [Sapphire611](http://sapphire611.github.io)
 :::
 
-## 1.Http 301、302、307 之间的区别
+## CSS 矩形旋转
+
+> transform: rotate(45deg);
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>矩形旋转示例</title>
+    <style>
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+      }
+
+      .rectangle {
+        width: 200px;
+        height: 100px;
+        background-color: #3498db;
+        border: 2px solid #2980b9;
+
+        /* 旋转45度 */
+        transform: rotate(45deg);
+
+        /* 可选：添加过渡效果 */
+        transition: transform 5s ease;
+
+        /* 确保旋转中心在元素中心 */
+        transform-origin: center;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      /* 悬停时旋转到不同角度 */
+      .rectangle:hover {
+        transform: rotate(135deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="rectangle">旋转矩形</div>
+    </div>
+  </body>
+</html>
+```
+
+## Http 301、302、307 之间的区别
 
 > 301 Moved Permanently (永久重定向):
 
@@ -47,14 +102,14 @@ showSponsor: true
 使用哪个状态码取决于重定向的性质，是永久的还是暂时的，以及是否需要保持相同的请求方法。
 :::
 
-### 2. 301 和 302 对于 seo 来说哪个更好
+### 301 和 302 对于 seo 来说哪个更好
 
 ::: tip
 如果你进行了永久性更改，希望搜索引擎更新其索引以指向新 URL，并传递排名和权重，那么使用 301 是更好的选择。
 但如果你只需要临时将流量重定向到另一个页面，而不希望影响搜索引擎索引，那么可以考虑使用 302 或 307。
 :::
 
-### 3.跨域是什么、如何解决
+### 跨域是什么、如何解决
 
 > 跨域（Cross-Origin）是指在 Web 安全模型下，一个网页的源（Origin）尝试请求来自另一个源的资源（例如，不同域名、协议或端口的资源）。浏览器会实施同源策略（Same-Origin Policy），阻止跨域请求，以防止潜在的安全风险，如跨站请求伪造（CSRF）和数据泄露。
 
@@ -72,59 +127,13 @@ CORS 是一种由浏览器实施的安全策略，允许服务器指定哪些域
 
 CORS 提供了细粒度的控制，可以限制哪些 HTTP 方法和标头是允许的。
 
-#### 3.2 JSONP（JSON with Padding）:
-
-- JSONP 是一种通过动态添加`<script>`标签从其他域获取 JSON 数据的方法。
-
-```js
-<body>
-  <div id="result"></div>
-</body>
-
-<script> ... </script>
-```
-
-```js
-const script = document.createElement('script');
-// 指定要请求的JSONP URL，包括回调函数名
-script.src = 'http://example.com/data?callback=' + callbackName;
-document.getElementById('result').textContent = data.message;
-```
-
-::: warning 4.jsonp 有什么缺点
-
-1. 安全问题，需要完全信任对方站点
-2. 仅支持 GET
-3. 处理错误困难
-   :::
-
-### 3.3 代理服务器:
-
-> 在同一域名下设置一个代理服务器，允许从客户端访问该代理服务器，然后由代理服务器来请求其他域的资源。
-
-- 这种方法需要在服务器端编写额外的代码，但可以有效解决跨域问题
-
-### 5.图片 base64 和外链的应用场景，各有什么优缺点
-
-| 方式         | 优点             | 缺点               |
-| ------------ | ---------------- | ------------------ |
-| Base64 编码  | 减少 HTTP 请求   | 增加 HTML 文件大小 |
-| &nbsp;       | 单个请求         | 浪费带宽,缓存问题  |
-| 外链加载图片 | 较小的 HTML 文件 | 增加 HTTP 请求     |
-| &nbsp;       | 浏览器缓存       | 潜在的并行请求限制 |
-| &nbsp;       | 更好的可维护性   |
-
-### 6.HTTP 缓存 机制
-
-[如何做 HTTP 缓存](/backend/node/node_interview/#_6-如何-做-http-缓存)
-
-### 7. HTTPS 握手过程
+### HTTPS 握手过程
 
 [HTTPS 握手过程](https://www.jianshu.com/p/e30a8c4fa329)
 
 ---
 
-### 8.Decorator 的作用，编译后是怎样的
+### Decorator 的作用，编译后是怎样的
 
 > JavaScript 装饰器（Decorators）是一种用于修改类、方法或属性行为的语法糖，它们通常用于增强代码的**可维护性**和**可读性**。
 
@@ -178,7 +187,7 @@ var Calculator = (function () {
 })();
 ```
 
-### 9. Symbol 是什么，一般用来做什么
+### Symbol 是什么，一般用来做什么
 
 > Symbol 是 ECMAScript 6（ES6）引入的一种新的原始数据类型。它是 JavaScript 中的一种特殊值，具有以下特点：
 
@@ -230,7 +239,7 @@ const csrfProtection = csurf({ cookie: true });
 app.use(csrfProtection);
 ```
 
-### 11.描述链表的反转怎样实现，复杂度多少?
+### 描述链表的反转怎样实现，复杂度多少?
 
 ```js
 class ListNode {
@@ -276,45 +285,6 @@ while (currentNode) {
 console.log(result); // 输出: [5, 4, 3, 2, 1]
 ```
 
-### 12.实现 instanceOf
-
-```js
-function customInstanceOf(obj, constructor) {
-  // 检查是否是对象
-  if (typeof obj !== 'object' || obj === null) {
-    return false;
-  }
-
-  // 获取对象的原型
-  let proto = Object.getPrototypeOf(obj);
-  // console.log('proto1 = ' + JSON.stringify(proto));
-
-  // 递归向上查找原型链，直到找到构造函数的原型
-  while (proto !== null) {
-    if (proto === constructor.prototype) {
-      return true;
-    }
-    proto = Object.getPrototypeOf(proto);
-    // console.log('proto2 = ' + JSON.stringify(proto))
-  }
-a
-  return false;
-}
-
-// 示例类
-function Person(name) {
-  this.name = name;
-}
-
-const person = new Person('Alice');
-
-console.log(customInstanceOf(person, Person)); // 输出: true
-console.log(customInstanceOf(person, Object)); // 输出: true
-console.log(customInstanceOf(person, Array)); // 输出: false
-```
-
-### 13.实现链表的添加、删除。 复杂度多少
-
 ```js
 class Node {
   constructor(data) {
@@ -329,13 +299,13 @@ class LinkedList {
   }
 }
 
-LinkedList.prototype.addToHead = function(data) {
+LinkedList.prototype.addToHead = function (data) {
   const newNode = new Node(data);
   newNode.next = this.head;
   this.head = newNode;
 };
 
-LinkedList.prototype.addToTail = function(data) {
+LinkedList.prototype.addToTail = function (data) {
   const newNode = new Node(data);
   if (!this.head) {
     this.head = newNode;
@@ -348,7 +318,7 @@ LinkedList.prototype.addToTail = function(data) {
   }
 };
 
-LinkedList.prototype.deleteNode = function(data) {
+LinkedList.prototype.deleteNode = function (data) {
   if (!this.head) {
     return;
   }
@@ -365,7 +335,6 @@ LinkedList.prototype.deleteNode = function(data) {
     current = current.next;
   }
 };
-
 ```
 
 时间复杂度分析：
@@ -378,8 +347,7 @@ LinkedList.prototype.deleteNode = function(data) {
 
 ---
 
-
-### 14.react hook 的局限性
+### react hook 的局限性
 
 > 1. 函数组件无法使用 class 组件的 state 属性。
 
@@ -387,14 +355,14 @@ LinkedList.prototype.deleteNode = function(data) {
 
 > 3. 函数组件无法使用 ref 属性。
 
+### react 调用 setState 之后发生了什么
 
-### 15.react 调用 setState 之后发生了什么
 1. React 调用 setState 之后，React 会将新的 state 和 props 传递给组件的 render 方法，然后 React 会生成新的 DOM 元素。
-2. React 会将新的 DOM 元素渲染到 DOM 中。
-3. React 会将新的 DOM 元素与旧的 DOM 元素进行比较，并生成一个更新计划。
+2. React 会将新的 DOM 元素渲染到 DOM 中
+3. React 会将新的 DOM 元素与旧的 DOM 元素进行比较，并生成一个更新计划
 4. React 会将更新计划应用到旧的 DOM 元素上，从而实现更新。
 
-### 16. 把 callback 改写成 Promise
+### 把 callback 改写成 Promise
 
 ```js
 function test(arg, callback) {
@@ -470,28 +438,44 @@ const main = async function () {
 main();
 ```
 
-## 手写装饰器
+### 手写装饰器
 
-| 装饰器类型   | 语法示例                          | 主要参数                       | 用途说明              |
-| ------------ | --------------------------------- | ------------------------------ | --------------------- |
-| 类装饰器     | `@decorator class MyClass {}`     | `constructor`                  | 修改或替换类定义      |
-| 方法装饰器   | `@decorator myMethod() {}`        | `target, name, descriptor`     | 拦截/修改方法行为     |
-| 属性装饰器   | `@decorator myProperty;`          | `target, name`                 | 修改属性描述符        |
-| 访问器装饰器 | `@decorator get myProp() {}`      | `target, name, descriptor`     | 修改getter/setter行为 |
-| 参数装饰器   | `myMethod(@decorator param) {}`   | `target, name, parameterIndex` | 标记或修改参数        |
-| 装饰器工厂   | `@decoratorFactory(arg) class {}` | 自定义参数                     | 创建可配置的装饰器    |
+| 装饰器类型   | 语法示例                          | 主要参数                       | 用途说明                |
+| ------------ | --------------------------------- | ------------------------------ | ----------------------- |
+| 类装饰器     | `@decorator class MyClass {}`     | `constructor`                  | 修改或替换类定义        |
+| 方法装饰器   | `@decorator myMethod() {}`        | `target, name, descriptor`     | 拦截/修改方法行为       |
+| 属性装饰器   | `@decorator myProperty;`          | `target, name`                 | 修改属性描述符          |
+| 访问器装饰器 | `@decorator get myProp() {}`      | `target, name, descriptor`     | 修改 getter/setter 行为 |
+| 参数装饰器   | `myMethod(@decorator param) {}`   | `target, name, parameterIndex` | 标记或修改参数          |
+| 装饰器工厂   | `@decoratorFactory(arg) class {}` | 自定义参数                     | 创建可配置的装饰器      |
 
 ```js
-function logMethod(target, name, descriptor) {
-    const old = descriptor.value;
-
-    descriptor.value = function (...args) {
-        console.log(`调用方法 ${name} 参数:`, args);
-        const result = old.apply(this, args)
-        console.log(`方法 ${name} 返回值:`, result);
-        return result;
-    }
-
-    return descriptor;
+function createLoggedMethod(className, methodName, originalMethod) {
+  return function (...args) {
+    console.log(`调用方法 ${methodName},参数 ${args}`);
+    const result = originalMethod.apply(this, args);
+    console.log(`方法 ${methodName} 返回值 ${result}`);
+    return result;
+  };
 }
+```
+
+```js
+class Calculator {
+  add(a, b) {
+    return a + b;
+  }
+
+  multiply(a, b) {
+    return a * b;
+  }
+}
+
+// 直接替换方法
+Calculator.prototype.add = createLoggedMethod('Calculator', 'add', Calculator.prototype.add);
+Calculator.prototype.multiply = createLoggedMethod('Calculator', 'multiply', Calculator.prototype.multiply);
+
+const calc = new Calculator();
+calc.add(2, 3); // 会有输出
+calc.multiply(2, 3); // 会有输出
 ```

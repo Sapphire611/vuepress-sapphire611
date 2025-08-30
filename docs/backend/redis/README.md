@@ -5,7 +5,7 @@ categories:
   - Backend
 tags:
   - redis
-sidebar: "auto"
+sidebar: 'auto'
 publish: true
 ---
 
@@ -13,7 +13,7 @@ publish: true
 
 [【尚硅谷】Redis 6 入门到精通 超详细 教程](https://www.bilibili.com/video/BV1Rv41177Af)
 
-[cV展示的学习园 (这人笔记写的很好)](https://blog.csdn.net/qq_45408390/category_11225849.html)
+[cV 展示的学习园 (这人笔记写的很好)](https://blog.csdn.net/qq_45408390/category_11225849.html)
 
 > Redis(Remote Dictinary Server),C 语言开发,高性能(key-value)数据库, **单线程 + 多路 IO 复用**
 
@@ -33,13 +33,14 @@ PONG # 看到这个就代表成功了
 
 ## Redis 五大数据类型
 
-::: warning 
+::: warning
+
 - String (90%+) ， 二进制安全
 - List ，双向链表
 - Set ，自动去重 ，字典
 - Hash ，类似 HashMap，存储键值对
 - Zset ，有序集合，score（从小到大排列）
-:::
+  :::
 
 ### Medis
 
@@ -85,7 +86,7 @@ strlen k1 # 获得k1的长度
 setnx k1 111 #setnx 只有key不存在时才能成功
 
 getrange k1 1 2 # (java) = k1.substring(1,2)
-setrange k1 1 2 value
+setrange k1 2 value
 
 setex k1 600 v1 # 同时设置过期时间
 getset k1 v2 # 读 & 设置新值
@@ -124,7 +125,7 @@ lset k1 1 "value2" # 将k1中下标为1的值替换成“value2”
 ```shell
 sadd set1 v1 v2 v3
 
-smember set1
+smembers set1
 sismember set1 v1 # 判断set1中有无v1这个值
 
 scard set1 # 返回set1中元素个数
@@ -152,15 +153,15 @@ hset user name liuliyi
 
 hmset user id 1 name liuliyi611 age 24 # 批量设置
 
-HEXISTS user name # user.name 是否存在
+hexists user name # user.name 是否存在
 
-HKEYS user # 查询user的所有key
-HVALS user # 查询user的所有value
-HGETALL user # 一次性查询user的所有内容
+hkeys user # 查询user的所有key
+hvals user # 查询user的所有value
+hgetall user # 一次性查询user的所有内容
 
-HINCRBY user age 10 # user.age += 10
+hincrby user age 10 # user.age += 10
 
-HSETNX user wife sara # 只有没有此属性，才能设置成功
+hsetnx user wife sara # 只有没有此属性，才能设置成功
 ```
 
 ### ZSet 常用命令
@@ -354,7 +355,7 @@ QUEUED
 - 悲观锁(Pessimistic Lock), 顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会 block 直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。
   :::
 
-### WATCH 
+### WATCH
 
 - 在执行 multi 之前，先执行 watch key1 [key2],可以监视一个(或多个) key
 - 如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断。
@@ -372,7 +373,7 @@ QUEUED
 ######### 另一个终端窗口
 127.0.0.1:6379> set k1 111 # 修改了 k1
 OK
-######### 
+#########
 
 127.0.0.1:6379(TX)> exec
 (nil) # 在开启事务的时候，在执行前先修改一下信息，就会执行失败，这是watch key的作用
@@ -381,42 +382,42 @@ OK
 ### UNWATCH
 
 - 取消 WATCH 命令对所有 key 的监视。
-- 如果在执行 WATCH 命令之后，EXEC 命令或DISCARD 命令先被执行了的话，那么就不需要再执行UNWATCH了
+- 如果在执行 WATCH 命令之后，EXEC 命令或 DISCARD 命令先被执行了的话，那么就不需要再执行 UNWATCH 了
 
 ## Redis 持久化
 
-[Redis6 篇 （六）Redis持久化](https://blog.csdn.net/qq_45408390/article/details/119731077)
+[Redis6 篇 （六）Redis 持久化](https://blog.csdn.net/qq_45408390/article/details/119731077)
 
-> RDB = Redis Database = 在指定的时间间隔内将内存中的数据集快照snapshot写入到磁盘中
+> RDB = Redis Database = 在指定的时间间隔内将内存中的数据集快照 snapshot 写入到磁盘中
 
 > AOF = Append Only File = 以日志形式记录每一个写操作（只许追加不可改写）
-  
 
-### Redis 持久化 AOF/ RDB的区别和选择
-1. RDB持久化
+### Redis 持久化 AOF/ RDB 的区别和选择
 
-- RDB持久化是将Redis中的数据保存到磁盘中的一种方式。当配置了RDB持久化后，Redis会定期将内存中的数据快照写入到磁盘中，形成一个RDB文件。RDB文件是一个二进制文件，包含了Redis在某个时间点上的所有数据，可以用于恢复Redis的数据。
+1. RDB 持久化
 
-> RDB持久化的优点是占用空间小，数据恢复速度快，适合于备份和灾难恢复。缺点是在持久化过程中可能会丢失一些数据，因为它只能定期将数据快照写入磁盘，如果在快照写入磁盘之前Redis发生了崩溃，那么内存中未保存到磁盘的数据将会丢失。
+- RDB 持久化是将 Redis 中的数据保存到磁盘中的一种方式。当配置了 RDB 持久化后，Redis 会定期将内存中的数据快照写入到磁盘中，形成一个 RDB 文件。RDB 文件是一个二进制文件，包含了 Redis 在某个时间点上的所有数据，可以用于恢复 Redis 的数据。
 
-2. AOF持久化
+> RDB 持久化的优点是占用空间小，数据恢复速度快，适合于备份和灾难恢复。缺点是在持久化过程中可能会丢失一些数据，因为它只能定期将数据快照写入磁盘，如果在快照写入磁盘之前 Redis 发生了崩溃，那么内存中未保存到磁盘的数据将会丢失。
 
-- AOF持久化是将Redis中的操作记录保存到磁盘中的一种方式。当配置了AOF持久化后，Redis会将每个写入命令追加到一个文件中，称为AOF文件。AOF文件是一个文本文件，包含了Redis所有的写入操作，可以用于恢复Redis的数据。
+2. AOF 持久化
 
-> AOF持久化的优点是可以保证数据的完整性和一致性，因为它会记录每个写入操作。缺点是占用空间大，恢复速度较慢，适合于数据重要性较高的应用场景。另外，由于AOF文件中记录了所有的写入操作，如果写入操作非常频繁，AOF文件可能会变得非常大，影响性能。
+- AOF 持久化是将 Redis 中的操作记录保存到磁盘中的一种方式。当配置了 AOF 持久化后，Redis 会将每个写入命令追加到一个文件中，称为 AOF 文件。AOF 文件是一个文本文件，包含了 Redis 所有的写入操作，可以用于恢复 Redis 的数据。
 
-**综上所述，RDB持久化适合于数据量较大、写入操作不频繁、数据恢复速度要求较高的场景，而AOF持久化适合于数据重要性较高、写入操作较为频繁的场景。可以根据实际的业务需求选择适合自己的持久化方式。**
+> AOF 持久化的优点是可以保证数据的完整性和一致性，因为它会记录每个写入操作。缺点是占用空间大，恢复速度较慢，适合于数据重要性较高的应用场景。另外，由于 AOF 文件中记录了所有的写入操作，如果写入操作非常频繁，AOF 文件可能会变得非常大，影响性能。
 
-::: tip 
+**综上所述，RDB 持久化适合于数据量较大、写入操作不频繁、数据恢复速度要求较高的场景，而 AOF 持久化适合于数据重要性较高、写入操作较为频繁的场景。可以根据实际的业务需求选择适合自己的持久化方式。**
+
+::: tip
 
 > 官方推荐两个都启用。
-> 如果对数据不敏感，可以选单独用RDB。不建议单独用 AOF，因为可能会出现Bug。如果只是做纯内存缓存，可以都不用。
+> 如果对数据不敏感，可以选单独用 RDB。不建议单独用 AOF，因为可能会出现 Bug。如果只是做纯内存缓存，可以都不用。
 
-- RDB持久化方式能够在指定的时间间隔能对你的数据进行快照存储
+- RDB 持久化方式能够在指定的时间间隔能对你的数据进行快照存储
 
-- AOF持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据,AOF命令以redis协议追加保存每次写的操作到文件末尾.
+- AOF 持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据,AOF 命令以 redis 协议追加保存每次写的操作到文件末尾.
 
-- Redis还能对AOF文件进行后台重写,使得AOF文件的体积不至于过大
+- Redis 还能对 AOF 文件进行后台重写,使得 AOF 文件的体积不至于过大
 
 - 如果你只希望你的数据在服务器运行的时候存在,你也可以不使用任何持久化方式.
 
@@ -439,9 +440,10 @@ OK
 版权声明：本文为CSDN博主「cv展示」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
 原文链接：https://blog.csdn.net/qq_45408390/article/details/119731077
 ```
-## Redis 主从复制 + Redis集群
 
-[Redis6篇 （七）Redis主从复制 + Redis集群](https://blog.csdn.net/qq_45408390/article/details/119731094)
+## Redis 主从复制 + Redis 集群
+
+[Redis6 篇 （七）Redis 主从复制 + Redis 集群](https://blog.csdn.net/qq_45408390/article/details/119731094)
 
 [Redis.conf 原文件 + 配置详解](https://blog.csdn.net/super1223/article/details/119060113)
 
@@ -455,14 +457,13 @@ OK
 brew install ca-certificates # 看报错，少什么brew
 ```
 
-[mac brew安装redis (mac本地安装redis，便于操作)](https://www.cnblogs.com/qianmaoliugou/p/15006539.html)
+[mac brew 安装 redis (mac 本地安装 redis，便于操作)](https://www.cnblogs.com/qianmaoliugou/p/15006539.html)
 
 ```
 brew install redis
 ```
 
 ---
-
 
 <img style="border:2;" src="/img/redis-test.jpg">
 
@@ -487,6 +488,7 @@ pidfile /var/run/redis_6381.pid
 port 6381
 dbfilename dump6381.rdb
 ```
+
 ```shell
 liuliyi@liuliyideMacBook-Pro redis-test % redis-server redis6379.conf
 liuliyi@liuliyideMacBook-Pro redis-test % redis-server redis6380.conf
@@ -538,26 +540,29 @@ repl_backlog_size:1048576
 repl_backlog_first_byte_offset:1
 repl_backlog_histlen:28
 ```
+
 ::: warning Q & A
+
 - 从机会【全量】复制主机的内容
 - 在主机上写，在从机上可以读取数据，在从机上写数据报错
 - 主机挂掉，重启就行，一切如初，从机重启需重设：slaveof 127.0.0.1 6379
-- 主机shutdown后，从机原地待命，等待主机重新启动，一切回复正常
-:::
+- 主机 shutdown 后，从机原地待命，等待主机重新启动，一切回复正常
+  :::
 
 ::: tip 复制原理
-- Slave启动成功连接到master后会发送一个sync命令
-- Master接到命令启动后台的存盘进程，同时收集所有接收到的用于修改数据集命令， 在后台进程执行完毕之后，master将传送整个数据文件到slave,以完成一次完全同步
-- 全量复制：而slave服务在接收到数据库文件数据后，将其存盘并加载到内存中。
-- 增量复制：Master继续将新的所有收集到的修改命令依次传给slave,完成同步
-- 但是只要是重新连接master,一次完全同步（全量复制)将被自动执行
-:::
+
+- Slave 启动成功连接到 master 后会发送一个 sync 命令
+- Master 接到命令启动后台的存盘进程，同时收集所有接收到的用于修改数据集命令， 在后台进程执行完毕之后，master 将传送整个数据文件到 slave,以完成一次完全同步
+- 全量复制：而 slave 服务在接收到数据库文件数据后，将其存盘并加载到内存中。
+- 增量复制：Master 继续将新的所有收集到的修改命令依次传给 slave,完成同步
+- 但是只要是重新连接 master,一次完全同步（全量复制)将被自动执行
+  :::
 
 ### 反客为主
 
 > 从机也可以有从机，还可以在主机挂掉的时候反客为主
 
-``` shell
+```shell
 slaveof no one # 反客为主
 ```
 
@@ -565,7 +570,7 @@ slaveof no one # 反客为主
 
 > 反客为主的自动版，能够后台监控主机是否故障，如果故障了根据投票数自动将从库转换为主库
 
-> 先搭建一主二从的环境，自定义的/myredis目录下新建sentinel.conf文件
+> 先搭建一主二从的环境，自定义的/myredis 目录下新建 sentinel.conf 文件
 
 ```shell
 ###################### sentinel.conf #######################
@@ -575,31 +580,33 @@ sentinel monitor mymaster 127.0.0.1 6379 1
 
 ![img](https://img-blog.csdnimg.cn/06d6391b367d46309376900f9962e3cc.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
 
-## Redis集群
+## Redis 集群
 
 ::: warning 集群之前遇到的问题
-1. 容量不够，redis如何进行扩容？
-2. 并发写操作， redis如何分摊？
-3. 主从模式，薪火相传模式，主机宕机，导致ip地址发生变化，应用程序中配置需要修改对应的主机地址、端口等信息。
 
-redis3.0中提供了解决方案。就是无中心化集群配置。
+1. 容量不够，redis 如何进行扩容？
+2. 并发写操作， redis 如何分摊？
+3. 主从模式，薪火相传模式，主机宕机，导致 ip 地址发生变化，应用程序中配置需要修改对应的主机地址、端口等信息。
+
+redis3.0 中提供了解决方案。就是无中心化集群配置。
 :::
 
 ### 集群概述
 
-- Redis 集群实现了对Redis的水平扩容
-- 即启动N个redis节点，将整个数据库分布存储在这N个节点中，每个节点存储总数据的1/N。
+- Redis 集群实现了对 Redis 的水平扩容
+- 即启动 N 个 redis 节点，将整个数据库分布存储在这 N 个节点中，每个节点存储总数据的 1/N。
 
 - Redis 集群通过分区（partition）来提供一定程度的可用性（availability）
 - 即使集群中有一部分节点失效或者无法进行通讯， 集群也可以继续处理命令请求。
-  
+
 ![img](https://img-blog.csdnimg.cn/a119e8e84725496b9cc8022f62f98260.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NDA4Mzkw,size_16,color_FFFFFF,t_70#pic_center)
 
-::: danger 总结：Redis部署的四种模式
+::: danger 总结：Redis 部署的四种模式
+
 1. 单机模式 💻
 2. 主从模式 💻 - 💻 - 💻
 3. 哨兵模式 🪖 - ?>> 💻
 4. 集群模式 💻💻💻💻💻💻 !>> 💻
-:::
+   :::
 
 [具体命令点击查看，没往下写了](https://blog.csdn.net/qq_45408390/article/details/119731094)
