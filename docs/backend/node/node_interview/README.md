@@ -68,7 +68,7 @@ export class ModuleB {}
 
 [B树 和 B+树](/backend/sql/#b-tree)
 
-[Docker 常用的网络模式有哪些?](/backend/docker/#docker-常用的网络模式有哪些)
+[Docker 常用的网络模式有哪些?](/deploy/docker/#docker-常用的网络模式有哪些)
 
 [Nest 守卫、拦截器、中间件 的区别](/backend/node/node_frame/#nest-守卫、拦截器、中间件-的区别)
 

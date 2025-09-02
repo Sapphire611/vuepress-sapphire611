@@ -5,11 +5,11 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "vuepress dev docs --temp .temp",
-    "serve": "vuepress dev docs --temp .temp",
-    "build": "vuepress build docs",
-    "github": "bash scripts/deploy-github.sh",
-    "github-win": "npm run build && ./scripts/deploy-github.bat",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && vuepress dev docs --temp .temp",
+    "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vuepress dev docs --temp .temp",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && vuepress build docs",
+    "github": "set NODE_OPTIONS=--openssl-legacy-provider && bash scripts/deploy-github.sh",
+    "github-win": "set NODE_OPTIONS=--openssl-legacy-provider && npm run build && ./scripts/deploy-github.bat",
     "test": "node test/test.js"
   },
   "author": "Sapphire611",
