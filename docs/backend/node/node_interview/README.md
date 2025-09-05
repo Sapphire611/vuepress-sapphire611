@@ -17,6 +17,12 @@ sticky: 2
 [nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) / 
 [nodejs 宏任务微任务](/backend/node/node/#_11-宏任务-微任务)
 
+## CTrip
+
+[NestJS 数据初始化的时机](/backend/node/node_frame/#nestjs-数据初始化的时机)
+
+[Nestjs 全链路追踪方案](/backend/node/node_frame/#nestjs-全链路追踪方案)
+
 ## TAIBAO
 
 [css-矩形旋转](/frontend/interview/#css-矩形旋转)
