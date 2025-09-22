@@ -1,6 +1,6 @@
 ---
 title: 面试真题记录
-date: 2025-6-23
+date: 2025-9-22
 categories:
   - Backend
 tags:
@@ -15,17 +15,25 @@ sticky: 2
 ### STICKY
 [什么是 nodejs?](/backend/node/node/#_12-什么是nodejs) / 
 [nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) / 
-[nodejs 宏任务微任务](/backend/node/node/#_11-宏任务-微任务)
+[nodejs 宏任务微任务](/backend/node/node/#_11-宏任务-微任务) /
+[防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
+
+
+## CPIC
+
+[css-矩形旋转](/frontend/interview/#css-矩形旋转)
+
+[防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
+
+[Promise.all Vs Promise.allSettled](/frontend/interview/#promise-all-vs-promise-allsettled)
+
+[Vue 路由传参](/frontend/interview/#vue-路由传参)
 
 ## CTrip
 
 [NestJS 数据初始化的时机](/backend/node/node_frame/#nestjs-数据初始化的时机)
 
 [Nestjs 全链路追踪方案](/backend/node/node_frame/#nestjs-全链路追踪方案)
-
-## TAIBAO
-
-[css-矩形旋转](/frontend/interview/#css-矩形旋转)
 
 ## DEEPSIGHT
 

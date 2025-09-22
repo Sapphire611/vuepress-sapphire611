@@ -1,6 +1,6 @@
 ---
 title: 前端面试题目整理
-date: 2025-08-28
+date: 2025-09-22
 categories:
   - Frontend
 tags:
@@ -17,6 +17,103 @@ showSponsor: true
 来自 [Sapphire611](http://sapphire611.github.io)
 :::
 
+## Vue 路由传参
+
+```js
+// query 传递参数
+this.$router.push({ path: '/user', query: { id: 123, name: 'John' } })
+// 接收参数
+this.$route.query.id    // 123
+this.$route.query.name  // 'John'
+
+// parms 路由配置
+{ path: '/user/:id', component: User }
+// 传递参数
+this.$router.push({ name: 'user', params: { id: 123 } })
+// 接收参数
+this.$route.params.id  // 123
+
+
+//  Props 传参（路由配置） router.js
+{
+  path: '/user/:id',
+  name: 'UserDetail',
+  component: UserDetail,
+  props: true  // 关键配置
+}
+// 从A页面跳转到B页面
+methods: {
+  goToUserDetail() {
+    // 方式1：使用path + 实际参数值
+    this.$router.push('/user/123')
+    
+    // 方式2：使用name + params
+    this.$router.push({
+      name: 'UserDetail',
+      params: { id: 123 }
+    })
+  }
+}
+```
+
+## Promise.all Vs Promise.allSettled
+
+> Promise.all 和 Promise.allSettled 都是用于处理多个 Promise 的并发方法，但它们在错误处理上有显著差异。
+
+### Promise.all
+
+短路效应：只要有一个 Promise 被拒绝（rejected），整个 Promise.all 会立即拒绝
+
+结果格式：所有 Promise 都成功时，返回一个包含所有成功结果的数组
+
+错误处理：只能捕获到第一个发生的错误
+
+```javascript
+const promises = [
+  Promise.resolve(1),
+  Promise.reject(new Error('失败1')),
+  Promise.resolve(3),
+  Promise.reject(new Error('失败2')) // 这个错误不会被捕获到
+];
+
+Promise.all(promises)
+  .then(results => {
+    console.log('成功:', results); // 不会执行
+  })
+  .catch(error => {
+    console.log('捕获到错误:', error.message); // 输出: "失败1"
+  });
+```
+
+### Promise.allSettled
+
+不会短路：等待所有 Promise 完成（无论成功或失败）
+
+结果格式：返回一个对象数组，每个对象包含状态和值/原因
+
+错误处理：可以获取所有 Promise 的最终状态
+
+示例：
+```javascript
+const promises = [
+  Promise.resolve(1),
+  Promise.reject(new Error('失败1')),
+  Promise.resolve(3),
+  Promise.reject(new Error('失败2'))
+];
+
+Promise.allSettled(promises)
+  .then(results => {
+    console.log('所有结果:');
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        console.log(`Promise ${index}: 成功 -`, result.value);
+      } else {
+        console.log(`Promise ${index}: 失败 -`, result.reason.message);
+      }
+    });
+  });
+```
 ## CSS 矩形旋转
 
 > transform: rotate(45deg);
