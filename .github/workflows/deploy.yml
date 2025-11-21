@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -44,7 +45,7 @@ jobs:
           git add -A
           git commit -m 'deploy'
           git remote remove origin 2>/dev/null || true
-          git remote add origin https://${{ secrets.GH_PAT }}@github.com/Sapphire611/sapphire611.github.io.git
+          git remote add origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/Sapphire611/sapphire611.github.io.git
           git push --set-upstream origin master --force
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
