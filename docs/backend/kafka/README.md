@@ -7,7 +7,6 @@ tags:
   - kafka
 sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
 ::: right

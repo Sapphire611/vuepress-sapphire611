@@ -7,7 +7,6 @@ tags:
   - note
 sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
 ## 👋 软考中级系统架构师
@@ -517,6 +516,7 @@ D.实现
 聚合关系:整体与部分生命周期不同，属于关联关系。
 依赖关系:一个事物发生变化影响另一个事物
 泛化关系:表示两类事物之间的特殊/一般关系。实现关系:接口和类的关系。
+
 ---
 
 37.执行以下 Python 语句之后，列表 y 为( B )。
@@ -951,7 +951,7 @@ Systems support is the ongoing technical support for user, as well as the mainte
 
 ---
 
-### 数据库设计的6个阶段
+### 数据库设计的 6 个阶段
 
 - 1.需求分析
 

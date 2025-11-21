@@ -5,7 +5,6 @@ categories:
   - elasticSearch
 sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
 ## ElasticSearch Demo

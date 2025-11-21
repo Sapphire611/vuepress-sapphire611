@@ -29,3 +29,5 @@ yarn.lock
 test.js
 test.ts
 test2.js
+/deepsight
+put.js

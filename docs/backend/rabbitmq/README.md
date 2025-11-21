@@ -7,7 +7,6 @@ tags:
   - rabbitmq
 sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
 ::: right
@@ -216,34 +215,38 @@ const channel = await connection.createConfirmChannel(); // 开启确认模式
 
 // 2. 消息持久化
 await channel.assertQueue(queue, { durable: true }); // 队列持久化
-channel.sendToQueue(queue, content, { persistent: true });// 消息持久化
+channel.sendToQueue(queue, content, { persistent: true }); // 消息持久化
 
 // 3. 消费者手动ACK
-channel.consume(queue, (msg) => {
-  try {
-    process(msg);
-    channel.ack(msg); // 处理成功才确认
-  } catch (err) {
-    channel.nack(msg); // 处理失败拒绝
-  }
-}, { noAck: false }); // 必须关闭自动ACK
+channel.consume(
+  queue,
+  (msg) => {
+    try {
+      process(msg);
+      channel.ack(msg); // 处理成功才确认
+    } catch (err) {
+      channel.nack(msg); // 处理失败拒绝
+    }
+  },
+  { noAck: false }
+); // 必须关闭自动ACK
 
 // 4. 备份交换机
 await channel.assertExchange('main.exchange', 'direct', {
   durable: true,
-  alternateExchange: 'ae.exchange' // 指定备份交换机
+  alternateExchange: 'ae.exchange', // 指定备份交换机
 });
 ```
 
 ### RabbitMQ 如何实现延迟队列？有哪些方案？
 
-- 方案1：TTL+死信队列（最常用）
+- 方案 1：TTL+死信队列（最常用）
 
 ```js
 // 延迟队列设置
 await channel.assertQueue('delay.queue', {
   deadLetterExchange: 'target.exchange',
-  messageTtl: 60000 // 60秒后成为死信
+  messageTtl: 60000, // 60秒后成为死信
 });
 
 // 消费者监听目标队列
@@ -251,9 +254,9 @@ await channel.assertQueue('target.queue');
 channel.consume('target.queue', processMessage);
 ```
 
-- 方案2：rabbitmq_delayed_message_exchange 插件
+- 方案 2：rabbitmq_delayed_message_exchange 插件
 
-- 方案3：外部存储+定时任务
+- 方案 3：外部存储+定时任务
 
 ### 如何处理 RabbitMQ 消息积压问题？
 
@@ -273,7 +276,7 @@ channel.prefetch(100); // 提高预取数量
 channel.consume(queue, (msg) => {
   batch.push(msg);
   if (batch.length >= 50) {
-    bulkProcess(batch).then(() => batch.forEach(m => channel.ack(m)));
+    bulkProcess(batch).then(() => batch.forEach((m) => channel.ack(m)));
   }
 });
 ```
@@ -288,6 +291,7 @@ channel.consume('overload.queue', (msg) => {
 ```
 
 - 监控预警
+
 ```bash
 # 监控队列积压情况
 rabbitmqctl list_queues name messages_ready

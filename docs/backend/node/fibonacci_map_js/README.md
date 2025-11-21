@@ -5,13 +5,13 @@ categories:
   - Algorithm
 tags:
   - algorithm
-sidebar: "auto"
+sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
+
 ## 👋 原始版本
 
-``` js
+```js
 const fibonacci = (n) => {
   if (n === 1 || n === 2) return 1;
   return fibonacci(n - 2) + fibonacci(n - 1);
@@ -19,11 +19,12 @@ const fibonacci = (n) => {
 
 console.log(fibonacci(50)); // 出不了结果
 ```
+
 ---
 
 ## 👋 修改后版本
 
-``` js
+```js
 const map = new Map(); // 这个map得是全局的
 map.set(1, 1);
 map.set(2, 1);
@@ -43,4 +44,3 @@ console.log(fibonacci(50)); // 没问题了
 ::: right
 来自 [Sapphire611](http://sapphire611.github.io)
 ::
-

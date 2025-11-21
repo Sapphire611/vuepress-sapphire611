@@ -7,7 +7,6 @@ tags:
   - graphql
 sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
 # 5 分钟速通 GraphQL
@@ -214,6 +213,7 @@ export default resolvers;
 - **Resolvers 要注意性能优化**，如使用 DataLoader 批量处理数据库请求。
 - **错误处理要规范**，返回统一的错误格式。
 - **善用工具链**：如 Apollo Server、GraphQL Playground、GraphiQL。
+
 ---
 
 ## 参考资料

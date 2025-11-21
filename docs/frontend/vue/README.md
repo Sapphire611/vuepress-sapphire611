@@ -8,7 +8,7 @@ tags:
   - interview
 sidebar: 'auto'
 publish: true
-showSponsor: true
+ 
 ---
 
 ## 👋 VUE 题目整理

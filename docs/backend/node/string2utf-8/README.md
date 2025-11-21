@@ -7,14 +7,13 @@ tags:
   - javascript
 sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
-## 👋 UTF-8字节数计算函数
+## 👋 UTF-8 字节数计算函数
 
-> 在JavaScript中，字符串的长度和字节数之间的关系可能会因字符串中包含的字符而有所不同。由于UTF-8编码是一种变长编码，每个字符可能占用不同数量的字节。
+> 在 JavaScript 中，字符串的长度和字节数之间的关系可能会因字符串中包含的字符而有所不同。由于 UTF-8 编码是一种变长编码，每个字符可能占用不同数量的字节。
 
-- 以下是一个简单的JavaScript函数，可以用于计算一个字符串在UTF-8编码下所占的字节数：
+- 以下是一个简单的 JavaScript 函数，可以用于计算一个字符串在 UTF-8 编码下所占的字节数：
 
 ```js
 function utf8ByteLength(str) {

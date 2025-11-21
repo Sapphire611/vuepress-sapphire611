@@ -5,7 +5,6 @@ categories:
   - archietcture
 sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
 ## 架构风格 && 数据交互 相关
@@ -66,15 +65,15 @@ car.engine = container.get('Engine');
 
 ### 1. 流程步骤与接口调用
 
-| 步骤 | 参与方       | 动作                                                                 | 数据流向                                                                 |
-|------|--------------|----------------------------------------------------------------------|--------------------------------------------------------------------------|
-| 1    | 前端→后端   | 请求生成二维码                                                       | `GET /api/wxlogin/qrcode`                                               |
-| 2    | 后端→微信   | 调用微信接口获取二维码                                               | `POST https://api.weixin.qq.com/sns/qrconnect?appid=XX&redirect_uri=XX` |
-| 3    | 微信→后端   | 返回二维码参数                                                       | `{"ticket":"XX", "expire_seconds":1800}`                                |
-| 4    | 后端→前端   | 返回二维码URL                                                        | `{"qrcode_url":"https://mp.weixin...", "state":"RANDOM_STR"}`           |
-| 5    | 前端→后端   | 轮询检查扫码状态                                                     | `GET /api/wxlogin/check?state=RANDOM_STR`                               |
-| 6    | 用户→微信App| 扫码并确认登录                                                       | -                                                                       |
-| 7    | 微信→后端   | 携带code回调后端                                                     | `GET /wxcallback?code=AUTH_CODE&state=RANDOM_STR`                       |
-| 8    | 后端→微信   | 用code换取access_token                                               | `POST https://api.weixin.qq.com/sns/oauth2/access_token?code=XX`        |
-| 9    | 微信→后端   | 返回用户凭证                                                         | `{"access_token":"XX","openid":"XX"}`                                   |
-| 10   | 后端→前端   | 返回登录结果                                                         | `{"status":"success","token":"JWT_TOKEN"}`                              |
+| 步骤 | 参与方          | 动作                      | 数据流向                                                                |
+| ---- | --------------- | ------------------------- | ----------------------------------------------------------------------- |
+| 1    | 前端 → 后端     | 请求生成二维码            | `GET /api/wxlogin/qrcode`                                               |
+| 2    | 后端 → 微信     | 调用微信接口获取二维码    | `POST https://api.weixin.qq.com/sns/qrconnect?appid=XX&redirect_uri=XX` |
+| 3    | 微信 → 后端     | 返回二维码参数            | `{"ticket":"XX", "expire_seconds":1800}`                                |
+| 4    | 后端 → 前端     | 返回二维码 URL            | `{"qrcode_url":"https://mp.weixin...", "state":"RANDOM_STR"}`           |
+| 5    | 前端 → 后端     | 轮询检查扫码状态          | `GET /api/wxlogin/check?state=RANDOM_STR`                               |
+| 6    | 用户 → 微信 App | 扫码并确认登录            | -                                                                       |
+| 7    | 微信 → 后端     | 携带 code 回调后端        | `GET /wxcallback?code=AUTH_CODE&state=RANDOM_STR`                       |
+| 8    | 后端 → 微信     | 用 code 换取 access_token | `POST https://api.weixin.qq.com/sns/oauth2/access_token?code=XX`        |
+| 9    | 微信 → 后端     | 返回用户凭证              | `{"access_token":"XX","openid":"XX"}`                                   |
+| 10   | 后端 → 前端     | 返回登录结果              | `{"status":"success","token":"JWT_TOKEN"}`                              |

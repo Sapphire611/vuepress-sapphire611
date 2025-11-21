@@ -6,10 +6,9 @@ categories:
   - interview
 sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
-## MongoDB相关
+## MongoDB 相关
 
 ### mongodb 中索引有哪些类型？分别怎么使用？
 

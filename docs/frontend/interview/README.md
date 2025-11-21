@@ -8,7 +8,7 @@ tags:
   - interview
 sidebar: 'auto'
 publish: true
-showSponsor: true
+ 
 ---
 
 ## 👋 前端面试题目整理

@@ -7,7 +7,7 @@ tags:
   - html
 sidebar: 'auto'
 publish: true
-showSponsor: true
+ 
 ---
 
 ## 👋 打印页面参考

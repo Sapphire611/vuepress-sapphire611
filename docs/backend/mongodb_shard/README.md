@@ -6,21 +6,20 @@ categories:
   - shard
 sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
 ## MongoDB Shard Demo
 
 ::: right
 测试环境：Mac
-已安装Docker相关环境
+已安装 Docker 相关环境
 请确保 27017 ～ 27020 端口没有被占用
 来自 [Sapphire611](http://sapphire611.github.io)
 :::
 
 ### 1. docker-compose.yml
 
-> 在目录下，创建docker-compose.yml文件
+> 在目录下，创建 docker-compose.yml 文件
 
 > --bind_ip_all 添加后，本地才能访问到
 
@@ -31,7 +30,7 @@ services:
     image: mongo:5.0
     command: mongod --configsvr --replSet configrs --bind_ip_all --port 27017
     ports:
-      - "27019:27017"
+      - '27019:27017'
     volumes:
       - configsvr_data:/data/configdb
     networks:
@@ -42,18 +41,18 @@ services:
     image: mongo:5.0
     command: mongod --shardsvr --replSet shard1rs --bind_ip_all --port 27017
     ports:
-      - "27018:27017"
+      - '27018:27017'
     volumes:
       - shard1_data:/data/db
     networks:
       - mongodb-network
 
-  # 分片服务器2 (Shard 2) 
+  # 分片服务器2 (Shard 2)
   shard2:
     image: mongo:5.0
     command: mongod --shardsvr --replSet shard2rs --bind_ip_all --port 27017
     ports:
-      - "27020:27017"
+      - '27020:27017'
     volumes:
       - shard2_data:/data/db
     networks:
@@ -64,7 +63,7 @@ services:
     image: mongo:5.0
     command: mongos --configdb configrs/configsvr:27017 --bind_ip_all --port 27017
     ports:
-      - "27017:27017"
+      - '27017:27017'
     depends_on:
       - configsvr
       - shard1
@@ -81,7 +80,6 @@ networks:
   mongodb-network:
     driver: bridge
 ```
-
 
 ---
 
@@ -182,6 +180,7 @@ print("\n✅ 分片集群初始化完成");
 
 echo "=== 初始化脚本执行完成 ==="
 ```
+
 ---
 
 ### 4. 给文件增加执行权限后执行
@@ -193,7 +192,7 @@ chmod +x init.sh
 
 ---
 
-## Demo输出
+## Demo 输出
 
 ```bash
 liuliyi@liuliyideMacBook-Pro docker-compose % docker-compose up -d

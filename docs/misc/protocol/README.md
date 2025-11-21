@@ -1,14 +1,13 @@
 ---
-title: Http、Tcp、Udp、Mqtt、Websocket 
+title: Http、Tcp、Udp、Mqtt、Websocket
 date: 2023-1-9
 categories:
   - Backend
 tags:
   - node
   - grpc
-sidebar: "auto"
+sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
 ## 👋 HTTP、TCP、UDP、MQTT 和 WebSocket
@@ -33,14 +32,14 @@ showSponsor: true
 
 它具有低带宽和低网络流量的特点，并且能够在不连接到互联网的情况下进行通信。
 
-### WebSocket 
+### WebSocket
 
 是一种协议，使客户端和服务器能够通过单个、持久连接进行双向通信。它用于实时应用程序，如在线游戏和聊天应用程序。
 
 - 总的来说，HTTP 用于在互联网上传输数据，而 TCP、UDP 和 MQTT 用于建立和维护设备之间的连接。WebSocket 用于客户端和服务器之间的实时通信。
 
-
 ### WebSocket Node.js 最小实现
+
 > server.js
 
 ```js
@@ -64,16 +63,16 @@ wss.on('connection', function connection(ws) {
 
 > client.js
 
-[Websocket测试工具，在线调试 - 在线工具](http://tools.fun/websocket.html)
+[Websocket 测试工具，在线调试 - 在线工具](http://tools.fun/websocket.html)
 
-``` js
+```js
 const ws = new WebSocket('ws://localhost:8080');
 
-ws.onopen = function() {
+ws.onopen = function () {
   ws.send('hello server');
 };
 
-ws.onmessage = function(event) {
+ws.onmessage = function (event) {
   console.log('received:', event.data);
 };
 ```

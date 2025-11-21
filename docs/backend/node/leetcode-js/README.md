@@ -7,9 +7,8 @@ tags:
   - leetcode
   - algorithm
   - javascript
-sidebar: "auto"
+sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
 ## Leetcode 做题记录
@@ -74,7 +73,7 @@ const twoSum = (nums, target) => {
 
 ```js
 const addTwoNumbers = (l1, l2) => {
-  let list = new ListNode("0");
+  let list = new ListNode('0');
   const ans = list;
   let carry = 0;
 
@@ -160,9 +159,7 @@ const findMedianSortedArrays = (nums1, nums2) => {
   });
 
   const len = arr.length;
-  return len % 2
-    ? arr[Math.floor(len / 2)]
-    : (arr[len / 2] + arr[len / 2 - 1]) / 2;
+  return len % 2 ? arr[Math.floor(len / 2)] : (arr[len / 2] + arr[len / 2 - 1]) / 2;
 };
 ```
 
@@ -185,7 +182,7 @@ const findMedianSortedArrays = (nums1, nums2) => {
 
 ```js
 const longestPalindrome = (s) => {
-  let res = "";
+  let res = '';
 
   // 变量提升后提升效率
   for (var i = 0; i < s.length; i++) {
@@ -252,7 +249,7 @@ const convert = (s, numRows) => {
     return s;
   }
 
-  let arr = new Array(numRows).fill("");
+  let arr = new Array(numRows).fill('');
   let index = 0; // 当前添加内容位置
   let plus = true; // 控制index的加减
 
@@ -272,7 +269,7 @@ const convert = (s, numRows) => {
     }
   }
 
-  return arr.join("");
+  return arr.join('');
 };
 
 // console.log(convert("PAHNAPLSIIGYIR", 3));
@@ -309,13 +306,7 @@ const convert = (s, numRows) => {
 
 ```js
 const reverse = (x) => {
-  const res = parseInt(
-    Math.abs(x)
-      .toString()
-      .split("")
-      .reverse()
-      .join("")
-  );
+  const res = parseInt(Math.abs(x).toString().split('').reverse().join(''));
 
   // if (res > Math.pow(2,31) || res < Math.pow(-2,31) -1 ) return 0;
   if (res > 2147483648 || res < -2147483647) return 0;
@@ -390,14 +381,7 @@ const myAtoi = (str) => {
 
 ```js
 const isPalindrome = (x) => {
-  return (
-    Number(
-      `${Math.abs(x)}`
-        .split("")
-        .reverse()
-        .join("")
-    ) === x
-  );
+  return Number(`${Math.abs(x)}`.split('').reverse().join('')) === x;
 };
 ```
 
@@ -418,7 +402,7 @@ const isPalindrome = (x) => {
  * @return {boolean}
  */
 const isMatch = (s, p) => {
-  return new RegExp("^" + p + "$").test(s);
+  return new RegExp('^' + p + '$').test(s);
 };
 // 用魔法打败魔法!
 ```
@@ -490,34 +474,34 @@ C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
 
 ```js
 const intToRoman = (num) => {
-    const map = {
-        M: 1000,
-        CM: 900,
-        D: 500,
-        CD: 400,
-        C: 100,
-        XC: 90,
-        L: 50,
-        XL: 40,
-        X: 10,
-        IX: 9,
-        V: 5,
-        IV: 4,
-        I: 1
-    };
+  const map = {
+    M: 1000,
+    CM: 900,
+    D: 500,
+    CD: 400,
+    C: 100,
+    XC: 90,
+    L: 50,
+    XL: 40,
+    X: 10,
+    IX: 9,
+    V: 5,
+    IV: 4,
+    I: 1,
+  };
 
-    let res = "";
+  let res = '';
 
-    const keys = Object.keys(map);
+  const keys = Object.keys(map);
 
-    for (const key of keys) {
-        while(num >= map[key]) {
-            res += key;
-            num -= map[key];
-        }
+  for (const key of keys) {
+    while (num >= map[key]) {
+      res += key;
+      num -= map[key];
     }
+  }
 
-    return res;
+  return res;
 };
 
 // console.log(intToRoman(1994));
@@ -546,7 +530,7 @@ const romanToInt = (s) => {
     L: 50,
     C: 100,
     D: 500,
-    M: 1000
+    M: 1000,
   };
 
   let sum = 0;
@@ -570,37 +554,37 @@ const romanToInt = (s) => {
  * @return {number}
  */
 const romanToInt = (s) => {
+  const map = {
+    M: 1000,
+    CM: 900,
+    D: 500,
+    CD: 400,
+    C: 100,
+    XC: 90,
+    L: 50,
+    XL: 40,
+    X: 10,
+    IX: 9,
+    V: 5,
+    IV: 4,
+    I: 1,
+  };
 
-    const map = {
-        M: 1000,
-        CM: 900,
-        D: 500,
-        CD: 400,
-        C: 100,
-        XC: 90,
-        L: 50,
-        XL: 40,
-        X: 10,
-        IX: 9,
-        V: 5,
-        IV: 4,
-        I: 1
-    };
+  let sum = 0;
 
-    let sum = 0;
+  const keys = Object.keys(map);
 
-    const keys = Object.keys(map);
-
-    for (const key of keys) {
-        if (s.leftsWith(key)) {
-            sum += map[key];
-            s = s.slice(key.length);
-        }
+  for (const key of keys) {
+    if (s.leftsWith(key)) {
+      sum += map[key];
+      s = s.slice(key.length);
     }
+  }
 
-    return sum;
+  return sum;
 };
 ```
+
 ---
 
 ### 14. 最长公共前缀
@@ -626,17 +610,17 @@ const romanToInt = (s) => {
  * @return {string}
  */
 const longestCommonPrefix = (strs) => {
-  if(strs.length < 1) return strs[0];
+  if (strs.length < 1) return strs[0];
 
   strs.sort();
 
   for (var i = 0; i < strs[0].length; i++) {
-    if(strs[0].charAt(i) !== strs[strs.length - 1].charAt(i)) break;
+    if (strs[0].charAt(i) !== strs[strs.length - 1].charAt(i)) break;
   }
 
-  if(i < 1) return "";
+  if (i < 1) return '';
 
-  return strs[0].substring(0,i);
+  return strs[0].substring(0, i);
 };
 ```
 
@@ -694,6 +678,7 @@ const threeSum = (nums) => {
 ```
 
 ### 16. 最接近的三数之和
+
 ```js
 给你一个长度为 n 的整数数组 nums 和 一个目标值 target。请你从 nums 中选出三个整数，使它们的和与 target 最接近。
 
@@ -719,22 +704,22 @@ const threeSum = (nums) => {
  * @return {number}
  */
 const threeSumClosest = (nums, target) => {
-    let res = nums[0] + nums[1] + nums[2];
-    nums = nums.sort((a, b) => a - b);
-    for (let i = 0; i < nums.length - 2; i++) {
-        let left = i + 1;
-        let right = nums.length - 1;
-        while (left < right) {
-            let sum = nums[i] + nums[left] + nums[right];
-            if (Math.abs(sum - target) < Math.abs(res - target)) {
-                res = sum;
-            }
-            if (sum > target) right--;
-            if (sum < target) left++;
-            if (sum == target) return target;
-        }
+  let res = nums[0] + nums[1] + nums[2];
+  nums = nums.sort((a, b) => a - b);
+  for (let i = 0; i < nums.length - 2; i++) {
+    let left = i + 1;
+    let right = nums.length - 1;
+    while (left < right) {
+      let sum = nums[i] + nums[left] + nums[right];
+      if (Math.abs(sum - target) < Math.abs(res - target)) {
+        res = sum;
+      }
+      if (sum > target) right--;
+      if (sum < target) left++;
+      if (sum == target) return target;
     }
-    return res;
+  }
+  return res;
 };
 ```
 
@@ -750,41 +735,45 @@ const threeSumClosest = (nums, target) => {
 //输入：digits = "23"
 //输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
 const letterCombinations = (digits) => {
-    if (digits.length == 0) return [];
-    const res = [];
-    const map = {//建立电话号码和字母的映射关系
-        2: "abc",
-        3: "def",
-        4: "ghi",
-        5: "jkl",
-        6: "mno",
-        7: "pqrs",
-        8: "tuv",
-        9: "wxyz",
-    };
+  if (digits.length == 0) return [];
+  const res = [];
+  const map = {
+    //建立电话号码和字母的映射关系
+    2: 'abc',
+    3: 'def',
+    4: 'ghi',
+    5: 'jkl',
+    6: 'mno',
+    7: 'pqrs',
+    8: 'tuv',
+    9: 'wxyz',
+  };
 
-    const dfs = (curStr, i) => {//curStr是递归每一层的字符串，i是扫描的指针
-        if (i > digits.length - 1) {//边界条件，递归的出口
-            res.push(curStr); //其中一个分支的解推入res
-            return; //结束递归分支，进入另一个分支
-        }
-        const letters = map[digits[i]]; //取出数字对应的字母
-        for (const l of letters) {
-            //进入不同字母的分支
-            dfs(curStr + l, i + 1); //参数传入新的字符串，i右移，继续递归
-        }
-    };
-    dfs("", 0); // 递归入口，传入空字符串，i初始为0的位置
-    return res;
+  const dfs = (curStr, i) => {
+    //curStr是递归每一层的字符串，i是扫描的指针
+    if (i > digits.length - 1) {
+      //边界条件，递归的出口
+      res.push(curStr); //其中一个分支的解推入res
+      return; //结束递归分支，进入另一个分支
+    }
+    const letters = map[digits[i]]; //取出数字对应的字母
+    for (const l of letters) {
+      //进入不同字母的分支
+      dfs(curStr + l, i + 1); //参数传入新的字符串，i右移，继续递归
+    }
+  };
+  dfs('', 0); // 递归入口，传入空字符串，i初始为0的位置
+  return res;
 };
 ```
+
 ---
 
 ### 18. 四数之和
 
 ```js
 给你一个由 n 个整数组成的数组 nums ，和一个目标值 target
-请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] 
+请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]]
 （若两个四元组元素一一对应，则认为两个四元组重复）：
 
 0 <= a, b, c, d < n
@@ -802,55 +791,56 @@ nums[a] + nums[b] + nums[c] + nums[d] == target
 输入：nums = [2,2,2,2,2], target = 8
 输出：[[2,2,2,2]]
 ```
+
 ```js
 const fourSum = (nums, target) => {
-    const len = nums.length;
+  const len = nums.length;
 
-    if (len < 4) return [];
+  if (len < 4) return [];
 
-    nums.sort((a, b) => a - b); // sort
+  nums.sort((a, b) => a - b); // sort
 
-    let res = [];
+  let res = [];
 
-    for (let i = 0; i < len - 3; i++) {
-        // 定第一位数字
-        if (i > 0 && nums[i] === nums[i - 1]) continue; // 去重1
-        if (nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target) break; // 不可能1
-        if (nums[i] + nums[len - 1] + nums[len - 2] + nums[len - 3] < target) continue; // 跳过1
+  for (let i = 0; i < len - 3; i++) {
+    // 定第一位数字
+    if (i > 0 && nums[i] === nums[i - 1]) continue; // 去重1
+    if (nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target) break; // 不可能1
+    if (nums[i] + nums[len - 1] + nums[len - 2] + nums[len - 3] < target) continue; // 跳过1
 
-        for (let j = i + 1; j < len - 2; j++) {
-            // 定第二位数字
-            if (j > i + 1 && nums[j] === nums[j - 1]) continue; // 去重2
-            if (nums[i] + nums[j] + nums[j + 1] + nums[j + 2] > target) break; // 不可能2
-            if (nums[i] + nums[j] + nums[len - 1] + nums[len - 2] < target) continue; // 跳过2
+    for (let j = i + 1; j < len - 2; j++) {
+      // 定第二位数字
+      if (j > i + 1 && nums[j] === nums[j - 1]) continue; // 去重2
+      if (nums[i] + nums[j] + nums[j + 1] + nums[j + 2] > target) break; // 不可能2
+      if (nums[i] + nums[j] + nums[len - 1] + nums[len - 2] < target) continue; // 跳过2
 
-            let L = j + 1, R = len - 1; // 定三、四位
-            while (L < R) {
-                let sum = nums[i] + nums[j] + nums[L] + nums[R]; // 四位全部确定，开始计算结果
-                if (sum === target) {
-                    res.push([nums[i], nums[j], nums[L], nums[R]]); // correct
-                    while (L < R && nums[L] === nums[L + 1]) L++; // 左去重3
-                    while (L < R && nums[R] === nums[R - 1]) R--; // 右去重4
-                    L++;
-                    R--; // 双指针向中间推进，寻找剩下的结果
-                }
-
-                if (sum > target) {
-                    // sum大了，右指针推进
-                    while (L < R) if (nums[R] !== nums[--R]) break;
-                }
-
-                if (sum < target) {
-                    // sum大了，左指针推进
-                    while (L < R) if (nums[L] !== nums[++L]) break;
-                }
-            }
+      let L = j + 1,
+        R = len - 1; // 定三、四位
+      while (L < R) {
+        let sum = nums[i] + nums[j] + nums[L] + nums[R]; // 四位全部确定，开始计算结果
+        if (sum === target) {
+          res.push([nums[i], nums[j], nums[L], nums[R]]); // correct
+          while (L < R && nums[L] === nums[L + 1]) L++; // 左去重3
+          while (L < R && nums[R] === nums[R - 1]) R--; // 右去重4
+          L++;
+          R--; // 双指针向中间推进，寻找剩下的结果
         }
 
-    }
+        if (sum > target) {
+          // sum大了，右指针推进
+          while (L < R) if (nums[R] !== nums[--R]) break;
+        }
 
-    return res;
-}
+        if (sum < target) {
+          // sum大了，左指针推进
+          while (L < R) if (nums[L] !== nums[++L]) break;
+        }
+      }
+    }
+  }
+
+  return res;
+};
 // console.log(fourSum([1, 0, -1, 0, -2, 2], 0));
 ```
 
@@ -864,7 +854,7 @@ const fourSum = (nums, target) => {
 左括号必须用相同类型的右括号闭合。
 左括号必须以正确的顺序闭合。
 每个右括号都有一个对应的相同类型的左括号。
- 
+
 
 示例 1：
 输入：s = "()"
@@ -877,7 +867,7 @@ const fourSum = (nums, target) => {
 示例 3：
 输入：s = "(]"
 输出：false
- 
+
 提示：
 1 <= s.length <= 104
 s 仅由括号 '()[]{}' 组成
@@ -885,24 +875,24 @@ s 仅由括号 '()[]{}' 组成
 
 ```ts
 const isValid = (s: string) => {
-    const map: Map <string, string> = new Map();
-    map.set('}', '{');
-    map.set(')', '(');
-    map.set(']', '[');
+  const map: Map<string, string> = new Map();
+  map.set('}', '{');
+  map.set(')', '(');
+  map.set(']', '[');
 
-    let res: Array<string> = [];
-    for (let i = 0; i < s.length; i++) {
-        if (['(', '[', '{'].includes(s[i])) {
-            res.push(s[i]);
-        } else {
-            if (!res.length) return false;
-            if (res[res.length - 1] !== map.get(s[i])) return false;
-            res.pop();
-        }
+  let res: Array<string> = [];
+  for (let i = 0; i < s.length; i++) {
+    if (['(', '[', '{'].includes(s[i])) {
+      res.push(s[i]);
+    } else {
+      if (!res.length) return false;
+      if (res[res.length - 1] !== map.get(s[i])) return false;
+      res.pop();
     }
+  }
 
-    return res.length === 0;
-}
+  return res.length === 0;
+};
 
 console.log(isValid('([)'));
 ```
@@ -918,7 +908,7 @@ console.log(isValid('([)'));
 
 你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。
 
- 
+
 
 示例 1：
 输入：nums = [4,5,6,7,0,1,2], target = 0
@@ -931,7 +921,7 @@ console.log(isValid('([)'));
 示例 3：
 输入：nums = [1], target = 0
 输出：-1
- 
+
 
 提示：
 
@@ -949,40 +939,42 @@ nums 中的每个值都 独一无二
  * @return {number}
  */
 const search = (nums, target) => {
-    // return nums.indexOf(target);
-    let left = 0;
-    let right = nums.length - 1;
+  // return nums.indexOf(target);
+  let left = 0;
+  let right = nums.length - 1;
 
-    while (left <= right) {
-        let mid = left + right >> 1; // /2
+  while (left <= right) {
+    let mid = (left + right) >> 1; // /2
 
-        if (nums[mid] === target) return mid; // goal
+    if (nums[mid] === target) return mid; // goal
 
-        // 中位数小于右指针数，右边是有序的
-        if (nums[mid] < nums[right]) {
-           // 判断target是否在(mid, right]之间
-            if (nums[mid] < target && target <= nums[right]) left = mid + 1;   // 如果在,则中间数右移,即left增大
-            else right = mid - 1;   // 如果不在,则中间数左移,即right减小
-        } else { // 否则,左半边是有序的
-          // 判断target是否在[left, mid)之间
-            if (nums[left] <= target && target < nums[mid]) right = mid - 1; // 如果在，则中间数左移,即right减小
-            else left = mid + 1; // 如果不在，则中间数右移即left增大
-        }
+    // 中位数小于右指针数，右边是有序的
+    if (nums[mid] < nums[right]) {
+      // 判断target是否在(mid, right]之间
+      if (nums[mid] < target && target <= nums[right]) left = mid + 1; // 如果在,则中间数右移,即left增大
+      else right = mid - 1; // 如果不在,则中间数左移,即right减小
+    } else {
+      // 否则,左半边是有序的
+      // 判断target是否在[left, mid)之间
+      if (nums[left] <= target && target < nums[mid]) right = mid - 1; // 如果在，则中间数左移,即right减小
+      else left = mid + 1; // 如果不在，则中间数右移即left增大
     }
+  }
 
-    return -1;
-
+  return -1;
 };
 ```
 
 ---
+
 ### 70. 爬楼梯
+
 ```js
 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
 
 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
 
- 
+
 
 示例 1：
 
@@ -1002,13 +994,12 @@ const search = (nums, target) => {
 ```
 
 ```js
-
 // const f = (n) => {
 //     if (n == 0) return 1;
 //     if (n == 1) return 1;
 //     if (n == 2) return 2;
 //     return f(n - 1) + f(n - 2)
-// } 
+// }
 
 // console.log(f(2))
 
@@ -1023,23 +1014,23 @@ map.set(1, 1);
 map.set(2, 2);
 
 var climbStairs = function (n) {
-
-    const result = map.get(n);
-    if (!result) {
-        // recursion answer
-        const newValue = climbStairs(n - 1) + climbStairs(n - 2);
-        // set result in map to save times
-        map.set(n,newValue);
-        // callback
-        return newValue;
-    } else {
-        // got result
-        return result;
-    }
+  const result = map.get(n);
+  if (!result) {
+    // recursion answer
+    const newValue = climbStairs(n - 1) + climbStairs(n - 2);
+    // set result in map to save times
+    map.set(n, newValue);
+    // callback
+    return newValue;
+  } else {
+    // got result
+    return result;
+  }
 };
 ```
 
 ---
+
 ### 306. 累加数
 
 ```js
@@ -1087,11 +1078,11 @@ const isAdditiveNumber = (num) => {
 
   //   for (let i = 1; i <= num.length - 1; i++) { 累加数，前一个数不可能比后一个数大..
   for (let i = 1; i <= num.length / 2; i++) {
-    if (num[0] === "0" && i > 1) return false; // “0235813” = false
+    if (num[0] === '0' && i > 1) return false; // “0235813” = false
 
     for (let j = i + 1; j < num.length; j++) {
       // j - i 长度有限制，不可能超数组一半
-      if ((num[i] === "0" && j - i > 1) || j - i > num.length / 2) break;
+      if ((num[i] === '0' && j - i > 1) || j - i > num.length / 2) break;
       s;
 
       let num1 = Number(num.substring(0, i));
@@ -1109,14 +1100,7 @@ const recursionJudge = (remain, num1, num2) => {
   if (remain.length === 0) return true;
 
   // 1.remain开头是不是累加后的和，2.剩下的内容递归重复
-  return (
-    remain.leftsWith(num1 + num2) &&
-    recursionJudge(
-      remain.substring((num1 + num2 + "").length),
-      num2,
-      num1 + num2
-    )
-  );
+  return remain.leftsWith(num1 + num2) && recursionJudge(remain.substring((num1 + num2 + '').length), num2, num1 + num2);
 };
 
 // console.log(isAdditiveNumber("000"));
@@ -1130,8 +1114,6 @@ const recursionJudge = (remain, num1, num2) => {
 
 我们是这样定义一个非递减数列的： 对于数组中任意的 i (0 <= i <= n-2)，总满足 nums[i] <= nums[i + 1]。
 
- 
-
 #### 示例 1:
 
 ```
@@ -1139,6 +1121,7 @@ const recursionJudge = (remain, num1, num2) => {
 输出: true
 解释: 你可以通过把第一个 4 变成 1 来使得它成为一个非递减数列。
 ```
+
 #### 示例 2:
 
 ```
@@ -1151,21 +1134,21 @@ const recursionJudge = (remain, num1, num2) => {
 
 ```js
 var checkPossibility = function (nums) {
-    const length = nums.length;
-    let count = 0;
-    for (let i = 0; i < length; i++) {
-        if (nums[i] > nums[i + 1]) {
-            count++;
-            if (count > 1) return false;
-            if (i > 0 && nums[i - 1] > nums[i + 1]){
-                // 特殊例子：// 3,[4], 2, 3落在4的位置时，nums[i-1] > nums[i+1], 
+  const length = nums.length;
+  let count = 0;
+  for (let i = 0; i < length; i++) {
+    if (nums[i] > nums[i + 1]) {
+      count++;
+      if (count > 1) return false;
+      if (i > 0 && nums[i - 1] > nums[i + 1]) {
+        // 特殊例子：// 3,[4], 2, 3落在4的位置时，nums[i-1] > nums[i+1],
 
-                nums[i+1] = nums[i]; // 尝试将i+1位置的数变成i位置的数
-            }
-        }
+        nums[i + 1] = nums[i]; // 尝试将i+1位置的数变成i位置的数
+      }
     }
+  }
 
-    return true;
+  return true;
 };
 ```
 
@@ -1186,7 +1169,7 @@ var checkPossibility = function (nums) {
 
 输入：matrix = [[1,2,3],[4,5,6]]
 输出：[[1,4],[2,5],[3,6]]
- 
+
 
 提示：
 
@@ -1203,22 +1186,22 @@ n == matrix[i].length
  * @return {number[][]}
  */
 var transpose = function (matrix) {
-    const arr = matrix;
-    const row = arr.length; // 3
-    const col = arr[0].length; // 4
-    // console.log({row,col})
+  const arr = matrix;
+  const row = arr.length; // 3
+  const col = arr[0].length; // 4
+  // console.log({row,col})
 
-    const result = [];
-    for (let i = 0; i < col; i++) {
-        let temp = [];
-        for (let j = 0; j < row; j++) {
-            // console.log(arr[j][i])
-            temp.push(arr[j][i]);
-        }
-        // console.log(temp)
-        result.push(temp);
+  const result = [];
+  for (let i = 0; i < col; i++) {
+    let temp = [];
+    for (let j = 0; j < row; j++) {
+      // console.log(arr[j][i])
+      temp.push(arr[j][i]);
     }
-    // console.log(result);
-    return result;
+    // console.log(temp)
+    result.push(temp);
+  }
+  // console.log(result);
+  return result;
 };
 ```

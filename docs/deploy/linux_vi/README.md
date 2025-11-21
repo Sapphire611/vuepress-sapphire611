@@ -5,18 +5,17 @@ categories:
   - Deploy
 tags:
   - linux
-sidebar: "auto"
+sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
-## 💻  Linux vi/vim 
+## 💻 Linux vi/vim
 
 - [Linux vi/vim](https://www.runoob.com/linux/linux-vim.html)
 
 > 所有的 Unix Like 系统都会内建 vi 文书编辑器
 
---- 
+---
 
 ## 键盘操作图
 

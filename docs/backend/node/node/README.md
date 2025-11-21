@@ -6,12 +6,11 @@ categories:
 tags:
   - node
   - interview
-sidebar: "auto"
+sidebar: 'auto'
 publish: true
-showSponsor: true
 ---
 
-## 👋  Node.js 题目整理
+## 👋 Node.js 题目整理
 
 :::right
 来自 [Sapphire611](http://sapphire611.github.io)
@@ -19,24 +18,23 @@ showSponsor: true
 
 ## 1. Koa 和 Express 有哪些不同？
 
-> express框架是一个基于 Node.js 平台的极简、灵活的 web 应用开发框架，
+> express 框架是一个基于 Node.js 平台的极简、灵活的 web 应用开发框架，
 
-> koa是 Express 原班人马基于 ES6 新特性重新开发的框架,框架自身不包含任何中间件，很多功能需要借助第三方中间件解决
+> koa 是 Express 原班人马基于 ES6 新特性重新开发的框架,框架自身不包含任何中间件，很多功能需要借助第三方中间件解决
 
 - 由于其基于 ES6 generator 特性的异步流程控制，解决了 "callback hell" 和麻烦的错误处理问题。
 
+1. express 内置了许多中间件 & 模块可供使用，而 koa 没有。
 
-1. express内置了许多中间件 & 模块可供使用，而koa没有。
-
-<span style="color:red">2. express的中间件模型为线型，而koa的中间件模型为U型，也可称为洋葱模型构造中间件。</span>
+<span style="color:red">2. express 的中间件模型为线型，而 koa 的中间件模型为 U 型，也可称为洋葱模型构造中间件。</span>
 
 > Express
-优点：线性逻辑，可用模块丰富，社区活跃
-缺点：callback.hell
+> 优点：线性逻辑，可用模块丰富，社区活跃
+> 缺点：callback.hell
 
 > Koa
-优点：🧅，解决了callback hell，轻量
-缺点：社区相对较小。
+> 优点：🧅，解决了 callback hell，轻量
+> 缺点：社区相对较小。
 
 ---
 
@@ -53,10 +51,11 @@ showSponsor: true
 | **I/O 处理**       | 用户交互（点击、网络请求等），依赖 Web APIs。                                            | 系统级 I/O（文件、网络等），依赖 libuv 的线程池和事件驱动。                          |
 |                    | setTimeout(() => console.log('timeout'), 0);                                             | setTimeout(() => console.log('timeout'), 0);                                         |
 |                    | Promise.resolve().then(() => console.log('promise'));                                    | setImmediate(() => console.log('immediate'));                                        |
-|                    | // 输出顺序：promise → timeout                                                           | // 输出顺序可能随机（取决于事件循环启动时间）
+|                    | // 输出顺序：promise → timeout                                                           | // 输出顺序可能随机（取决于事件循环启动时间）                                        |
 | **关键差异总结**   | 微任务优先级高，与 UI 渲染紧密关联。                                                     | 多阶段处理复杂 I/O，`nextTick` 和 `setImmediate` 是特有机制。                        |
 
 ### 3.1. 运行环境与职责
+
 浏览器：处理 DOM 事件、UI 渲染、网络请求（如 fetch）、用户交互（如点击）等。
 
 Node.js：处理文件 I/O、网络请求（如 http 模块）、子进程等系统级操作。
@@ -95,31 +94,28 @@ Close Callbacks：处理关闭事件的回调（如 socket.on('close')）。
 
 process.nextTick 在阶段切换前优先执行（优先级高于微任务）。
 
+## 如何实现 JWT 鉴权机制？
 
+### JWT 是什么
 
-## 如何实现JWT鉴权机制？
+JWT（JSON Web Token）分成了三部分，头部（Header）、载荷（Payload）、签名（Signature），并以.进行拼接。其中头部和载荷都是以 JSON 格式存放数据，只是进行了编码
 
-### JWT是什么
-
-JWT（JSON Web Token）分成了三部分，头部（Header）、载荷（Payload）、签名（Signature），并以.进行拼接。其中头部和载荷都是以JSON格式存放数据，只是进行了编码
-
- 
 1. header
-每个JWT都会带有头部信息，这里主要声明使用的算法。声明算法的字段名为alg，同时还有一个typ的字段，默认JWT即可。以下示例中算法为HS256
-
-``` js
-{  "alg": "HS256",  "typ": "JWT" } 
-```
-
-- 因为JWT是字符串，所以我们还需要对以上内容进行Base64编码，编码后字符串如下：
+   每个 JWT 都会带有头部信息，这里主要声明使用的算法。声明算法的字段名为 alg，同时还有一个 typ 的字段，默认 JWT 即可。以下示例中算法为 HS256
 
 ```js
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9        
+{  "alg": "HS256",  "typ": "JWT" }
+```
+
+- 因为 JWT 是字符串，所以我们还需要对以上内容进行 Base64 编码，编码后字符串如下：
+
+```js
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9;
 ```
 
 2. payload
-   
-载荷即消息体，这里会存放实际的内容，也就是Token的数据声明，例如用户的id和name，默认情况下也会携带令牌的签发时间iat，通过还可以设置过期时间，如下：
+
+载荷即消息体，这里会存放实际的内容，也就是 Token 的数据声明，例如用户的 id 和 name，默认情况下也会携带令牌的签发时间 iat，通过还可以设置过期时间，如下：
 
 ```js
 {
@@ -129,21 +125,21 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 }
 ```
 
-- 同样进行Base64编码后，字符串如下：
+- 同样进行 Base64 编码后，字符串如下：
 
 ```js
-eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ
+eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ;
 ```
 
 3. Signature
 
-签名是对头部和载荷内容进行签名，一般情况，设置一个secretKey，对前两个的结果进行HMACSHA25算法，公式如下：
+签名是对头部和载荷内容进行签名，一般情况，设置一个 secretKey，对前两个的结果进行 HMACSHA25 算法，公式如下：
 
 > Signature = HMACSHA256(base64Url(header)+.+base64Url(payload),secretKey)
 
 一旦前面两部分数据被篡改，只要服务器加密用的密钥没有泄露，得到的签名肯定和之前的签名不一致
 
-### 如何实现JWT
+### 如何实现 JWT
 
 ```js
 Token的使用分成了两部分：
@@ -167,19 +163,21 @@ const jwt = require('jsonwebtoken');
 jwt.sign(payload, secret, options, callback);
 // option :{ expiresIn: moment().add(1, 'days').valueOf() }
 ```
-- 在前端接收到token后，一般情况会通过localStorage进行缓存，然后将token放到HTTP请求头Authorization 中，关于Authorization的设置，前面要加上 Bearer ，注意后面带有空格
 
-### 校验token
+- 在前端接收到 token 后，一般情况会通过 localStorage 进行缓存，然后将 token 放到 HTTP 请求头 Authorization 中，关于 Authorization 的设置，前面要加上 Bearer ，注意后面带有空格
+
+### 校验 token
 
 ```js
 const jwt = require('jsonwebtoken');
 return jwt.decode(token);
 ```
+
 ### 优缺点
 
 优点：
 
-- json具有通用性，所以可以跨语言
+- json 具有通用性，所以可以跨语言
 
 - 组成简单，字节占用小，便于传输
 
@@ -187,40 +185,36 @@ return jwt.decode(token);
 
 - 一处生成，多处使用，可以在分布式系统中，解决单点登录问题
 
-- 可防护CSRF攻击
+- 可防护 CSRF 攻击
 
 缺点：
 
-- payload部分仅仅是进行简单编码，所以只能用于存储逻辑必需的非敏感信息
+- payload 部分仅仅是进行简单编码，所以只能用于存储逻辑必需的非敏感信息
 
 - 需要保护好加密密钥，一旦泄露后果不堪设想
 
-- 为避免token被劫持，最好使用https协议
+- 为避免 token 被劫持，最好使用 https 协议
 
-## 4. Node性能如何监控以及优化?
+## 4. Node 性能如何监控以及优化?
 
 ### 性能优化是什么？
 
-> Node作为一门服务端语言，性能方面尤为重要，其衡量指标一般有如下：
+> Node 作为一门服务端语言，性能方面尤为重要，其衡量指标一般有如下：
 
 - CPU
-  
 - 内存
-  
 - I/O
-  
 - 网络
 
 > CPU 主要有两个量化指标：
 
-- CPU负载：在某个时间段内，占用以及等待CPU的进程总数
+- CPU 负载：在某个时间段内，占用以及等待 CPU 的进程总数
 
-- CPU使用率：CPU时间占用状况，等于 1 - 空闲CPU时间(idle time) / CPU总时间
+- CPU 使用率：CPU 时间占用状况，等于 1 - 空闲 CPU 时间(idle time) / CPU 总时间
 
 :::right
-———— Node应用一般不会消耗很多的CPU，如果CPU占用率高，则表明应用存在很多同步操作，导致异步任务回调被阻塞
+———— Node 应用一般不会消耗很多的 CPU，如果 CPU 占用率高，则表明应用存在很多同步操作，导致异步任务回调被阻塞
 :::
-
 
 ```js
 'use strict';
@@ -254,7 +248,7 @@ console.log(res);
 ```
 
 :::right
-———— 在Node中，一个进程的最大内存容量为1.5GB。因此我们需要减少内存泄露
+———— 在 Node 中，一个进程的最大内存容量为 1.5GB。因此我们需要减少内存泄露
 :::
 
 ---
@@ -272,7 +266,7 @@ easyMonitor('你的项目名称');
 
 ### 优化代码
 
-> 正确使用Stream
+> 正确使用 Stream
 
 ```js
 const http = require('http');
@@ -280,15 +274,15 @@ const fs = require('fs');
 
 // bad
 http.createServer(function (req, res) {
-    fs.readFile(__dirname + '/data.txt', function (err, data) {
-        res.end(data);
-    });
+  fs.readFile(__dirname + '/data.txt', function (err, data) {
+    res.end(data);
+  });
 });
 
 // good
 http.createServer(function (req, res) {
-    const stream = fs.createReadStream(__dirname + '/data.txt');
-    stream.pipe(res);
+  const stream = fs.createReadStream(__dirname + '/data.txt');
+  stream.pipe(res);
 });
 ```
 
@@ -310,37 +304,38 @@ http.createServer(function (req, res) {
 const buffer = fs.readFileSync(__dirname + '/source/index.htm');
 
 app.use(
-    mount('/', async (ctx) => {
-        ctx.status = 200;
-        ctx.type = 'html';
-        ctx.body = buffer;
-        leak.push(fs.readFileSync(__dirname + '/source/index.htm'));
-    })
+  mount('/', async (ctx) => {
+    ctx.status = 200;
+    ctx.type = 'html';
+    ctx.body = buffer;
+    leak.push(fs.readFileSync(__dirname + '/source/index.htm'));
+  })
 );
 
 const leak = [];
 // leak的内存非常大，造成内存泄露，应当避免这样的操作，通过减少内存使用，是提高服务性能的手段之一
 // 而节省内存最好的方式是使用池，其将频用、可复用对象存储起来，减少创建和销毁操作
 ```
-## 5. 如何封装Node.js中间件？
 
-> 在NodeJS中，中间件主要是指封装http请求细节处理的方法
+## 5. 如何封装 Node.js 中间件？
 
-- 例如在express、koa等web框架中，中间件的本质为一个回调函数，参数包含请求对象、响应对象和执行下一个中间件的函数
+> 在 NodeJS 中，中间件主要是指封装 http 请求细节处理的方法
+
+- 例如在 express、koa 等 web 框架中，中间件的本质为一个回调函数，参数包含请求对象、响应对象和执行下一个中间件的函数
 
 - 在这些中间件函数中，我们可以执行业务逻辑代码，修改请求和响应对象、返回响应数据等操作
 
 ```js
 exports.validate = (schema) => {
-	if (!schema) {
-		return function (ctx, next) {
-			return next();
-		};
+  if (!schema) {
+    return function (ctx, next) {
+      return next();
+    };
 
     // ...
-	
-		return next();
-	};
+
+    return next();
+  }
 };
 ```
 
@@ -348,14 +343,13 @@ exports.validate = (schema) => {
 
 - 缓存的模块 > 内置模块(fs/path) > 相对/绝对路径(有文件后缀 > 无文件后缀) > 相对/绝对路径(无文件后缀) > 目录/第三方模块
 
-- 如果是目录，则根据 package.json的main属性值决定目录下入口文件，默认情况为 index.js
+- 如果是目录，则根据 package.json 的 main 属性值决定目录下入口文件，默认情况为 index.js
 
 - 如果文件为第三方模块，则会引入 node_modules 文件，如果不在当前仓库文件中，则自动从上级递归查找，直到根目录
 
-
 ## 7. Node.js 事件循环机制
 
-> 事件循环是基于libuv实现，libuv是一个多平台的专注于异步IO的库，具体流程如下：
+> 事件循环是基于 libuv 实现，libuv 是一个多平台的专注于异步 IO 的库，具体流程如下：
 
 ```
      ┌────────────────┐
@@ -369,7 +363,7 @@ exports.validate = (schema) => {
 │    ┌────────┴───────┐
 │    │  idle,prepare  │ // 闲置阶段
 │    └────────┬───────┘              ┌────────────────┐
-│             │                      │                │ // 检索、执行I/O  
+│             │                      │                │ // 检索、执行I/O
 │    ┌────────┴───────┐              │    incoming    │ // 除了 setImmediate()
 │    │      poll      │◄─────────────┤                │ // 适当阻塞
 │    └────────┬───────┘              │   connections  │
@@ -385,11 +379,12 @@ exports.validate = (schema) => {
 
 - 每个阶段对应一个队列，当事件循环进入某个阶段时, 将会在该阶段内执行回调，直到队列耗尽或者回调的最大数量已执行, 那么将进入下一个处理阶段
 
-- 除了上述6个阶段，还存在**process.nextTick**，其不属于事件循环的任何一个阶段，它属于该阶段与下阶段之间的过渡, 即本阶段执行结束, 进入下一个阶段前, 所要执行的回调，类似插队。
+- 除了上述 6 个阶段，还存在**process.nextTick**，其不属于事件循环的任何一个阶段，它属于该阶段与下阶段之间的过渡, 即本阶段执行结束, 进入下一个阶段前, 所要执行的回调，类似插队。
 
 ---
 
 ### 题目
+
 ```js
 'use strict';
 
@@ -431,6 +426,7 @@ new Promise(function (resolve) {
 
 console.log('script end'); // 6
 ```
+
 ---
 
 ```js
@@ -471,26 +467,27 @@ then里面的回调函数进入微任务队列
 
 ---
 
-## 8. Node中的EventEmmiter是什么？
+## 8. Node 中的 EventEmmiter 是什么？
 
-> Node 的events模块提供了一个 EventEmitter，这个类实现了Node异步事件驱动架构的基本模式——观察者模式
+> Node 的 events 模块提供了一个 EventEmitter，这个类实现了 Node 异步事件驱动架构的基本模式——观察者模式
 
 > 在这种模式中，被观察者(主体)维护着一组其他对象派来(注册)的观察者，有新的对象对主体感兴趣就注册观察者，不感兴趣就取消订阅，主体有更新的话就依次通知观察者们
 
 ```js
-const EventEmitter = require('events')
+const EventEmitter = require('events');
 
 class MyEmitter extends EventEmitter {}
 const myEmitter = new MyEmitter();
 
 function callback() {
-    console.log('触发了event事件！')
+  console.log('触发了event事件！');
 }
-myEmitter.on('event', callback) // 注册event事件
-myEmitter.emit('event') // 通过emit触发
+myEmitter.on('event', callback); // 注册event事件
+myEmitter.emit('event'); // 通过emit触发
 myEmitter.removeListener('event', callback); // 通过RemoveListener取消注册
 ```
-``` js
+
+```js
 // 常见方法:
 emitter.addListener/on(eventName, listener) // 添加类型为 eventName 的监听事件到事件数组尾部
 emitter.prependListener(eventName, listener) // 添加类型为 eventName 的监听事件到事件数组头部
@@ -500,77 +497,77 @@ emitter.once(eventName, listener) // 添加类型为 eventName 的监听事件�
 emitter.removeAllListeners([eventName]) // 移除全部类型为 eventName 的监听事件
 ```
 
-### 实现一个EventEmmiter
+### 实现一个 EventEmmiter
 
 ```js
 class EventEmitter {
-    constructor() {
-        this.events = {};
-    }
+  constructor() {
+    this.events = {};
+  }
 
-    on(type, handler) {
-        if (!this.events[type]) {
-            this.events[type] = [];
-        }
-        this.events[type].push(handler);
+  on(type, handler) {
+    if (!this.events[type]) {
+      this.events[type] = [];
     }
+    this.events[type].push(handler);
+  }
 
-    addListener(type,handler){
-        this.on(type,handler)
-    }
+  addListener(type, handler) {
+    this.on(type, handler);
+  }
 
-    prependListener(type, handler) {
-        if (!this.events[type]) {
-            this.events[type] = [];
-        }
-        this.events[type].unshift(handler);
+  prependListener(type, handler) {
+    if (!this.events[type]) {
+      this.events[type] = [];
     }
+    this.events[type].unshift(handler);
+  }
 
-    removeListener(type, handler) {
-        if (!this.events[type]) {
-            return;
-        }
-        this.events[type] = this.events[type].filter(item => item !== handler);
+  removeListener(type, handler) {
+    if (!this.events[type]) {
+      return;
     }
+    this.events[type] = this.events[type].filter((item) => item !== handler);
+  }
 
-    off(type,handler){
-        this.removeListener(type,handler)
-    }
+  off(type, handler) {
+    this.removeListener(type, handler);
+  }
 
-    emit(type, ...args) {
-        this.events[type].forEach((item) => {
-            Reflect.apply(item, this, args);
-        });
-    }
+  emit(type, ...args) {
+    this.events[type].forEach((item) => {
+      Reflect.apply(item, this, args);
+    });
+  }
 
-    once(type, handler) {
-        this.on(type, this._onceWrap(type, handler, this));
-    }
+  once(type, handler) {
+    this.on(type, this._onceWrap(type, handler, this));
+  }
 
-    _onceWrap(type, handler, target) {
-        const state = { fired: false, handler, type , target};
-        const wrapFn = this._onceWrapper.bind(state);
-        state.wrapFn = wrapFn;
-        return wrapFn;
-    }
+  _onceWrap(type, handler, target) {
+    const state = { fired: false, handler, type, target };
+    const wrapFn = this._onceWrapper.bind(state);
+    state.wrapFn = wrapFn;
+    return wrapFn;
+  }
 
-    _onceWrapper(...args) {
-        if (!this.fired) {
-            this.fired = true;
-            Reflect.apply(this.handler, this.target, args);
-            this.target.off(this.type, this.wrapFn);
-        }
+  _onceWrapper(...args) {
+    if (!this.fired) {
+      this.fired = true;
+      Reflect.apply(this.handler, this.target, args);
+      this.target.off(this.type, this.wrapFn);
     }
+  }
 }
 ```
 
-## 9. 说说对Node中Stream的理解？
+## 9. 说说对 Node 中 Stream 的理解？
 
 > 流（Stream），是一个数据传输手段，是端到端信息交换的一种方式，而且是有顺序的,是逐块读取数据、处理内容，以 Buffer 为单位
 
 - 流可以分成三部分：source、dest、pipe
 
-- 在source和dest之间有一个连接的管道pipe,它的基本语法是source.pipe(dest)，source和dest就是通过pipe连接，让数据从source流向了dest，如下图所示:
+- 在 source 和 dest 之间有一个连接的管道 pipe,它的基本语法是 source.pipe(dest)，source 和 dest 就是通过 pipe 连接，让数据从 source 流向了 dest，如下图所示:
 
 ```
 ┌──────────────┐                ┌──────────────┐
@@ -580,11 +577,11 @@ class EventEmitter {
 └──────────────┘                └──────────────┘
 ```
 
-### Stream 的种类 
+### Stream 的种类
 
-> 在NodeJS，几乎所有的地方都使用到了流的概念，分成四个种类：
+> 在 NodeJS，几乎所有的地方都使用到了流的概念，分成四个种类：
 
-- 可读流： 可读取数据的流。例如fs.createReadStream() 可以从文件读取内容
+- 可读流： 可读取数据的流。例如 fs.createReadStream() 可以从文件读取内容
 
 - 可写流：可写入数据的流。例如 fs.createWriteStream() 可以使用流将数据写入文件
 
@@ -593,13 +590,13 @@ class EventEmitter {
 - 转换流： 可以在数据写入和读取时修改或转换数据的流。
   - 例如，在文件压缩操作中，可以向文件写入压缩数据，并从文件中读取解压数据
 
-
 ```
 在NodeJS中HTTP服务器模块中，request 是可读流，response 是可写流。
 还有fs模块，能同时处理可读和可写文件流
 
 可读流和可写流都是单向的，比较容易理解，而另外两个是双向的
 ```
+
 ### 双工流 demo
 
 > 比如 websocket 通信，是一个全双工通信，发送方和接受方都是各自独立的方法，发送和接收都没有任何关系
@@ -613,11 +610,12 @@ const myDuplex = new Duplex({
   },
   write(chunk, encoding, callback) {
     // ...
-  }
+  },
 });
-
 ```
+
 ---
+
 ### 转换流 demo
 
 ```js
@@ -626,15 +624,15 @@ const { Transform } = require('stream');
 const myTransform = new Transform({
   transform(chunk, encoding, callback) {
     // ...
-  }
+  },
 });
 ```
 
 ### 主要应用场景
 
-stream的应用场景主要就是处理IO操作，而http请求和文件操作都属于IO操作
+stream 的应用场景主要就是处理 IO 操作，而 http 请求和文件操作都属于 IO 操作
 
-思想一下，如果一次IO操作过大，硬件的开销就过大，而将此次大的IO操作进行分段操作，让数据像水管一样流动，知道流动完成
+思想一下，如果一次 IO 操作过大，硬件的开销就过大，而将此次大的 IO 操作进行分段操作，让数据像水管一样流动，知道流动完成
 
 常见的场景有：
 
@@ -642,27 +640,27 @@ stream的应用场景主要就是处理IO操作，而http请求和文件操作�
 // 文件操作
 // 创建一个可读数据流readStream，一个可写数据流writeStream，通过pipe管道把数据流转过去
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
 
 // 两个文件名
-const fileName1 = path.resolve(__dirname, 'data.txt')
-const fileName2 = path.resolve(__dirname, 'data-bak.txt')
+const fileName1 = path.resolve(__dirname, 'data.txt');
+const fileName2 = path.resolve(__dirname, 'data-bak.txt');
 // 读取文件的 stream 对象
-const readStream = fs.createReadStream(fileName1)
+const readStream = fs.createReadStream(fileName1);
 // 写入文件的 stream 对象
-const writeStream = fs.createWriteStream(fileName2)
+const writeStream = fs.createWriteStream(fileName2);
 // 通过 pipe执行拷贝，数据流转
-readStream.pipe(writeStream)
+readStream.pipe(writeStream);
 // 数据读取完成监听，即拷贝完成
 readStream.on('end', function () {
-    console.log('拷贝完成')
-})
+  console.log('拷贝完成');
+});
 ```
 
 ```js
 // 读取minioClient的图片(ReadableStream)，然后转换成base64
-const readable = await S3FileAdapter.minioClient.getObject(config.bucketName,each);
+const readable = await S3FileAdapter.minioClient.getObject(config.bucketName, each);
 
 const chunks = [];
 readable.on('readable', () => {
@@ -687,7 +685,6 @@ readable.on('end', async () => {
   const thumbnail = 'data:image/jpeg;base64,' + base64; // ok...
   console.log(`Read data end Length : ${res.length}...`);
 });
-
 ```
 
 ## 10. Node Stream 是什么？有哪些种类的 Stream？
@@ -734,6 +731,6 @@ readable.on('end', async () => {
 重复上述过程，不断循环执行宏任务和微任务，直到所有任务都完成。
 :::
 
-## 12. 什么是Nodejs？ 
+## 12. 什么是 Nodejs？
 
 > Node.js 是一个基于 Chrome V8 引擎 的 JavaScript 运行时，用于在服务器端高效运行 JavaScript 代码。它采用 事件驱动、非阻塞 I/O 模型，使其轻量且高效，特别适合构建高性能、可扩展的网络应用。
