@@ -147,7 +147,7 @@ watchEffect(() => {
 
 ---
 
-## 谈谈你对 `VUE`的理解
+## 谈谈你对 `VUE` 的理解
 
 #### `MVVM` VS `MVC`
 
@@ -756,13 +756,13 @@ Action
 防抖函数的作用是在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时。
 
 ```javascript
-function debounce(fn, delay) {
+function debounce(fn) {
   let timer = null;
   return function(...args) {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       fn.apply(this, args);
-    }, delay);
+    }, 1000);
   };
 }
 
@@ -771,11 +771,11 @@ function debounce(fn, delay) {
 节流函数的作用是在规定的时间内，函数只会被执行一次。
 
 ```javascript
-function throttle(fn, delay) {
+function throttle(fn) {
   let lastTime = 0;
   return function(...args) {
     const now = Date.now();
-    if (now - lastTime >= delay) {
+    if (now - lastTime >= 1000) {
       fn.apply(this, args);
       lastTime = now;
     }

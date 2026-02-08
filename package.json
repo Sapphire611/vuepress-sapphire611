@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
+    "dev": "export NODE_OPTIONS=--openssl-legacy-provider && vuepress dev docs --temp .temp",
     "start": "set NODE_OPTIONS=--openssl-legacy-provider && vuepress dev docs --temp .temp",
     "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vuepress dev docs --temp .temp",
     "build": "set NODE_OPTIONS=--openssl-legacy-provider && vuepress build docs",

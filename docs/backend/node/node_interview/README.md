@@ -13,9 +13,9 @@ sticky: 2
 ---
 
 ### STICKY
-[什么是 nodejs?](/backend/node/node/#_12-什么是nodejs) / 
+[什么是 nodejs?](/backend/node/node/#_12-什么是-nodejs) / 
 [nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) / 
-[nodejs 宏任务微任务](/backend/node/node/#_11-宏任务-微任务) /
+[浏览器和 Node 中 事件循环区别](/node/node/#_3-浏览器和-node-中-事件循环有什么区别) /
 [防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
 
@@ -756,37 +756,6 @@ function identity<T>(value: T): T {
 
 let result = identity('Hello, TypeScript'); // result的类型为string
 ```
-
-### 5. 防抖 / 节流
-
-> 防抖（Debouncing）和节流（Throttling）是两种用于控制函数调用频率的常见技术，它们通常用于处理用户输入、浏览器事件或其他需要限制触发频率的场景。Node.js 中也可以应用这些技术，尤其是在构建后端应用程序中的一些特定情况下。
-
-#### 防抖（Debouncing）：
-
-> 防抖技术确保在一定时间内只执行一次函数。如果在指定的时间间隔内再次触发函数，计时器将被重置，直到没有新的触发事件。防抖通常用于处理用户输入，以避免在用户持续输入时频繁触发函数。
-
-示例（使用 Node.js 的 setTimeout 函数实现防抖）：
-
-```js
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func.apply(this, args);
-    }, delay);
-  };
-}
-
-const debouncedFunction = debounce(() => {
-  console.log('Debounced function called');
-}, 1000);
-
-// 调用debouncedFunction，但只有在1秒内没有更多的调用时才会实际执行
-debouncedFunction();
-```
-
-#### 节流（Throttling）：
 
 节流技术确保在一定时间内执行函数的频率受到限制，无论触发频率如何。例如，你可以设置一个函数每隔一定时间执行一次，而不管触发事件的频率。节流通常用于减少事件处理的频率，以防止过多的计算或请求。
 
