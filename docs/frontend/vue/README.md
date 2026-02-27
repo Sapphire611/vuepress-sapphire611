@@ -1,6 +1,6 @@
 ---
 title: VUE 题目整理
-date: 2026-02-25
+date: 2026-02-26
 categories:
   - Frontend
 tags:
@@ -790,3 +790,25 @@ function throttle(fn) {
 滚动加载更多（每隔一段时间检查位置）
 按钮点击防止重复提交
 鼠标移动事件（如拖拽）
+
+---
+
+## toRef 什么时候使用
+
+> toRef 更像是为了兼容性而存在的工具，让 reactive 对象的属性也能像 ref 一样被使用
+
+```js
+const user = reactive({
+  name: '小明',
+  age: 18
+})
+
+// user.name = '小红'
+
+// ✅ 用 toRef 创建一个 ref，让reactive对象，能像ref对象一样.value操作
+const userRef = toRef(user, 'name')
+userRef.value = '小红'
+
+console.log(user.name) // '小红'
+```
+

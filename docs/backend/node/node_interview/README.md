@@ -18,7 +18,19 @@ sticky: 2
 [浏览器和 Node 中 事件循环区别](/node/node/#_3-浏览器和-node-中-事件循环有什么区别) /
 [防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
+## HUAWANG
 
+[计算属性 (computed) 和侦听器 (watch/watchEffect) 对比](/frontend/vue/#计算属性-computed-和侦听器-watch-watcheffect-对比)
+
+[Vue2/3的响应式原理](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
+
+[toRef 什么时候使用](/frontend/vue/#toref-什么时候使用)
+
+[type 和 interface 的区别](/frontend/typescript/#_2-type-和-interface-的区别)
+
+[any、unknown、never 的区别](/frontend/typescript/#_3-any、unknown、never-的区别)
+
+[> CommonJS 是运行时引入,ESM 是编译时静态分析 + 运行时执行](#)
 ## CPIC
 
 [css-矩形旋转](/frontend/interview/#css-矩形旋转)

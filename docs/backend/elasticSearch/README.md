@@ -221,7 +221,7 @@ text 类型默认禁用聚合/排序操作，因为：
 
 > 是一个开源的日志分析平台,正确配置后，点击左边 Discover 菜单，就可以看到数据并查询了
 
-```kql
+```bash
 age: 40
 state.keyword: "UT"
 balance > 30000
