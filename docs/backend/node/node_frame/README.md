@@ -21,6 +21,22 @@ publish: true
 
 [Nest.js](https://nestjs.com/)
 
+
+### req/res 与 ExecutionContext 的核心区别
+
+| 特性             | `req` / `res` 对象                       | `ExecutionContext` (执行上下文)                            |
+| ---------------- | ---------------------------------------- | ---------------------------------------------------------- |
+| **来源**         | 底层框架（如 Express/Fastify）的原始对象 | NestJS 抽象层提供的上下文包装器                            |
+| **访问方式**     | 直接操作（如 `req.headers`）             | 通过方法链获取（如 `context.switchToHttp().getRequest()`） |
+| **功能范围**     | 仅限 HTTP 请求/响应的原始操作            | 包含路由、控制器、处理器等元信息                           |
+| **协议支持**     | 仅支持当前协议（如 HTTP）                | 支持 HTTP/WebSocket/RPC 等多协议统一接口                   |
+| **元数据访问**   | 无法访问 NestJS 装饰器元数据             | 可读取装饰器元数据（如 `@Roles()`）                        |
+| **控制器关联性** | 无关联                                   | 可获取当前控制器类和方法（`getClass()`/`getHandler()`）    |
+| **依赖注入**     | 无法使用 DI 容器                         | 可通过 `getModuleRef()` 动态解析依赖                       |
+| **推荐使用场景** | - 简单请求/响应操作<br>- 快速原型开发    | - 需要路由信息<br>- 多协议支持<br>- 权限控制等复杂逻辑     |
+
+---
+
 ### Nest 守卫、拦截器、中间件 的区别
 
 | 特性                   | 中间件(Middleware)                               | 守卫(Guard)                                | 拦截器(Interceptor)                        |
@@ -38,18 +54,92 @@ publish: true
 | **能否获取处理器信息** | 否                                               | 是（通过 ExecutionContext）                | 是（通过 ExecutionContext）                |
 | **修改响应时机**       | 路由处理器执行前                                 | 路由处理器执行前                           | 路由处理器执行前后均可                     |
 
-### req/res 与 ExecutionContext 的核心区别
+---
 
-| 特性             | `req` / `res` 对象                       | `ExecutionContext` (执行上下文)                            |
-| ---------------- | ---------------------------------------- | ---------------------------------------------------------- |
-| **来源**         | 底层框架（如 Express/Fastify）的原始对象 | NestJS 抽象层提供的上下文包装器                            |
-| **访问方式**     | 直接操作（如 `req.headers`）             | 通过方法链获取（如 `context.switchToHttp().getRequest()`） |
-| **功能范围**     | 仅限 HTTP 请求/响应的原始操作            | 包含路由、控制器、处理器等元信息                           |
-| **协议支持**     | 仅支持当前协议（如 HTTP）                | 支持 HTTP/WebSocket/RPC 等多协议统一接口                   |
-| **元数据访问**   | 无法访问 NestJS 装饰器元数据             | 可读取装饰器元数据（如 `@Roles()`）                        |
-| **控制器关联性** | 无关联                                   | 可获取当前控制器类和方法（`getClass()`/`getHandler()`）    |
-| **依赖注入**     | 无法使用 DI 容器                         | 可通过 `getModuleRef()` 动态解析依赖                       |
-| **推荐使用场景** | - 简单请求/响应操作<br>- 快速原型开发    | - 需要路由信息<br>- 多协议支持<br>- 权限控制等复杂逻辑     |
+### 代码示例
+
+#### 1️⃣ 中间件 - 日志记录
+
+```ts
+// logger.middleware.ts
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Request, Response, NextFunction } from 'express';
+
+@Injectable()
+export class LoggerMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    console.log(`[${req.method}] ${req.url}`);
+    next();
+  }
+}
+
+// app.module.ts
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
+```
+
+#### 2️⃣ 守卫 - JWT 认证
+
+```ts
+// jwt-auth.guard.ts
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+
+@Injectable()
+export class JwtAuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    const token = request.headers.authorization;
+    return token?.startsWith('Bearer ');  // 简化验证
+  }
+}
+
+// 使用
+@Controller('users')
+@UseGuards(JwtAuthGuard)
+export class UsersController {}
+```
+
+#### 3️⃣ 拦截器 - 统一响应格式
+
+```ts
+// transform.interceptor.ts
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+@Injectable()
+export class TransformInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    return next.handle().pipe(
+      map(data => ({ success: true, data }))
+    );
+  }
+}
+```
+
+**注册方式：**
+```ts
+// 方式1: 局部使用 - 装饰器
+@Controller('users')
+@UseInterceptors(TransformInterceptor)
+export class UsersController {}
+
+// 方式2: 全局注册 - 模块配置
+import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+
+@Module({
+  providers: [
+    { provide: APP_INTERCEPTOR, useClass: TransformInterceptor }
+  ],
+})
+export class AppModule {}
+```
+
+---
 
 ### Nestjs ORM 的选型
 

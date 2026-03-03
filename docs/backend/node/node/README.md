@@ -1,6 +1,6 @@
 ---
 title: Node 题目整理
-date: 2025-6-17
+date: 2026-3-3
 categories:
   - Backend
 tags:
@@ -659,6 +659,55 @@ writeStream.on('drain', () => {
 | **Duplex** (双工流)    | 同时实现 Readable 和 Writable 接口，读写通道独立                        | TCP sockets、WebSockets、child_process IPC | 包含可读和可写流的所有事件      | 包含可读和可写流的所有方法    |
 | **Transform** (转换流) | 特殊的 Duplex 流，写入和读取时自动转换数据（输出与输入有计算/转换关系） | zlib 压缩流、加密流、CSV 解析器            | `data`, `end`, `finish`         | `_transform()`, `_flush()`    |
 
+```js
+const { Duplex } = require('stream');
+
+// 最简双工流 - 直接传入对象
+const duplex = new Duplex({
+  read() {
+    this.push('read data\n');
+    this.push(null);  // 结束读取
+  },
+  write(chunk, enc, cb) {
+    console.log('write:', chunk.toString());
+    cb();  // 必须调用
+  }
+});
+
+// 使用
+duplex.write('hello');  // write: hello
+duplex.on('data', chunk => console.log('read:', chunk.toString()));
+// read: read data
+```
+
+```js
+const zlib = require('zlib');
+const fs = require('fs');
+const { Transform } = require('stream');
+
+// zlib.createGzip() 返回的就是一个转换流
+const gzip = zlib.createGzip();  // 这是一个 Transform Stream
+
+// 验证类型
+console.log(gzip instanceof Transform);  // true
+console.log(gzip instanceof require('stream').Transform);  // true
+
+// 使用转换流进行压缩
+fs.createReadStream('./input.txt')
+  .pipe(gzip)                    // 转换流：压缩数据
+  .pipe(fs.createWriteStream('./input.txt.gz'));
+
+console.log('压缩完成');
+
+// 解压也是转换流
+const gunzip = zlib.createGunzip();  // 也是 Transform Stream
+
+fs.createReadStream('./input.txt.gz')
+  .pipe(gunzip)                    // 转换流：解压数据
+  .pipe(fs.createWriteStream('./output.txt'));
+
+console.log('解压完成');
+```
 ## 11.宏任务 / 微任务
 
 > 宏任务（Macro Task）和微任务（Micro Task）是与事件循环（Event Loop）相关的概念，用于管理 JavaScript 代码的执行顺序和异步操作。它们有助于理解 JavaScript 中的异步编程和事件处理
@@ -691,3 +740,168 @@ writeStream.on('drain', () => {
 
 重复上述过程，不断循环执行宏任务和微任务，直到所有任务都完成。
 :::
+
+## 12. net 模块的作用是什么？
+
+- net 模块提供 TCP/IP 和 Socket 的 API，用于创建底层网络通信的服务端和客户端
+  
+```js
+const net = require('net');
+
+// 服务端
+const server = net.createServer(socket => {
+  socket.write('连接成功\n');
+  
+  socket.on('data', data => {
+    console.log('收到:', data.toString());
+    socket.write('服务端已接收\n');
+  });
+});
+
+server.listen(3000);
+
+// 客户端
+const client = net.createConnection({ port: 3000 }, () => {
+  client.write('你好，服务端');
+});
+
+client.on('data', data => {
+  console.log('服务端响应:', data.toString());
+});
+```
+
+## 13. 什么是背压？highWaterMark有什么作用？
+
+> 背压是数据流动中生产速度 > 消费速度时的处理机制
+
+- highWaterMark是流的缓冲区大小阈值。可读流是读多少字节暂停，可写流是写多少字节触发drain
+
+```js
+const { Readable, Writable } = require('stream');
+
+// 1. Create a readable stream with custom highWaterMark
+const readStream = new Readable({
+  highWaterMark: 16 * 1024, // 16KB default
+  read() {
+    // Push data when consumer is ready
+    if (this.dataCount < 100) {
+      this.push(Buffer.alloc(1024, `chunk-${this.dataCount++}`));
+    } else {
+      this.push(null); // End of stream
+    }
+  }
+});
+
+readStream.dataCount = 0;
+
+// 2. Create a writable stream
+const writeStream = new Writable({
+  highWaterMark: 16 * 1024, // 16KB buffer limit
+  write(chunk, encoding, callback) {
+    // Simulate slow writing (e.g., writing to disk/network)
+    setTimeout(() => {
+      console.log(`Written: ${chunk.toString().slice(0, 20)}...`);
+      callback();
+    }, 100);
+  }
+});
+
+// 3. Handle back pressure
+readStream.on('data', (chunk) => {
+  const canContinue = writeStream.write(chunk);
+  
+  if (!canContinue) {
+    // Buffer is full, pause reading
+    console.log('⏸️  Buffer full, pausing read stream');
+    readStream.pause();
+  }
+});
+
+writeStream.on('drain', () => {
+  // Buffer drained, resume reading
+  console.log('✅ Buffer drained, resuming read stream');
+  readStream.resume();
+});
+
+readStream.on('end', () => {
+  writeStream.end();
+  console.log('🎉 Stream completed');
+});
+```
+## 14. 什么是Buffer？为什么需要它？
+
+> Buffer 是 Node.js 用于处理二进制数据的类，继承自 JavaScript 的 `Uint8Array`
+
+### 为什么需要 Buffer？
+
+JavaScript 最初设计用于处理网页中的字符串，没有真正的二进制数据类型。但 Node.js 需要处理：
+- 文件系统操作
+- 网络数据流
+- 加密解密
+- 图像处理
+
+因此需要 Buffer 来高效处理二进制数据。
+
+### Buffer 的特点
+
+- **内存管理**：分配在 V8 堆外内存，由 C++ 层管理，效率高
+- **大小固定**：创建后大小不可变（但内容可修改）
+- **创建方式**：使用 `Buffer.alloc()` 和 `Buffer.from()`，避免安全隐患（旧的 `new Buffer()` 已废弃）
+
+```js
+// 创建 Buffer
+const buf1 = Buffer.alloc(10);           // 创建 10 字节的空 Buffer
+const buf2 = Buffer.from('hello');       // 从字符串创建
+const buf3 = Buffer.from([1, 2, 3]);     // 从数组创建
+```
+
+---
+
+## 15. Buffer 和字符串转换及乱码处理
+
+### 转换方式
+
+```js
+// 字符串 -> Buffer
+const buf = Buffer.from('hello', 'utf8');
+
+// Buffer -> 字符串
+const str = buf.toString('utf8');
+
+// 支持多种编码：utf8, base64, hex, ascii 等
+const base64 = buf.toString('base64');  // aGVsbG8=
+const hex = buf.toString('hex');        // 68656c6c6f
+```
+
+### 实际应用场景
+
+| 场景 | 说明 |
+|------|------|
+| 文件 MD5 校验 | 读取文件为 Buffer 计算哈希值 |
+| 分片合并 | 使用 `Buffer.concat()` 合并多个分片 |
+| 加密签名 | 升级包签名基于 Buffer 操作 |
+
+### 乱码处理
+
+在流式读取文本时，可能出现一个字符被切分到两个数据块的情况，导致乱码。
+
+**解决方案**：
+
+```js
+const fs = require('fs');
+
+// 方案1: 使用 setEncoding
+const readStream = fs.createReadStream('file.txt');
+readStream.setEncoding('utf8');
+readStream.on('data', (chunk) => {
+  console.log(chunk);  // 自动处理边界
+});
+
+// 方案2: 手动维护剩余字节
+let leftover = Buffer.alloc(0);
+readStream.on('data', (chunk) => {
+  const combined = Buffer.concat([leftover, chunk]);
+  // 处理完整字符...
+  // 保存不完整的字节到 leftover
+});
+```
