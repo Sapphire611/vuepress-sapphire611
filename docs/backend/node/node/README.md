@@ -16,6 +16,10 @@ publish: true
 来自 [Sapphire611](http://sapphire611.github.io)
 :::
 
+## 0. 什么是 Nodejs？
+
+> Node.js 是一个基于 Chrome V8 引擎 的 JavaScript 运行时，用于在服务器端高效运行 JavaScript 代码。它采用 事件驱动、非阻塞 I/O 模型，使其轻量且高效，特别适合构建高性能、可扩展的网络应用。
+
 ## 1. Koa 和 Express 有哪些不同？
 
 > express 框架是一个基于 Node.js 平台的极简、灵活的 web 应用开发框架，
@@ -467,7 +471,7 @@ then里面的回调函数进入微任务队列
 
 ---
 
-## 8. Node 中的 EventEmmiter 是什么？
+## 8. Node 中的 EventEmitter 是什么？
 
 > Node 的 events 模块提供了一个 EventEmitter，这个类实现了 Node 异步事件驱动架构的基本模式——观察者模式
 
@@ -475,29 +479,42 @@ then里面的回调函数进入微任务队列
 
 ```js
 const EventEmitter = require('events');
+const myEmitter = new EventEmitter();
 
-class MyEmitter extends EventEmitter {}
-const myEmitter = new MyEmitter();
+// 1. on / addListener - 添加监听器到数组尾部
+myEmitter.on('event', () => console.log('尾部添加'));
+myEmitter.addListener('event', () => console.log('同样尾部添加'));
 
+// 2. prependListener - 添加监听器到数组头部
+myEmitter.prependListener('event', () => console.log('头部添加'));
+
+// 3. once - 只执行一次的监听器
+myEmitter.once('event', () => console.log('只执行一次'));
+
+// 4. emit - 触发事件
+myEmitter.emit('event');
+// 输出顺序:
+// "头部添加"
+// "尾部添加"
+// "同样尾部添加"
+// "只执行一次"
+
+myEmitter.emit('event');
+// "只执行一次" 不会再输出
+
+// 5. removeListener / off - 移除指定监听器
 function callback() {
-  console.log('触发了event事件！');
+  console.log('要移除的监听器');
 }
-myEmitter.on('event', callback); // 注册event事件
-myEmitter.emit('event'); // 通过emit触发
-myEmitter.removeListener('event', callback); // 通过RemoveListener取消注册
+myEmitter.on('event', callback);
+myEmitter.removeListener('event', callback); // 或 myEmitter.off('event', callback)
+
+// 6. removeAllListeners - 移除所有监听器
+myEmitter.removeAllListeners('event'); // 移除event事件的所有监听器
+myEmitter.removeAllListeners(); // 移除所有事件的所有监听器
 ```
 
-```js
-// 常见方法:
-emitter.addListener/on(eventName, listener) // 添加类型为 eventName 的监听事件到事件数组尾部
-emitter.prependListener(eventName, listener) // 添加类型为 eventName 的监听事件到事件数组头部
-emitter.emit(eventName[, ...args]) // 触发类型为 eventName 的监听事件
-emitter.removeListener/off(eventName, listener) // 移除类型为 eventName 的监听事件
-emitter.once(eventName, listener) // 添加类型为 eventName 的监听事件，以后只能执行一次并删除
-emitter.removeAllListeners([eventName]) // 移除全部类型为 eventName 的监听事件
-```
-
-### 实现一个 EventEmmiter
+### 实现一个 EventEmitter
 
 ```js
 class EventEmitter {
@@ -577,113 +594,57 @@ class EventEmitter {
 └──────────────┘                └──────────────┘
 ```
 
-### Stream 的种类
-
-> 在 NodeJS，几乎所有的地方都使用到了流的概念，分成四个种类：
-
-- 可读流： 可读取数据的流。例如 fs.createReadStream() 可以从文件读取内容
-
-- 可写流：可写入数据的流。例如 fs.createWriteStream() 可以使用流将数据写入文件
-
-- 双工流： 既可读又可写的流。例如 net.Socket
-
-- 转换流： 可以在数据写入和读取时修改或转换数据的流。
-  - 例如，在文件压缩操作中，可以向文件写入压缩数据，并从文件中读取解压数据
-
-```
-在NodeJS中HTTP服务器模块中，request 是可读流，response 是可写流。
-还有fs模块，能同时处理可读和可写文件流
-
-可读流和可写流都是单向的，比较容易理解，而另外两个是双向的
-```
-
-### 双工流 demo
-
-> 比如 websocket 通信，是一个全双工通信，发送方和接受方都是各自独立的方法，发送和接收都没有任何关系
-
 ```js
-const { Duplex } = require('stream');
-
-const myDuplex = new Duplex({
-  read(size) {
-    // ...
-  },
-  write(chunk, encoding, callback) {
-    // ...
-  },
-});
-```
-
----
-
-### 转换流 demo
-
-```js
-const { Transform } = require('stream');
-
-const myTransform = new Transform({
-  transform(chunk, encoding, callback) {
-    // ...
-  },
-});
-```
-
-### 主要应用场景
-
-stream 的应用场景主要就是处理 IO 操作，而 http 请求和文件操作都属于 IO 操作
-
-思想一下，如果一次 IO 操作过大，硬件的开销就过大，而将此次大的 IO 操作进行分段操作，让数据像水管一样流动，知道流动完成
-
-常见的场景有：
-
-```js
-// 文件操作
-// 创建一个可读数据流readStream，一个可写数据流writeStream，通过pipe管道把数据流转过去
-
+// 基础pipe用法
 const fs = require('fs');
-const path = require('path');
 
-// 两个文件名
-const fileName1 = path.resolve(__dirname, 'data.txt');
-const fileName2 = path.resolve(__dirname, 'data-bak.txt');
-// 读取文件的 stream 对象
-const readStream = fs.createReadStream(fileName1);
-// 写入文件的 stream 对象
-const writeStream = fs.createWriteStream(fileName2);
-// 通过 pipe执行拷贝，数据流转
-readStream.pipe(writeStream);
-// 数据读取完成监听，即拷贝完成
-readStream.on('end', function () {
-  console.log('拷贝完成');
-});
+// 从source.txt读取，写入到dest.txt
+fs.createReadStream('./source.txt')
+  .pipe(fs.createWriteStream('./dest.txt'));
+
+// 链式pipe - 文件压缩
+fs.createReadStream('./source.txt')
+  .pipe(zlib.createGzip())          // 压缩
+  .pipe(fs.createWriteStream('./source.txt.gz'));
+
+console.log('文件复制完成');
 ```
 
 ```js
-// 读取minioClient的图片(ReadableStream)，然后转换成base64
-const readable = await S3FileAdapter.minioClient.getObject(config.bucketName, each);
+// 事件监听方式（不使用pipe）
+const fs = require('fs');
 
-const chunks = [];
-readable.on('readable', () => {
-  let chunk;
-  // console.log('Stream is readable (new data received in buffer)');
-  // Use a loop to make sure we read all currently available data
-  while (null !== (chunk = readable.read())) {
-    // console.log(`Read ${chunk.length} bytes of data...`);
-    chunks.push(chunk);
+const readStream = fs.createReadStream('./source.txt');
+const writeStream = fs.createWriteStream('./dest.txt');
+
+// 可读流事件
+readStream.on('data', (chunk) => {
+  console.log(`接收到 ${chunk.length} 字节数据`);
+  writeStream.write(chunk);
+});
+
+readStream.on('end', () => {
+  console.log('读取完成');
+  writeStream.end(); // 结束写入流
+});
+
+readStream.on('error', (err) => {
+  console.error('读取错误:', err);
+});
+
+writeStream.on('finish', () => {
+  console.log('写入完成');
+});
+
+// 处理背压（back pressure）
+readStream.on('data', (chunk) => {
+  if (!writeStream.write(chunk)) {
+    readStream.pause(); // 如果写入缓冲区满了，暂停读取
   }
 });
 
-readable.on('end', async () => {
-  const content = chunks; // [Uint8Array(13343), Uint8Array(27960), Uint8Array(65536), Uint8Array(2114),...]
-
-  let res = []; // 将结果重组成array形式
-  for (let i = 0; i < content.length; i++) {
-    res = [...res, ...content[i]];
-  }
-
-  const base64 = Buffer.from(res, 'utf-8').toString('base64');
-  const thumbnail = 'data:image/jpeg;base64,' + base64; // ok...
-  console.log(`Read data end Length : ${res.length}...`);
+writeStream.on('drain', () => {
+  readStream.resume(); // 写入缓冲区清空后，继续读取
 });
 ```
 
@@ -730,7 +691,3 @@ readable.on('end', async () => {
 
 重复上述过程，不断循环执行宏任务和微任务，直到所有任务都完成。
 :::
-
-## 12. 什么是 Nodejs？
-
-> Node.js 是一个基于 Chrome V8 引擎 的 JavaScript 运行时，用于在服务器端高效运行 JavaScript 代码。它采用 事件驱动、非阻塞 I/O 模型，使其轻量且高效，特别适合构建高性能、可扩展的网络应用。

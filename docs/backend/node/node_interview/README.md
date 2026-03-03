@@ -1,6 +1,6 @@
 ---
 title: 面试真题记录
-date: 2025-9-22
+date: 2026-3-3
 categories:
   - Backend
 tags:
@@ -13,9 +13,9 @@ sticky: 2
 ---
 
 ### STICKY
-[什么是 nodejs?](/backend/node/node/#_12-什么是-nodejs) / 
+[什么是 nodejs?](/backend/node/node/#_0-什么是-nodejs) / 
 [nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) / 
-[浏览器和 Node 中 事件循环区别](/node/node/#_3-浏览器和-node-中-事件循环有什么区别) /
+[浏览器和 Node 中 事件循环区别](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别) /
 [防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
 ## HUAWANG
@@ -31,6 +31,7 @@ sticky: 2
 [any、unknown、never 的区别](/frontend/typescript/#_3-any、unknown、never-的区别)
 
 [> CommonJS 是运行时引入,ESM 是编译时静态分析 + 运行时执行](#)
+
 ## CPIC
 
 [css-矩形旋转](/frontend/interview/#css-矩形旋转)
