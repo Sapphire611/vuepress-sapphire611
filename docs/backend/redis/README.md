@@ -1,6 +1,6 @@
 ---
 title: Redis 学习笔记
-date: 2025-6-18
+date: 2026-3-8
 categories:
   - Backend
 tags:
@@ -223,7 +223,7 @@ publish channel1 hello #Terminal 2
 **定义**：查询一个不存在的数据，缓存和数据库都没有，导致每次请求都打到数据库
 
 **解决方案**：
-- **布隆过滤器**：将所有可能存在的 key 哈希到一个足够���的 bitmap 中，不存在的 key 直接过滤
+- **布隆过滤器**：将所有可能存在的 key 哈希到一个足够大的 bitmap 中，不存在的 key 直接过滤
 - **缓存空对象**：当数据库查询为空时，也将该 key 缓存起来（value 为 null），设置较短的过期时间
 
 ```shell

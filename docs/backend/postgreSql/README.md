@@ -1,6 +1,6 @@
 ---
 title: POSTGRESQL 相关
-date: 2026-3-3
+date: 2026-3-8
 categories:
   - postgres
   - database
@@ -10,7 +10,211 @@ publish: true
 
 ## POSTGRESQL 相关
 
-### 1. PostgreSQL 相比 MySQL 的优势？
+### 1. PostgreSQL 基本操作命令
+
+> **环境**：Docker 容器中的 PostgreSQL
+
+#### Docker 容器操作
+
+```bash
+# ========== 查看运行中的 PostgreSQL 容器 ==========
+docker ps -a | grep postgres
+
+# ========== 启动 PostgreSQL 容器 ==========
+docker run -d \
+  --name postgres \
+  -e POSTGRES_PASSWORD=your_password \
+  -p 5432:5432 \
+  postgres:16
+
+# ========== 或者使用 docker-compose ==========
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:
+```
+
+#### 进入 PostgreSQL 命令行
+
+```bash
+# ========== 方法一：直接进入 psql（推荐） ==========
+docker exec -it postgres psql -U postgres
+
+# 连接到特定数据库
+docker exec -it postgres psql -U postgres -d mydb
+
+# ========== 方法二：先进入容器再连接 ==========
+docker exec -it postgres bash
+psql -U postgres
+
+# ========== 方法三：执行单条 SQL 命令 ==========
+docker exec -it postgres psql -U postgres -c "SELECT version();"
+docker exec -it postgres psql -U postgres -c "\l"
+```
+
+#### psql 常用命令
+
+| 命令 | 说明 | 示例 |
+|------|------|------|
+| `\l` 或 `\list` | 查看所有数据库 | `\l` |
+| `\c database_name` | 连接到指定数据库 | `\c mydb` |
+| `\dt` | 查看当前数据库的所有表 | `\dt` |
+| `\d table_name` | 查看表结构 | `\d users` |
+| `\du` | 查看所有用户 | `\du` |
+| `\di` | 查看所有索引 | `\di` |
+| `\dn` | 查看所有 schema | `\dn` |
+| `\conninfo` | 查看当前连接信息 | `\conninfo` |
+| `\x` | 切换扩展显示模式 | `\x` |
+| `\q` 或 `quit` | 退出 psql | `\q` |
+
+#### 常用 SQL 操作
+
+```sql
+-- ========== 数据库操作 ==========
+-- 创建数据库
+CREATE DATABASE mydb;
+
+-- 删除数据库
+DROP DATABASE mydb;
+
+-- 切换数据库
+\c mydb;
+
+-- ========== 表操作 ==========
+-- 创建表
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 查看表结构
+\d users;
+
+-- 查看所有表
+\dt
+
+-- 删除表
+DROP TABLE users;
+
+-- ========== 数据操作 ==========
+-- 插入数据
+INSERT INTO users (name, email) VALUES
+  ('Alice', 'alice@example.com'),
+  ('Bob', 'bob@example.com');
+
+-- 查询数据
+SELECT * FROM users;
+SELECT * FROM users WHERE name = 'Alice';
+
+-- 更新数据
+UPDATE users SET email = 'newemail@example.com' WHERE name = 'Alice';
+
+-- 删除数据
+DELETE FROM users WHERE name = 'Bob';
+
+-- ========== 用户管理 ==========
+-- 创建用户
+CREATE USER app_user WITH PASSWORD 'secure_password';
+
+-- 授权
+GRANT ALL PRIVILEGES ON DATABASE mydb TO app_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO app_user;
+
+-- 查看所有用户
+\du
+
+-- ========== 导入导出 ==========
+# 导出整个数据库
+docker exec -it postgres pg_dump -U postgres mydb > mydb_backup.sql
+
+# 导入数据库
+docker exec -i postgres psql -U postgres mydb < mydb_backup.sql
+
+# 导出单个表
+docker exec -it postgres pg_dump -U postgres -t users mydb > users_backup.sql
+
+# 导出为 CSV 格式
+docker exec -it postgres psql -U postgres -c "COPY (SELECT * FROM users) TO STDOUT WITH CSV HEADER" > users.csv
+```
+
+#### 实用技巧
+
+```bash
+# ========== 查看数据库大小 ==========
+docker exec -it postgres psql -U postgres -c "
+  SELECT pg_database.datname,
+         pg_size_pretty(pg_database_size(pg_database.datname)) AS size
+  FROM pg_database
+  ORDER BY pg_database_size(pg_database.datname) DESC;
+"
+
+# ========== 查看表大小 ==========
+docker exec -it postgres psql -U postgres -c "
+  SELECT schemaname,
+         tablename,
+         pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) AS size
+  FROM pg_tables
+  WHERE schemaname = 'public'
+  ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+"
+
+# ========== 查看当前连接数 ==========
+docker exec -it postgres psql -U postgres -c "
+  SELECT count(*) AS connections,
+         max(datname) AS database
+  FROM pg_stat_activity
+  GROUP BY datname;
+"
+
+# ========== 终止某个连接 ==========
+docker exec -it postgres psql -U postgres -c "
+  SELECT pg_terminate_backend(pid)
+  FROM pg_stat_activity
+  WHERE datname = 'mydb' AND pid <> pg_backend_pid();
+"
+
+# ========== 查看慢查询 ==========
+docker exec -it postgres psql -U postgres -c "
+  SELECT query,
+         calls,
+         total_time,
+         mean_time
+  FROM pg_stat_statements
+  ORDER BY mean_time DESC
+  LIMIT 10;
+"
+```
+
+::: tip 连接字符串示例
+```
+# Node.js (pg)
+postgresql://postgres:password@localhost:5432/mydb
+
+# Python (psycopg2)
+dbname=mydb user=postgres password=password host=localhost port=5432
+
+# Java (JDBC)
+jdbc:postgresql://localhost:5432/mydb?user=postgres&password=password
+```
+:::
+
+---
+
+### 2. PostgreSQL 相比 MySQL 的优势？
 
 **PostgreSQL 是世界上最先进的开源关系型数据库，被称为"开源界的 Oracle"**
 
@@ -269,7 +473,7 @@ publish: true
 
 ---
 
-### 2. 什么是 MVCC？PostgreSQL 如何实现？
+### 3. 什么是 MVCC？PostgreSQL 如何实现？
 
 **MVCC（多版本并发控制）是一种乐观锁机制，通过保存数据的多个版本实现读写不加锁**
 
@@ -341,7 +545,7 @@ autovacuum_vacuum_scale_factor = 0.2  -- 20% 的数据死亡时触发
 
 ---
 
-### 3. PostgreSQL 索引类型有哪些？
+### 4. PostgreSQL 索引类型有哪些？
 
 PostgreSQL 提供了多种索引类型，针对不同场景优化：
 
@@ -399,7 +603,7 @@ CREATE INDEX idx_logs_created ON logs USING BRIN (created_at);
 
 ---
 
-### 4. PostgreSQL vs MySQL 索引对比
+### 5. PostgreSQL vs MySQL 索引对比
 
 | 特性 | PostgreSQL | MySQL (InnoDB) |
 |------|-----------|----------------|
@@ -409,4 +613,78 @@ CREATE INDEX idx_logs_created ON logs USING BRIN (created_at);
 | **JSON 索引** | GIN（强大） | 虚拟列 + 索引（弱） |
 | **部分索引** | ✅ 支持 | ❌ 不支持 |
 | **表达式索引** | ✅ 支持 | MySQL 8.0+ 支持 |
-| **并发索引创建** | ✅ CREATE INDEX CONCURRENTLY | ❌ 需要锁表
+| **并发索引创建** | ✅ CREATE INDEX CONCURRENTLY | ❌ 需要锁表 |
+
+---
+
+### 6. PostgreSQL 分布式事务是如何实现的？
+
+PostgreSQL 支持 **2PC（两阶段提交）** 协议来实现分布式事务。
+
+**PostgreSQL 的分布式事务语法：**
+
+```sql
+-- ========== 数据库 A ==========
+BEGIN;                                   -- 开启事务
+UPDATE accounts SET balance = balance - 100 WHERE account_id = 1;
+PREPARE TRANSACTION 'transaction_A';     -- 准备事务（持久化到磁盘）
+
+-- ========== 数据库 B ==========
+BEGIN;                                   -- 开启事务
+UPDATE accounts SET balance = balance + 100 WHERE account_id = 2;
+PREPARE TRANSACTION 'transaction_B';     -- 准备事务
+
+-- ========== 全局提交 ==========
+COMMIT PREPARED 'transaction_A';         -- 提交准备好的事务
+COMMIT PREPARED 'transaction_B';
+
+-- ========== 全局回滚 ==========
+-- ROLLBACK PREPARED 'transaction_A';    -- 回滚准备好的事务
+-- ROLLBACK PREPARED 'transaction_B';
+```
+
+**PostgreSQL 特有的分布式事务功能：**
+
+| 功能 | 说明 |
+|------|------|
+| **PREPARE TRANSACTION** | 将事务状态持久化到磁盘，可跨会话恢复 |
+| **COMMIT PREPARED** | 提交已准备的事务 |
+| **ROLLBACK PREPARED** | 回滚已准备的事务 |
+| **自动恢复** | 系统崩溃后自动恢复未完成的事务 |
+
+查看准备中的事务：
+```sql
+-- 查看所有准备中的事务
+SELECT * FROM pg_prepared_xacts;
+
+-- 查看当前数据库的准备事务
+SELECT * FROM pg_prepared_statements;
+```
+
+**两阶段提交流程：**
+
+```
+┌─────────────┐
+│  第一阶段   │  PREPARE TRANSACTION（准备阶段）
+│  投票阶段   │  → 执行本地事务但不提交
+└─────────────┘  → 将事务状态持久化到磁盘
+                  → 返回 Ready 状态
+
+┌─────────────┐
+│  第二阶段   │  COMMIT PREPARED（执行阶段）
+│  执行阶段   │  → COMMIT PREPARED：提交事务
+└─────────────┘  → ROLLBACK PREPARED：回滚事务
+```
+
+::: tip 与 MySQL 的区别
+- **MySQL**：使用 XA 协议（`XA START/END/PREPARE/COMMIT`）
+- **PostgreSQL**：使用 PREPARE TRANSACTION 语法
+- **恢复机制**：PostgreSQL 自动恢复，MySQL 需要手动 `XA RECOVER`
+:::
+
+::: warning 生产环境建议
+2PC 事务在生产环境中使用需要谨慎：
+- **性能问题**：锁资源时间长，并发性能差
+- **可用性问题**：单点故障可能导致长时间锁定
+- **推荐方案**：优先考虑最终一致性方案（TCC、Saga、消息队列）
+:::
