@@ -1,6 +1,6 @@
 ---
 title: Node 常用框架相关
-date: 2025-9-5
+date: 2026-3-9
 categories:
   - Backend
 tags:
@@ -181,6 +181,108 @@ import { Module } from '@nestjs/common';
 })
 export class AppModule {}
 ```
+
+### Nestjs 模块的生命周期
+
+> NestJS 提供了一套完整的生命周期钩子（Lifecycle Hooks），让开发者可以在应用程序启动、模块初始化、依赖注入等各个阶段执行自定义逻辑
+
+#### 生命周期钩子执行顺序图
+
+```mermaid
+graph TD
+    A[1. OnModuleInit] --> B[2. OnApplicationBootstrap]
+    B --> C[应用已就绪]
+    C --> D[3. OnModuleDestroy]
+    D --> E[4. BeforeApplicationShutdown]
+    E --> F[5. OnApplicationShutdown]
+```
+
+#### 生命周期钩子详解
+
+| 钩子 | 接口 | 触发时机 | 适用场景 | 异步支持 |
+|------|------|----------|----------|----------|
+| `OnModuleInit` | `onModuleInit()` | 所有模块依赖解析完成后，模块初始化时 | 初始化模块级数据、缓存预热、连接建立 | ✅ async/await |
+| `OnApplicationBootstrap` | `onApplicationBootstrap()` | 所有模块初始化完成后，应用启动前 | 全局配置加载、数据初始化、监听器启动 | ✅ async/await |
+| `OnModuleDestroy` | `onModuleDestroy()` | 应用关闭时（模块销毁前） | 清理模块资源、关闭连接、保存状态 | ✅ async/await |
+| `BeforeApplicationShutdown` | `beforeApplicationShutdown()` | 应用关闭信号触发后 | 清理任务队列、完成正在进行的工作 | ✅ async/await |
+| `OnApplicationShutdown` | `onApplicationShutdown()` | 应用关闭前（最后阶段） | 日志持久化、监控上报、最终清理 | ✅ async/await |
+
+#### 代码示例
+
+```ts
+import { Injectable, OnModuleInit, OnApplicationBootstrap, OnModuleDestroy, BeforeApplicationShutdown, OnApplicationShutdown } from '@nestjs/common';
+
+@Injectable()
+export class LifecycleService
+  implements OnModuleInit, OnApplicationBootstrap, OnModuleDestroy, BeforeApplicationShutdown, OnApplicationShutdown {
+
+  // 1️⃣ 模块初始化 - 适合连接数据库、Redis 等资源
+  async onModuleInit() {
+    console.log('📦 Module initialized');
+    // await this.database.connect();
+  }
+
+  // 2️⃣ 应用启动 - 适合数据初始化、缓存预热
+  async onApplicationBootstrap() {
+    console.log('🚀 Application bootstrapped');
+    // await this.seedData();
+    // await this.warmUpCache();
+  }
+
+  // 3️⃣ 模块销毁 - 适合关闭连接、清理资源
+  async onModuleDestroy() {
+    console.log('🗑️  Module destroyed');
+    // await this.database.close();
+  }
+
+  // 4️⃣ 应用关闭前 - 适合完成正在进行的工作
+  async beforeApplicationShutdown(signal?: string) {
+    console.log('⏳ Before shutdown, signal:', signal);
+    // await this.completePendingTasks();
+  }
+
+  // 5️⃣ 应用关闭 - 适合最终清理、日志持久化
+  async onApplicationShutdown(signal?: string) {
+    console.log('🔴 Application shutdown, signal:', signal);
+    // await this.flushLogs();
+  }
+}
+```
+
+#### 关闭信号处理
+
+> NestJS 可以监听系统关闭信号（SIGTERM、SIGINT），实现优雅关闭
+
+```ts
+// main.ts
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // 启用优雅关闭
+  app.enableShutdownHooks();
+
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+#### 最佳实践
+
+| 场景 | 推荐钩子 | 说明 |
+|------|----------|------|
+| 数据库连接 | `OnModuleInit` | 确保依赖注入完成后再连接 |
+| Redis 连接 | `OnModuleInit` | 同上 |
+| 初始化数据/种子数据 | `OnApplicationBootstrap` | 确保所有服务都已初始化 |
+| 缓存预热 | `OnApplicationBootstrap` | 避免启动后首次请求慢 |
+| 定时任务启动 | `OnApplicationBootstrap` | 确保应用完全就绪 |
+| 关闭数据库连接 | `OnModuleDestroy` | 优先清理关键资源 |
+| 保存临时状态 | `BeforeApplicationShutdown` | 给予足够时间完成 |
+| 日志持久化 | `OnApplicationShutdown` | 最后阶段执行 |
+
+---
 
 ### Nestjs 全链路追踪方案
 
