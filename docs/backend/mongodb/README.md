@@ -1,6 +1,6 @@
 ---
 title: MongoDB相关
-date: 2026-3-3
+date: 2026-3-8
 categories:
   - mongodb
   - interview
@@ -164,3 +164,333 @@ db.products.aggregate([
 | **关联查询** | `$lookup`（性能较差） | JOIN（性能好） |
 | **扩展方式** | 水平扩展（分片） | 垂直扩展为主 |
 | **适用场景** | 非结构化、高并发写入 | 结构化、复杂事务 |
+
+---
+
+### 5. MongoDB 千万级数据如何导出，并在实际业务中操作？
+
+> **场景**：处理千万级数据的查询、聚合和导出，保证性能和用户体验。
+
+#### 方案对比总览
+
+| 方案 | 实时性 | 查询速度 | 开发复杂度 | 适用场景 |
+|------|--------|----------|------------|----------|
+| **预聚合（物化视图）** | 分钟级 | ⚡⚡⚡ | 低 | 固定报表、趋势分析 |
+| **索引优化聚合** | 实时 | ⚡⚡ | 中 | 动态查询、临时分析 |
+| **增量视图 + CDC** | 秒级 | ⚡⚡⚡ | 高 | 实时监控、大屏 |
+| **流式处理** | 实时 | ⚡ | 低 | 数据导出、批量处理 |
+
+---
+
+#### 方案一：预聚合（物化视图）⭐ 推荐
+
+**核心思想**：后台定期运行聚合任务，将原始数据计算成汇总结果存入新集合，业务层直接查询结果集。
+
+```javascript
+// ========== 后端定时任务（如每小时执行） ==========
+async function preAggregateDailyStats() {
+  const pipeline = [
+    // 1️⃣ 只处理当天数据，利用索引
+    { $match: { timestamp: { $gte: startOfDay, $lt: endOfDay } } },
+
+    // 2️⃣ 按维度分组聚合
+    { $group: {
+      _id: {
+        date: { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+        category: "$category",
+        region: "$region"
+      },
+      orderCount: { $sum: 1 },
+      totalAmount: { $sum: "$amount" },
+      avgAmount: { $avg: "$amount" }
+    }},
+
+    // 3️⃣ 存储到预聚合集合
+    { $merge: { into: "daily_sales_summary", whenMatched: "replace" } }
+  ];
+
+  await db.orders.aggregate(pipeline).toArray();
+}
+
+// ========== 业务查询（毫秒级响应） ==========
+app.get('/api/report/sales', async (req, res) => {
+  const { date, category } = req.query;
+  const result = await db.daily_sales_summary.find({
+    "_id.date": date,
+    "_id.category": category
+  }).toArray();
+  res.json(result);
+});
+```
+
+**优势：**
+- ✅ 查询速度从分钟级降至毫秒级
+- ✅ 对原始库几乎没有压力
+- ✅ 支持复杂的多维统计
+
+**适用场景：** 日报、周报、月报、固定维度的 KPI 看板
+
+---
+
+#### 方案二：聚合框架 + 索引优化
+
+**核心思想：** 直接对原始数据执行聚合查询，通过精心设计的索引和管道顺序保证性能。
+
+**索引设计黄金法则（ESR 原则）：**
+
+| 字段 | 说明 | 示例 |
+|------|------|------|
+| **E** (Equality) | 等值查询字段放最前面 | `status: "completed"` |
+| **S** (Sort) | 排序字段其次 | `amount: -1` |
+| **R** (Range) | 范围查询字段最后 | `timestamp: { $gte: ... }` |
+
+```javascript
+// ========== 创建复合索引（ESR 顺序） ==========
+await db.orders.createIndex({
+  status: 1,           // E: 等值查询
+  region: 1,           // E: 等值查询
+  amount: -1,          // S: 排序字段
+  timestamp: 1         // R: 范围查询
+});
+
+// ========== 聚合管道优化要点 ==========
+const pipeline = [
+  // 第1步：尽早过滤，使用索引
+  { $match: {
+    status: "completed",
+    timestamp: { $gte: startDate, $lt: endDate }
+  }},
+
+  // 第2步：尽早投影，减少数据传输
+  { $project: {
+    region: 1,
+    amount: 1,
+    category: 1
+  }},
+
+  // 第3步：分组统计
+  { $group: {
+    _id: "$region",
+    totalAmount: { $sum: "$amount" },
+    avgAmount: { $avg: "$amount" },
+    count: { $sum: 1 }
+  }},
+
+  // 第4步：排序（确保排序字段有索引）
+  { $sort: { totalAmount: -1 } },
+
+  // 第5步：分页
+  { $limit: 50 }
+];
+
+// ========== 执行时分析执行计划 ==========
+const explain = await db.orders.aggregate(pipeline, { explain: true }).next();
+console.log('是否使用索引：',
+  !explain.stages[0].$cursor?.queryPlanner?.winningPlan?.stage?.includes('COLLSCAN')
+);
+```
+
+**关键监控指标：**
+- `totalDocsExamined / nReturned` 比值越小越好
+- 避免 COLLSCAN（全表扫描）
+- 关注 `allowDiskUse` 触发频率（内存不足的标志）
+
+---
+
+#### 方案三：增量物化视图 + CDC
+
+**核心思想：** 利用变更数据捕获（CDC）技术，在原始数据变更时实时更新预计算结果。
+
+```javascript
+// ========== 监听变更并实时更新汇总表 ==========
+const changeStream = db.orders.watch();
+
+changeStream.on('change', (change) => {
+  if (change.operationType === 'insert') {
+    const doc = change.fullDocument;
+
+    // 实时更新汇总表
+    db.daily_sales_summary.updateOne(
+      {
+        "_id.date": dayFormat(doc.timestamp),
+        "_id.category": doc.category
+      },
+      {
+        $inc: {
+          orderCount: 1,
+          totalAmount: doc.amount
+        },
+        $set: { lastUpdated: new Date() }
+      },
+      { upsert: true }
+    );
+  }
+});
+```
+
+**适用场景：**
+- 实时大屏、监控看板
+- 需要秒级数据更新的业务决策系统
+- 客户 360 视图等实时画像系统
+
+---
+
+#### 方案四：分页 + 流式处理
+
+**核心思想：** 避免一次性加载全部数据，采用游标或分页分批处理。
+
+```javascript
+// ========== 使用游标流式处理（适合导出） ==========
+async function streamLargeReport(res) {
+  const cursor = db.orders.find({
+    timestamp: { $gte: startDate, $lt: endDate }
+  }).batchSize(1000);  // 控制每批大小
+
+  res.setHeader('Content-Type', 'application/json');
+
+  let count = 0;
+  for await (const doc of cursor) {
+    // 逐条处理或批量写入响应
+    res.write(JSON.stringify(processRow(doc)) + '\n');
+    count++;
+
+    // 每处理1000条释放一次事件循环
+    if (count % 1000 === 0) {
+      await new Promise(resolve => setImmediate(resolve));
+    }
+  }
+  res.end();
+}
+
+// ========== 基于_id的范围分页（避免skip性能问题） ==========
+async function paginatedQuery(lastId = null, limit = 1000) {
+  const query = lastId
+    ? { _id: { $gt: lastId }, status: "completed" }
+    : { status: "completed" };
+
+  const docs = await db.orders
+    .find(query)
+    .sort({ _id: 1 })
+    .limit(limit)
+    .toArray();
+
+  const nextId = docs.length === limit ? docs[docs.length - 1]._id : null;
+  return { docs, nextId };
+}
+```
+
+---
+
+#### 后端开发实战要点
+
+**1️⃣ 连接池配置**
+
+```javascript
+const client = new MongoClient(uri, {
+  maxPoolSize: 50,        // 根据并发调整
+  minPoolSize: 10,
+  maxIdleTimeMS: 30000,
+  waitQueueTimeoutMS: 5000
+});
+```
+
+**2️⃣ 超时与重试策略**
+
+```javascript
+// 为长时间聚合设置超时
+const result = await db.orders.aggregate(pipeline, {
+  maxTimeMS: 30000,       // 30秒超时
+  allowDiskUse: true      // 大数据量聚合允许使用磁盘
+}).toArray();
+```
+
+**3️⃣ 缓存策略**
+
+```javascript
+// 结合 Redis 缓存热点查询
+const cacheKey = `report:${JSON.stringify(queryParams)}`;
+let result = await redis.get(cacheKey);
+
+if (!result) {
+  result = await computeReport(queryParams);
+  await redis.setex(cacheKey, 300, JSON.stringify(result));  // 缓存5分钟
+}
+```
+
+**4️⃣ 监控与告警**
+
+- **慢查询日志**：`db.setProfilingLevel(1, { slowms: 100 })`
+- **关键指标监控**：QPS、延迟、连接数
+- **设置 P95 延迟告警阈值**
+
+---
+
+#### 总结
+
+::: tip 最佳实践建议
+对于千万级数据的后端报表处理：
+1. **优先考虑预聚合方案**，从根本上解决性能问题
+2. **如果需要实时动态查询**，必须严格遵守索引优化原则（ESR 原则）
+3. **在代码中做好保护机制**：分页、超时、缓存、监控
+:::
+
+### 6. MongoDB 设置了 ABC 联合索引，那 AB AC 之类的生效吗？
+
+> **场景**：创建了复合索引 `{ A: 1, B: 1, C: 1 }`，查询条件不同时索引是否生效？
+
+#### 索引生效情况
+
+| 查询条件 | 是否生效 | 效率 | 说明 |
+|---------|---------|------|------|
+| `{ A }` | ✅ 完全生效 | ⚡⚡⚡ | 索引前缀 |
+| `{ A, B }` | ✅ 完全生效 | ⚡⚡⚡ | 索引前缀 |
+| `{ A, B, C }` | ✅ 完全生效 | ⚡⚡⚡ | 完全匹配索引 |
+| `{ A, C }` | ⚠️ 部分生效 | ⚡⚡ | 跳过 B 字段，效率降低 |
+| `{ B }` | ❌ 不生效 | - | 不满足最左前缀 |
+| `{ B, C }` | ❌ 不生效 | - | 不满足最左前缀 |
+| `{ C }` | ❌ 不生效 | - | 不满足最左前缀 |
+
+#### 最左前缀原则
+
+MongoDB 的复合索引遵循**最左前缀原则**：索引可以被用于查询其字段的任意前缀子集。
+
+对于索引 `{ A: 1, B: 1, C: 1 }`，其有效前缀为：
+
+```
+{ A: 1 }
+{ A: 1, B: 1 }
+{ A: 1, B: 1, C: 1 }
+```
+
+**查询示例：**
+
+```javascript
+// 创建复合索引
+db.users.createIndex({ age: 1, city: 1, name: 1 });
+
+// ✅ 完全生效 - 索引前缀
+db.users.find({ age: 25 });
+db.users.find({ age: 25, city: "Beijing" });
+db.users.find({ age: 25, city: "Beijing", name: "Tom" });
+
+// ⚠️ 部分生效 - 跳过了 city 字段
+db.users.find({ age: 25, name: "Tom" });
+
+// ❌ 不生效 - 不满足最左前缀
+db.users.find({ city: "Beijing" });
+db.users.find({ name: "Tom" });
+db.users.find({ city: "Beijing", name: "Tom" });
+```
+
+#### 为什么 `{ A, C }` 效率降低？
+
+当查询 `{ A, C }` 时：
+1. MongoDB 可以使用索引快速定位到 A 的值
+2. 但对于每个 A 值，需要扫描所有 B 值来找到匹配的 C
+3. 这比专门的 `{ A, C }` 索引效率低
+
+::: tip 最佳实践
+- **高频查询优先**：为常见的查询条件创建专门的复合索引
+- **字段顺序很重要**：将区分度高的字段放在前面
+- **避免跳过字段**：如经常查询 `{ A, C }`，应创建 `{ A: 1, C: 1 }` 索引
+:::

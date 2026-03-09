@@ -13,16 +13,45 @@ sticky: 2
 ---
 
 ### STICKY
-[什么是 nodejs?](/backend/node/node/#_0-什么是-nodejs) / 
-[nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) / 
+
+[什么是 nodejs?](/backend/node/node/#_0-什么是-nodejs) /
+[nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) /
 [浏览器和 Node 中 事件循环区别](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别) /
 [防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
+
+## FUXUN
+
+[MySQL 分布式事务是如何实现的？](/backend/mysql/#_8-mysql-分布式事务是如何实现的)
+
+[MongoDB 千万级数据如何导出，并在实际业务中操作？](/backend/mongodb/#_5-mongodb-千万级数据如何导出-并在实际业务中操作)
+
+[Docker Compose 如何指定网络 IP？](/deploy/docker/#docker-compose-如何指定网络-ip)
+
+[Redis List 常用命令 (lrange k1 0 -1)](/backend/redis/#list-常用命令)
+
+[Redis Hash 常用命令 (hkeys k1)](/backend/redis/#hash-常用命令)
+
+[MongoDB ABC 联合索引，AB AC 是否生效？](/backend/mongodb/#_6-mongodb-设置了-abc-联合索引-那-ab-ac-之类的生效吗)
+
+[MySQL 与 MongoDB 地理索引对比](/backend/mysql/#_11-mysql-与-mongodb-地理索引对比)
+
+[Node GC 新生代如何转变为老生代？](/backend/node/node/#_16-node-gc-新生代如何转变为老生代)
+
+[js 原生数组头部插入删除 (unshift,shift)](#)
+
+[js 参数传递是值传递还是引用传递 (基本类型传值、引用类型传递引用)](#)
+
+- 基本类型: String Number Boolean Symbol null undefined
+  
+- 引用类型: Object Array Function
+
+---
 
 ## HUAWANG
 
 [计算属性 (computed) 和侦听器 (watch/watchEffect) 对比](/frontend/vue/#计算属性-computed-和侦听器-watch-watcheffect-对比)
 
-[Vue2/3的响应式原理](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
+[Vue2/3 的响应式原理](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
 
 [toRef 什么时候使用](/frontend/vue/#toref-什么时候使用)
 
@@ -52,7 +81,7 @@ sticky: 2
 
 [浏览器的事件循环](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别)
 
-[VUE响应式原理](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
+[VUE 响应式原理](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
 
 ---
 
@@ -64,7 +93,7 @@ sticky: 2
 
 - Redis 缓存续期问题（计划任务时间大于轮询时间时，双重缓存/缓存续期）
 
-[prisma和typeorm区别](/backend/node/node_frame/#orm-的选型)
+[prisma 和 typeorm 区别](/backend/node/node_frame/#orm-的选型)
 
 - NestJS 解决循环依赖的问题(forwardRef)
 
@@ -87,13 +116,12 @@ export class ModuleB {}
 [手写装饰器](/frontend/interview/#手写装饰器)
 
 ## SHANGHAI LONGYI
-[express 和 koa 中间件的区别(线性 / 洋葱圈)](/backend/node/node/#_1-koa-和-express-有哪些不同)
 
-[Redis 基本数据类型](/backend/redis/#redis-五大数据类型)
+[express 和 koa 中间件的区别(线性 / 洋葱圈)](/backend/node/node/#_1-koa-和-express-有哪些不同)
 
 [MySQL 和 MongoDB 的索引数据结构](/backend/sql/#mysql-和-mongodb-的索引数据结构)
 
-[B树 和 B+树](/backend/sql/#b-tree)
+[B 树 和 B+树](/backend/sql/#b-tree)
 
 [Docker 常用的网络模式有哪些?](/deploy/docker/#docker-常用的网络模式有哪些)
 
@@ -111,17 +139,11 @@ export class ModuleB {}
 
 [Mysql & MongoDB & Redis 介绍，分别在哪些场景下发挥优势?](/backend/SQL/#mysql-mongodb-redis-介绍-分别在哪些场景下发挥优势)
 
-
-
 [查找 4 月份的日志，基于 name 去重](/backend/SQL/#查找-4-月份的日志-基于-name-去重)
 
-
-
 [mongodb 中索引有哪些类型？分别怎么使用？](/backend/mongodb/#mongodb-中索引有哪些类型-分别怎么使用)
-                  
 
 [把 callback 改写成 Promise](/frontend/interview/#_16-把-callback-改写成-promise)
-
 
 ### 算法题：括号匹配 leetcode 20
 
@@ -132,7 +154,6 @@ export class ModuleB {}
 ## NGA
 
 [什么是 控制反转 && 依赖注入?](/architecture/#什么是-控制反转-依赖注入)
-
 
 [多实例情况下，怎么通过 redis 防止定时任务多次执行](/backend/sql/#多实例情况下-怎么通过-redis-防止定时任务多次执行)
 
@@ -149,7 +170,6 @@ export class ModuleB {}
 - Ajax 是一种基于 JavaScript 和 XML（或 JSON）的技术，用于实现客户端和服务器端之间的异步通信。Ajax 可以在不刷新整个页面的情况下更新部分页面内容，从而提高了网站的响应速度和用户体验。Ajax 主要是在客户端使用的技术，通过浏览器内置的 **XMLHttpRequest** 对象来实现与服务器端的异步通信。
 
 > 因此，Node.js 和 Ajax 是两个不同的概念。Node.js 主要是用于在服务器端运行 JavaScript 代码，而 Ajax 主要是用于在客户端和服务器端之间进行异步通信。
-
 
 [Node Stream 是什么？有哪些种类的 Stream？](/backend/node/node/#_10-node-stream-是什么-有哪些种类的-stream)
 
@@ -610,7 +630,6 @@ console.log(a); // 输出 5
 console.log(b); // 输出 10
 ```
 
-
 ### 17.现有 1000 个苹果，10 个盒子，问各个盒子内应该分别放入多少个苹果，才能使得用户要买任意 1 至 1000 之间的一个苹果数，都可以给他
 
 > (卖的时候是整个盒子卖，不能拆盒子的包装)。
@@ -734,16 +753,11 @@ HTTPS 证书认证过程:
 
 ```json
 {
-    $facet: {
-      "salesByAgent": [
-        { $sort: { totalSales: -1 } },
-        { $limit: 5 }
-      ],
-      "totalSales": [
-        { $group: { _id: null, total: { $sum: "$totalSales" } } }
-      ]
-    }
+  "$facet": {
+    "salesByAgent": [{ "$sort": { "totalSales": -1 } }, { "$limit": 5 }],
+    "totalSales": [{ "$group": { "_id": null, "total": { "$sum": "$totalSales" } } }]
   }
+}
 ```
 
 ## DAOYOUYUN

@@ -128,3 +128,107 @@ echo "======== end clean docker containers logs ========"
 | **Macvlan**    | 为容器分配独立 MAC 地址，直接接入物理网络                             | 容器需作为物理网络设备                | ```docker network create -d macvlan --subnet=192.168.1.0/24 -o parent=eth0 my_macvlan```<br>```docker run --network my_macvlan -d nginx``` |
 | **IPvlan**     | 类似 Macvlan，但共享 MAC 地址，通过不同 IP 区分                       | 避免 MAC 地址泛滥的网络环境           | ```docker network create -d ipvlan --subnet=192.168.1.0/24 -o parent=eth0 my_ipvlan``` |
 | **自定义桥接** | 用户自定义桥接网络，支持 DNS 自动解析容器名                           | 单机内容器需通过名称通信（如微服务）  | ```docker network create my_bridge```<br>```docker run -d --name web --network my_bridge nginx``` |
+
+---
+
+### Docker Compose 如何指定网络 IP？
+
+在 Docker Compose 中为容器指定固定 IP（静态 IP）的核心是**定义自定义网络**，并在该网络中为容器分配特定的 IP 地址。
+
+#### 方法一：在 Compose 文件中完整定义网络和 IP ⭐ 推荐
+
+这是最直接、最推荐的方式，在 `docker-compose.yml` 文件中同时定义网络和各个服务的 IP 地址。
+
+```yaml
+version: '3.8'
+
+services:
+  web:
+    image: nginx:latest
+    container_name: my-nginx
+    networks:
+      my_custom_net:
+        # 为这个容器指定静态 IPv4 地址
+        ipv4_address: 172.25.0.10
+    ports:
+      - "8080:80"
+
+  db:
+    image: mysql:8.0
+    container_name: my-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+    networks:
+      my_custom_net:
+        # 为另一个容器指定不同的静态 IP
+        ipv4_address: 172.25.0.11
+
+# 定义自定义网络
+networks:
+  my_custom_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        # 定义网络的子网和网关
+        - subnet: "172.25.0.0/16"
+          gateway: "172.25.0.1"
+```
+
+**配置说明：**
+
+| 配置项 | 说明 |
+|--------|------|
+| `networks` | 顶级字段，定义自定义网络 |
+| `ipam` | IP 地址管理配置，指定子网范围 |
+| `subnet` | 定义 IP 地址段（如 `172.25.0.0/16`） |
+| `gateway` | 网关地址（可选） |
+| `ipv4_address` | 为容器指定静态 IP，必须在子网范围内 |
+
+---
+
+#### 方法二：使用外部已创建的网络
+
+如果已经通过 `docker network create` 命令提前创建了自定义网络，可以在 Compose 文件中直接引用它。
+
+**1️⃣ 首先在命令行创建网络：**
+
+```bash
+docker network create --subnet=10.5.0.0/16 my_precreated_net
+```
+
+**2️⃣ 在 docker-compose.yml 中引用该网络：**
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    image: alpine:latest
+    container_name: my-app
+    command: ["sleep", "infinity"]
+    networks:
+      my_precreated_net:
+        # 指定 IP，必须在上一步定义的子网内
+        ipv4_address: 10.5.0.100
+
+# 定义外部网络
+networks:
+  my_precreated_net:
+    external: true  # 告诉 Compose，这个网络已经存在，不要再创建
+```
+
+---
+
+#### 重要注意事项
+
+| 注意事项 | 说明 |
+|----------|------|
+| **避免 IP 冲突** | 确保手动指定的 `ipv4_address` 在子网中是唯一且未被占用的 |
+| **DNS 依然有效** | 即使指定了静态 IP，Docker 内置 DNS 仍然工作，推荐使用服务名通信 |
+| **版本要求** | 需要 Compose 文件格式 version 2 及以上 |
+| **跨平台支持** | bridge 驱动在 Linux 上原生运行，在 Docker Desktop 中运行在虚拟机内 |
+
+::: tip 最佳实践
+虽然可以为容器指定静态 IP，但**更推荐使用服务名称进行容器间通信**（如 `http://db:3306`），这样可以获得更好的灵活性和可维护性。静态 IP 主要用于需要固定 IP 的特殊场景（如防火墙规则、监控配置等）。
+:::
