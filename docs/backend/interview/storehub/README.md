@@ -220,4 +220,6 @@ setTimeout
 
 ### 算法题
 
-[1. 两数之和](/backend/node/leetcode-js/#_1-两数之和)
+### [1. 两数之和](/backend/node/leetcode-js/#_1-两数之和)
+
+### [63. 不同路径 II](/backend/node/leetcode-js/#_63-不同路径-ii)
