@@ -1,6 +1,6 @@
 ---
 title: LeetCode (JS)
-date: 2025-6-23
+date: 2026-3-9
 categories:
   - Algorithm
 tags:
@@ -13,7 +13,7 @@ publish: true
 
 ## Leetcode 做题记录
 
-### 1. 两数之和
+## 1. 两数之和
 
 ```js
 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出和为目标值 target 的那两个整数，并返回它们的数组下标。
@@ -96,7 +96,7 @@ const addTwoNumbers = (l1, l2) => {
 
 ---
 
-### 3. 无重复字符的最长子串
+## 3. 无重复字符的最长子串
 
 ```js
 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
@@ -409,7 +409,7 @@ const isMatch = (s, p) => {
 
 ---
 
-### 11. 盛最多水的容器
+## 11. 盛最多水的容器
 
 ```js
 给你 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, ai) 和 (i, 0) 。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
@@ -844,7 +844,7 @@ const fourSum = (nums, target) => {
 // console.log(fourSum([1, 0, -1, 0, -2, 2], 0));
 ```
 
-### 20. 有效的括号
+## 20. 有效的括号
 
 ```ts
 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
@@ -897,7 +897,7 @@ const isValid = (s: string) => {
 console.log(isValid('([)'));
 ```
 
-### 33. 搜索旋转排序数组
+## 33. 搜索旋转排序数组
 
 ```js
 整数数组 nums 按升序排列，数组中的值 互不相同 。
@@ -966,8 +966,81 @@ const search = (nums, target) => {
 ```
 
 ---
+## 63. 不同路径 II
 
-### 70. 爬楼梯
+```js
+给定一个 m x n 的整数数组 grid。一个机器人初始位于 左上角（即 grid[0][0]）。机器人尝试移动到 右下角（即 grid[m - 1][n - 1]）。机器人每次只能向下或者向右移动一步。
+
+网格中的障碍物和空位置分别用 1 和 0 来表示。机器人的移动路径中不能包含 任何 有障碍物的方格。
+
+返回机器人能够到达右下角的不同路径数量。
+
+示例 1：
+
+输入：obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
+输出：2
+解释：3x3 网格的正中间有一个障碍物。
+从左上角到右下角一共有 2 条不同的路径：
+1. 向右 -> 向右 -> 向下 -> 向下
+2. 向下 -> 向下 -> 向右 -> 向右
+
+示例 2：
+
+输入：obstacleGrid = [[0,1],[0,0]]
+输出：1
+```
+
+```js
+/**
+ * @param {number[][]} obstacleGrid
+ * @return {number}
+ */
+
+// 解题思路：
+//   - 使用二维 DP 数组，dp[i][j] 表示到达位置 (i,j) 的不同路径数量
+//   - 如果当前格子是障碍物（值为1），则路径数为0
+//   - 如果当前格子无障碍物，则路径数 = 上方格子路径数 + 左方格子路径数
+
+var uniquePathsWithObstacles = function (obstacleGrid) {
+  const m = obstacleGrid.length;
+  const n = obstacleGrid[0].length;
+  const dp = Array(m)
+    .fill()
+    .map(() => Array(n).fill(0));
+
+  // 初始位置有障碍物，则无法到达
+  dp[0][0] = obstacleGrid[0][0] === 0 ? 1 : 0;
+
+  // 初始化第一列
+  for (let i = 1; i < m; i++) {
+    dp[i][0] = obstacleGrid[i][0] === 0 ? dp[i - 1][0] : 0;
+  }
+
+  // 初始化第一行
+  for (let j = 1; j < n; j++) {
+    dp[0][j] = obstacleGrid[0][j] === 0 ? dp[0][j - 1] : 0;
+  }
+
+  // 动态规划递推
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      if (obstacleGrid[i][j] === 0) {
+        // 当前位置无障碍物，路径数 = 上方路径数 + 左方路径数
+        dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+      }
+      // 有障碍物的位置 dp[i][j] 保持为 0
+    }
+  }
+
+  return dp[m - 1][n - 1];
+};
+
+// console.log(uniquePathsWithObstacles([[0, 0, 0], [0, 1, 0], [0, 0, 0]]));
+```
+
+---
+
+## 70. 爬楼梯
 
 ```js
 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
@@ -1108,7 +1181,7 @@ const recursionJudge = (remain, num1, num2) => {
 
 ---
 
-### 665. 非递减数列
+## 665. 非递减数列
 
 给你一个长度为 n 的整数数组 nums ，请你判断在 最多 改变 1 个元素的情况下，该数组能否变成一个非递减数列。
 
