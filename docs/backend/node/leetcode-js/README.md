@@ -1,6 +1,6 @@
 ---
 title: LeetCode (JS)
-date: 2026-3-9
+date: 2026-3-10
 categories:
   - Algorithm
 tags:
@@ -966,6 +966,7 @@ const search = (nums, target) => {
 ```
 
 ---
+
 ## 63. 不同路径 II
 
 ```js
@@ -992,49 +993,44 @@ const search = (nums, target) => {
 
 ```js
 /**
- * @param {number[][]} obstacleGrid
+ * @param {number[][]} grid
  * @return {number}
  */
-
-// 解题思路：
-//   - 使用二维 DP 数组，dp[i][j] 表示到达位置 (i,j) 的不同路径数量
-//   - 如果当前格子是障碍物（值为1），则路径数为0
-//   - 如果当前格子无障碍物，则路径数 = 上方格子路径数 + 左方格子路径数
-
-var uniquePathsWithObstacles = function (obstacleGrid) {
-  const m = obstacleGrid.length;
-  const n = obstacleGrid[0].length;
+var uniquePathsWithObstacles = function (grid) {
+  const m = grid.length; // m = 行数
+  const n = grid[0].length; // n = 列数
   const dp = Array(m)
     .fill()
     .map(() => Array(n).fill(0));
+  const start = grid[0][0];
+  dp[0][0] = start === 1 ? 0 : 1; // 如果起点有障碍，则无法到达
 
-  // 初始位置有障碍物，则无法到达
-  dp[0][0] = obstacleGrid[0][0] === 0 ? 1 : 0;
-
-  // 初始化第一列
-  for (let i = 1; i < m; i++) {
-    dp[i][0] = obstacleGrid[i][0] === 0 ? dp[i - 1][0] : 0;
-  }
-
-  // 初始化第一行
+  // 初始化第一行，需要遍历所有列
   for (let j = 1; j < n; j++) {
-    dp[0][j] = obstacleGrid[0][j] === 0 ? dp[0][j - 1] : 0;
+    if (grid[0][j] === 1) dp[0][j] = 0;
+    else dp[0][j] = dp[0][j - 1];
   }
 
-  // 动态规划递推
+  // 初始化第一列，需要遍历所有行
   for (let i = 1; i < m; i++) {
+    if (grid[i][0] === 1) dp[i][0] = 0;
+    else dp[i][0] = dp[i - 1][0];
+  }
+
+  for (let i = 1; i < m; i++) {
+    // i 遍历行
     for (let j = 1; j < n; j++) {
-      if (obstacleGrid[i][j] === 0) {
-        // 当前位置无障碍物，路径数 = 上方路径数 + 左方路径数
+      // j 遍历列
+      if (grid[i][j] === 1) {
+        dp[i][j] = 0;
+      } else {
         dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
       }
-      // 有障碍物的位置 dp[i][j] 保持为 0
     }
   }
 
   return dp[m - 1][n - 1];
 };
-
 // console.log(uniquePathsWithObstacles([[0, 0, 0], [0, 1, 0], [0, 0, 0]]));
 ```
 

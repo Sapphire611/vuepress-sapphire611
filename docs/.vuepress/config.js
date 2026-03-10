@@ -53,11 +53,11 @@ module.exports = {
       socialLinks: [
         // 信息栏展示社交信息
         { icon: 'reco-github', link: 'https://github.com/sapphire611' },
-        { icon: 'reco-bilibili', link: 'https://space.bilibili.com/17383192' },
-        {
-          icon: 'reco-zhihu',
-          link: 'https://www.zhihu.com/people/liu-li-yi-30'
-        }
+        // { icon: 'reco-bilibili', link: 'https://space.bilibili.com/17383192' },
+        // {
+        //   icon: 'reco-zhihu',
+        //   link: 'https://www.zhihu.com/people/liu-li-yi-30'
+        // }
       ]
     },
     record: '沪ICP备2021035470号-1',
