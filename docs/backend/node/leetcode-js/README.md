@@ -118,7 +118,7 @@ const lengthOfLongestSubstring = (s) => {
 
     if (find === -1) {
       window.push(s[i]);
-      ans = window.length > ans ? window.length : ans; // 输出window达到过的最大长度
+      ans = Math.max(window.length, ans); // 输出window达到过的最大长度
     } else {
       window.splice(0, find + 1); // 找到重复字母后，find之前的内容全部作废
       window.push(s[i]);
@@ -421,10 +421,6 @@ const isMatch = (s, p) => {
 输出：49
 解释：在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
 ```
-
----
-
-![img](https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/07/25/question_11.jpg)
 
 ---
 
@@ -1077,23 +1073,19 @@ var uniquePathsWithObstacles = function (grid) {
  * @return {number}
  */
 
-const map = new Map();
+const map = new Map(); // 这个Map一定要拉到全局，否则没有效果
+
 map.set(0, 1);
 map.set(1, 1);
 map.set(2, 2);
 
 var climbStairs = function (n) {
-  const result = map.get(n);
-  if (!result) {
-    // recursion answer
-    const newValue = climbStairs(n - 1) + climbStairs(n - 2);
-    // set result in map to save times
-    map.set(n, newValue);
-    // callback
-    return newValue;
-  } else {
-    // got result
-    return result;
+  const goal = map.get(n);
+  if (goal) return goal;
+  else {
+    const value = climbStairs(n - 1) + climbStairs(n - 2);
+    map.set(n, value);
+    return value; // 递归返回
   }
 };
 ```
@@ -1211,7 +1203,7 @@ var checkPossibility = function (nums) {
       if (count > 1) return false;
       if (i > 0 && nums[i - 1] > nums[i + 1]) {
         // 特殊例子：// 3,[4], 2, 3落在4的位置时，nums[i-1] > nums[i+1],
-
+        // 需要尝试改为 3,[4],4
         nums[i + 1] = nums[i]; // 尝试将i+1位置的数变成i位置的数
       }
     }
