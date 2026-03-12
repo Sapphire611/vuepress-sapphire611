@@ -1,6 +1,6 @@
 ---
 title: LeetCode (JS)
-date: 2026-3-10
+date: 2026-3-12
 categories:
   - Algorithm
 tags:
@@ -893,6 +893,94 @@ const isValid = (s: string) => {
 console.log(isValid('([)'));
 ```
 
+---
+
+## 22. 括号生成
+
+```js
+数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+
+示例 1：
+
+输入：n = 3
+输出：["((()))","(()())","(())()","()(())","()()()"]
+示例 2：
+
+输入：n = 1
+输出：["()"]
+```
+
+```js
+/**
+ * @param {number} n
+ * @return {string[]}
+ */
+var generateParenthesis = function (n) {
+  const map = new Map();
+  map.set(0, ['']);
+  map.set(1, ['()']);
+  map.set(2, ['(())', '()()']);
+  map.set(3, ['((()))', '(()())', '(())()', '()(())', '()()()']);
+
+  function generate(n) {
+    if (map.has(n)) return map.get(n);
+
+    const result = [];
+
+    for (let i = 0; i < n; i++) {
+      // 左边括号内的组合（消耗 i 对括号）
+      const leftParts = generate(i);
+      // 右边剩下的组合（消耗 n-1-i 对括号）
+      const rightParts = generate(n - 1 - i);
+
+      // 组合所有可能
+      for (const left of leftParts) {
+        for (const right of rightParts) {
+          result.push(`(${left})${right}`); // 难以理解
+        }
+      }
+    }
+
+    return result;
+  }
+
+  return generate(n);
+};
+```
+
+```js
+/**
+ * @param {number} n
+ * @return {string[]}
+ */
+var generateParenthesis = function (n) {
+  let result = [];
+
+  function f(current, left, right) {
+    // 如果已经使用了所有括号，添加到结果中
+    if (current.length === 2 * n) {
+      result.push(current);
+      return;
+    }
+
+    // 如果还没用完所有左括号，可以添加一个左括号
+    if (left < n) {
+      f(current + '(', left + 1, right);
+    }
+
+    // 如果有未配对的左括号，可以添加一个右括号
+    if (right < left) {
+      f(current + ')', left, right + 1);
+    }
+  }
+
+  f('', 0, 0);
+  return result;
+};
+```
+
+---
+
 ## 33. 搜索旋转排序数组
 
 ```js
@@ -1265,4 +1353,85 @@ var transpose = function (matrix) {
   // console.log(result);
   return result;
 };
+```
+
+---
+
+## 2700. 两个对象之间的差异
+
+```js
+题目描述
+请你编写一个函数，它接收两个深度嵌套的对象或数组 obj1 和 obj2 ，并返回一个新对象表示它们之间差异。
+
+该函数应该比较这两个对象的属性，并识别任何变化。返回的对象应仅包含从 obj1 到 obj2 的值不同的键。
+
+对于每个变化的键，值应表示为一个数组 [obj1 value, obj2 value] 。不存在于一个对象中但存在于另一个对象中的键不应包含在返回的对象中。在比较两个数组时，数组的索引被视为它们的键。最终结果应是一个深度嵌套的对象，其中每个叶子的值都是一个差异数组。
+
+你可以假设这两个对象都是 JSON.parse 的输出结果。
+
+示例 1：
+
+输入： 
+obj1 = {}
+obj2 = {
+  "a": 1, 
+  "b": 2
+}
+输出：{}
+解释：obj1没有进行任何修改。obj2中出现了新的键 "a" 和 "b" ，但添加或删除的键应该被忽略。
+
+示例 2：
+输入：
+obj1 = {
+  "a": 1,
+  "v": 3,
+  "x": [],
+  "z": {
+    "a": null
+  }
+}
+obj2 = {
+  "a": 2,
+  "v": 4,
+  "x": [],
+  "z": {
+    "a": 2
+  }
+}
+输出：
+{
+  "a": [1, 2],
+  "v": [3, 4],
+  "z": {
+    "a": [null, 2]
+  }
+}
+解释：键 "a"、"v" 和 "z" 都有变化。"a" 从 1 变为 2，"v" 从 3 变为 4 ，"z" 的子对象 "a" 从 null 变为 2。
+```
+
+```js
+/**
+ * 2700. 两个对象之间的差异
+ * @param {any} obj1
+ * @param {any} obj2
+ * @return {any}
+ */
+function objDiff(obj1, obj2) {
+  // 类型不同，直接返回差异
+  if (type(obj1) !== type(obj2)) return [obj1, obj2];
+
+  // 非对象类型，比较值是否相等
+  if (!isObject(obj1)) return obj1 === obj2 ? {} : [obj1, obj2];
+
+  // 对象类型，递归比较每个键
+  const diff = {};
+  const sameKeys = Object.keys(obj1).filter((key) => key in obj2);
+
+  sameKeys.forEach((key) => {
+    const subDiff = objDiff(obj1[key], obj2[key]);
+    if (Object.keys(subDiff).length) diff[key] = subDiff;
+  });
+
+  return diff;
+}
 ```

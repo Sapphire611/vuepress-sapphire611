@@ -725,3 +725,50 @@ redis3.0 中提供了解决方案。就是无中心化集群配置。
    :::
 
 [具体命令点击查看，没往下写了](https://blog.csdn.net/qq_45408390/article/details/119731094)
+
+### 多实例情况下，怎么通过 redis 防止定时任务多次执行？
+
+> 在多实例情况下，可以使用 Redis 分布式锁来防止定时任务多次执行。
+
+1.在执行定时任务之前，使用 Redis 的 SETNX 命令尝试获取锁。如果获取成功，说明该实例获得了锁，可以执行定时任务。
+
+2.在执行完定时任务之后，使用 Redis 的 DEL 命令释放锁。
+
+3.如果获取锁失败，说明其他实例已经获得了锁，该实例应该等待其他实例释放锁。
+
+代码示例：
+
+```js
+const Redis = require('ioredis');
+const redis = new Redis();
+
+const taskName = 'myTask';
+const lockTTL = 60; // lock expires in 60 seconds
+
+async function runTask() {
+  // try to acquire lock
+  const lockAcquired = await redis.setnx(taskName, 1);
+  if (!lockAcquired) {
+    console.log('Task already running, exiting...');
+    return;
+  }
+
+  // set lock expiration
+  await redis.expire(taskName, lockTTL);
+
+  try {
+    // perform task
+    console.log('Running task...');
+    // ...
+  } finally {
+    // release lock
+    await redis.del(taskName);
+  }
+}
+```
+
+> 这样可以确保一次只有一个实例在执行定时任务，避免了多次执行的问题。
+
+> 需要注意的是使用 Redis 分布式锁时，要尽量避免死锁的情况，如果锁被占用过长可以在超时时间后自动释放锁或者人工释放。
+
+---
