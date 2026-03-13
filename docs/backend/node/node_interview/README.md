@@ -1,6 +1,6 @@
 ---
 title: 面试真题记录
-date: 2026-3-12
+date: 2026-3-13
 categories:
   - Backend
 tags:
@@ -18,6 +18,37 @@ sticky: 2
 [nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) /
 [浏览器和 Node 中 事件循环区别](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别) /
 [防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
+
+### AltenChina(HP)
+
+#### Electron
+
+[IPC 的核心功能模块 (send+on、invoke+handle、sendSync)](/frontend/electron/#ipc-的核心功能模块)
+
+[如何设置只开启单窗口（app.requestSingleInstanceLock() 请求单例锁，没拿到应用程序退出）](/frontend/electron/#如何设置只开启单窗口)
+
+[多窗口之间如何通信(通过主进程转发、使用 BroadcastChannel API)](/frontend/electron/#多窗口之间如何通信)
+
+[如何实现窗口透明背景(BrowserWindow transparent: true,frame: false, html-body-background: transparent;)](/frontend/electron/#如何实现窗口透明背景)
+
+[发生内存泄漏如何排查(Chromium DevTools-Memory-记录两个Snapshot-选择HeapSnapshot-comparison)](/frontend/electron/#发生内存泄漏如何排查)
+
+#### 其他
+
+[Redux 核心概念（单一数据源、State只读、通过Reducer进行修改）](/frontend/react/#redux-mobx-的核心概念)
+
+[什么是类型断言(就是 as 而已)](/frontend/typescript/#_4-什么是类型断言)
+
+[JS 怎么实现深拷贝 （JSON.parse(JSON.stringify(obj)) / structuredClone(obj)）](#)
+
+[Nodejs 观察者模式](/backend/node/node/#_8-node-中的-eventemitter-是什么)
+
+[箭头函数和普通函数的区别（this 指向不同、不能作为构造函数、没有arguments、call、apply、bind、prototype）](#)
+
+[自己封装 Ajax](#)
+
+[flex 实现表格](#)
+
 
 
 ## UXN
@@ -51,7 +82,6 @@ sticky: 2
 [js 参数传递是值传递还是引用传递 (基本类型传值、引用类型传递引用)](#)
 
 - 基本类型: String Number Boolean Symbol null undefined
-  
 - 引用类型: Object Array Function
 
 ---

@@ -1132,3 +1132,483 @@ const value = useMemo(() => ({ theme, setTheme }), [theme]);
 **选择建议**：
 - 🎯 简单的全局配置（主题、语言） → **Context**
 - 🎯 复杂的状态管理（多个状态、异步逻辑） → **Redux / Zustand**
+
+### Redux/Mobx 的核心概念
+
+::: right
+Redux 和 MobX 是 React 生态中最流行的状态管理库，它们采用了不同的状态管理哲学
+:::
+
+#### Redux 核心概念
+
+Redux 是一个可预测的状态容器，采用 **单向数据流** 和 **不可变数据**。
+
+##### 三大原则
+
+1. **单一数据源**：整个应用的 state 存储在单一 store 的对象树中
+2. **State 只读**：修改 state 的唯一方式是触发 action
+3. **使用纯函数执行修改**：通过 reducer 纯函数计算新 state
+
+##### 核心概念
+
+```js
+// 1. Action - 描述发生了什么
+const ADD_TODO = 'ADD_TODO';
+
+const addTodo = (text) => ({
+  type: ADD_TODO,
+  payload: text
+});
+
+// 2. Reducer - 纯函数，根据 action 计算新 state
+const todosReducer = (state = [], action) => {
+  switch (action.type) {
+    case ADD_TODO:
+      // ✅ 不可变更新：返回新对象
+      return [...state, { id: Date.now(), text: action.payload, completed: false }];
+    case 'TOGGLE_TODO':
+      return state.map(todo =>
+        todo.id === action.id
+          ? { ...todo, completed: !todo.completed }
+          : todo
+      );
+    default:
+      return state;
+  }
+};
+
+// 3. Store - 存储 state
+import { createStore } from 'redux';
+
+const store = createStore(todosReducer);
+
+// 4. 使用
+console.log(store.getState()); // 获取 state
+store.dispatch(addTodo('学习 Redux')); // 触发 action
+store.subscribe(() => console.log(store.getState())); // 监听变化
+```
+
+##### Redux 数据流
+
+```
+┌─────────┐     ┌──────────┐     ┌─────────┐
+│  View   │────▶│ Action   │────▶│ Store   │
+└─────────┘     └──────────┘     └─────────┘
+     ▲                                 │
+     └───────── Reducer ◀───────────────┘
+```
+
+1. View 触发 Action
+2. Store 接收 Action，交给 Reducer
+3. Reducer 返回新 State
+4. Store 通知 View 更新
+
+##### Redux Toolkit（现代 Redux）
+
+Redux Toolkit（RTK）是官方推荐的 Redux 编写方式，简化了配置。
+
+```js
+import { createSlice, configureStore } from '@reduxjs/toolkit';
+
+// 1. 创建 slice（包含 reducer + actions）
+const todoSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    addTodo: (state, action) => {
+      // ✅ Immer 允许直接修改
+      state.push({ id: Date.now(), text: action.payload, completed: false });
+    },
+    toggleTodo: (state, action) => {
+      const todo = state.find(t => t.id === action.payload);
+      if (todo) {
+        todo.completed = !todo.completed;
+      }
+    },
+  },
+});
+
+// 2. 提取 actions
+const { addTodo, toggleTodo } = todoSlice.actions;
+
+// 3. 创建 store
+const store = configureStore({
+  reducer: {
+    todos: todoSlice.reducer,
+  },
+});
+
+// 4. 使用
+store.dispatch(addTodo('学习 RTK'));
+```
+
+##### Redux 异步处理（Redux Thunk）
+
+```js
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
+// 创建异步 thunk
+const fetchTodos = createAsyncThunk(
+  'todos/fetchTodos',
+  async () => {
+    const response = await fetch('/api/todos');
+    return response.json();
+  }
+);
+
+const todoSlice = createSlice({
+  name: 'todos',
+  initialState: { items: [], status: 'idle', error: null },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTodos.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchTodos.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      })
+      .addCase(fetchTodos.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
+  },
+});
+
+// 在组件中使用
+function TodoList() {
+  const dispatch = useDispatch();
+  const { items, status } = useSelector((state) => state.todos);
+
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, [dispatch]);
+
+  if (status === 'loading') return <div>加载中...</div>;
+  return <ul>{items.map(todo => <li key={todo.id}>{todo.text}</li>)}</ul>;
+}
+```
+
+---
+
+#### MobX 核心
+
+MobX 采用 **响应式编程** 和 **可变状态**，通过装饰器或函数自动追踪依赖。
+
+##### 核心概念
+
+1. **Observable State**：可观察的状态
+2. **Computed Values**：派生值（自动更新）
+3. **Actions**：修改状态的方法
+4. **Reactions**：响应状态变化
+
+```js
+import { makeObservable, observable, computed, action, autorun } from 'mobx';
+
+class TodoStore {
+  // 1. Observable State - 可观察的状态
+  todos = [];
+
+  constructor() {
+    // 让 MobX 可以追踪这些属性
+    makeObservable(this, {
+      todos: observable,
+      unfinishedCount: computed,
+      addTodo: action,
+      toggleTodo: action,
+    });
+  }
+
+  // 2. Computed - 自动计算
+  get unfinishedCount() {
+    return this.todos.filter(t => !t.completed).length;
+  }
+
+  // 3. Action - 修改状态
+  addTodo(text) {
+    this.todos.push({ id: Date.now(), text, completed: false });
+  }
+
+  toggleTodo(id) {
+    const todo = this.todos.find(t => t.id === id);
+    if (todo) {
+      todo.completed = !todo.completed;
+    }
+  }
+}
+
+// 使用
+const store = new TodoStore();
+
+// 4. Reaction - 自动响应变化
+autorun(() => {
+  console.log('未完成数量:', store.unfinishedCount);
+});
+
+store.addTodo('学习 MobX'); // 自动打印：未完成数量: 1
+store.toggleTodo(store.todos[0].id); // 自动打印：未完成数量: 0
+```
+
+##### 函数式写法（更简洁）
+
+```js
+import { observable, computed, action } from 'mobx';
+
+class TodoStore {
+  todos = observable([]);
+
+  get unfinishedCount() {
+    return this.todos.filter(t => !t.completed).length;
+  }
+
+  addTodo = action((text) => {
+    this.todos.push({ id: Date.now(), text, completed: false });
+  });
+
+  toggleTodo = action((id) => {
+    const todo = this.todos.find(t => t.id === id);
+    if (todo) {
+      todo.completed = !todo.completed;
+    }
+  });
+}
+```
+
+##### 在 React 中使用 MobX
+
+```js
+import { observer } from 'mobx-react-lite';
+
+// 使用 observer 包装组件，自动响应状态变化
+const TodoList = observer(({ store }) => {
+  return (
+    <div>
+      <h3>未完成: {store.unfinishedCount}</h3>
+      <ul>
+        {store.todos.map(todo => (
+          <li key={todo.id}>
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => store.toggleTodo(todo.id)}
+            />
+            {todo.text}
+          </li>
+        ))}
+      </ul>
+      <button onClick={() => store.addTodo('新任务')}>
+        添加
+      </button>
+    </div>
+  );
+});
+```
+
+---
+
+#### Redux vs MobX 对比
+
+| 特性 | Redux | MobX |
+|:---|:---|:---|
+| **理念** | 单向数据流、函数式编程 | 响应式编程、面向对象 |
+| **状态可变性** | 不可变（immutable） | 可变（mutable） |
+| **代码风格** | 冗长但规范 | 简洁灵活 |
+| **学习曲线** | 陡峭 | 平缓 |
+| **性能** | 需要手动优化 | 自动优化 |
+| **调试工具** | 完善（Redux DevTools） | 相对简单 |
+| **类型支持** | TypeScript 支持好 | 需要额外配置 |
+| **样板代码** | 多 | 少 |
+
+##### 代码对比
+
+```js
+// ========== Redux ==========
+// action types
+const ADD_TODO = 'ADD_TODO';
+const TOGGLE_TODO = 'TOGGLE_TODO';
+
+// action creators
+const addTodo = (text) => ({ type: ADD_TODO, payload: text });
+const toggleTodo = (id) => ({ type: TOGGLE_TODO, payload: id });
+
+// reducer
+function todosReducer(state = [], action) {
+  switch (action.type) {
+    case ADD_TODO:
+      return [...state, { id: Date.now(), text: action.payload, completed: false }];
+    case TOGGLE_TODO:
+      return state.map(todo =>
+        todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo
+      );
+    default:
+      return state;
+  }
+}
+
+// store
+const store = createStore(todosReducer);
+
+// 组件中使用
+function TodoList() {
+  const todos = useSelector(state => state.todos);
+  const dispatch = useDispatch();
+
+  return (
+    <>
+      {todos.map(todo => (
+        <div key={todo.id}>
+          <span>{todo.text}</span>
+          <button onClick={() => dispatch(toggleTodo(todo.id))}>
+            Toggle
+          </button>
+        </div>
+      ))}
+      <button onClick={() => dispatch(addTodo('New Todo'))}>
+        Add
+      </button>
+    </>
+  );
+}
+
+// ========== MobX ==========
+class TodoStore {
+  todos = observable([]);
+
+  addTodo = action((text) => {
+    this.todos.push({ id: Date.now(), text, completed: false });
+  });
+
+  toggleTodo = action((id) => {
+    const todo = this.todos.find(t => t.id === id);
+    if (todo) todo.completed = !todo.completed;
+  });
+}
+
+// 组件中使用
+const TodoList = observer(({ store }) => {
+  return (
+    <>
+      {store.todos.map(todo => (
+        <div key={todo.id}>
+          <span>{todo.text}</span>
+          <button onClick={() => store.toggleTodo(todo.id)}>
+            Toggle
+          </button>
+        </div>
+      ))}
+      <button onClick={() => store.addTodo('New Todo')}>
+        Add
+      </button>
+    </>
+  );
+});
+```
+
+---
+
+#### 如何选择？
+
+**选择 Redux 的场景：**
+
+✅ 大型应用，复杂的状态逻辑
+✅ 需要可预测的状态变化
+✅ 团队协作，需要规范化
+✅ 需要时间旅行调试
+✅ 状态变化需要记录和追溯
+
+```js
+// Redux 典型场景：电商应用
+const store = {
+  cart: {
+    items: [],
+    total: 0,
+    discount: 0
+  },
+  products: {
+    list: [],
+    filters: { category: null, priceRange: null },
+    sortBy: 'price'
+  },
+  user: {
+    profile: null,
+    orders: [],
+    preferences: {}
+  }
+};
+```
+
+**选择 MobX 的场景：**
+
+✅ 中小型应用
+✅ 快速开发原型
+✅ 团队更熟悉面向对象
+✅ 不想写太多样板代码
+✅ 性能敏感场景
+
+```js
+// MobX 典型场景：表单应用
+class FormStore {
+  formData = observable({
+    username: '',
+    email: '',
+    password: ''
+  });
+
+  errors = observable({});
+
+  get isValid() {
+    return this.formData.username && this.formData.email && this.formData.password;
+  }
+
+  validate = action(() => {
+    this.errors = {};
+    if (!this.formData.username) this.errors.username = '必填';
+    if (!this.formData.email) this.errors.email = '必填';
+  });
+}
+```
+
+**选择 Zustand（新兴方案）：**
+
+Zustand 是一个更轻量、更简单的状态管理库。
+
+```js
+import { create } from 'zustand';
+
+const useStore = create((set) => ({
+  todos: [],
+  addTodo: (text) => set((state) => ({
+    todos: [...state.todos, { id: Date.now(), text, completed: false }]
+  })),
+  toggleTodo: (id) => set((state) => ({
+    todos: state.todos.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    )
+  })),
+}));
+
+// 组件中使用
+function TodoList() {
+  const { todos, addTodo, toggleTodo } = useStore();
+
+  return (
+    <>
+      {todos.map(todo => (
+        <div key={todo.id}>
+          <span>{todo.text}</span>
+          <button onClick={() => toggleTodo(todo.id)}>Toggle</button>
+        </div>
+      ))}
+      <button onClick={() => addTodo('New')}>Add</button>
+    </>
+  );
+}
+```
+
+::: tip 现代状态管理推荐
+- **大型项目**：Redux Toolkit（官方推荐）
+- **中小型项目**：Zustand（简洁、轻量）
+- **快速原型**：MobX（灵活、简单）
+- **简单全局状态**：React Context（内置方案）
+:::

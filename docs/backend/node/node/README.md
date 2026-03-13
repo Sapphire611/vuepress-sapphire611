@@ -1,6 +1,6 @@
 ---
 title: Node 题目整理
-date: 2026-3-9
+date: 2026-3-13
 categories:
   - Backend
 tags:
@@ -708,6 +708,7 @@ fs.createReadStream('./input.txt.gz')
 
 console.log('解压完成');
 ```
+
 ## 11.宏任务 / 微任务
 
 > 宏任务（Macro Task）和微任务（Micro Task）是与事件循环（Event Loop）相关的概念，用于管理 JavaScript 代码的执行顺序和异步操作。它们有助于理解 JavaScript 中的异步编程和事件处理
@@ -828,6 +829,7 @@ readStream.on('end', () => {
   console.log('🎉 Stream completed');
 });
 ```
+
 ## 14. 什么是Buffer？为什么需要它？
 
 > Buffer 是 Node.js 用于处理二进制数据的类，继承自 JavaScript 的 `Uint8Array`
@@ -906,7 +908,469 @@ readStream.on('data', (chunk) => {
 });
 ```
 
-## 16. Node GC 新生代如何转变为老生代？
+
+## 16. Nodejs 垃圾回收机制
+
+::: right
+Node.js 使用 V8 引擎的垃圾回收机制（Garbage Collection，GC），自动管理内存，无需手动释放
+:::
+
+### 一、什么是垃圾回收？
+
+垃圾回收（GC）是自动内存管理机制，自动识别不再使用的对象并释放其占用的内存。
+
+```javascript
+// 示例：垃圾回收的基本概念
+function createUser() {
+  const user = { name: 'John', age: 25 };  // 局部变量
+  return user;  // 返回给外部，不会被回收
+}
+
+function createTemp() {
+  const temp = { data: 'temporary' };  // 局部变量
+  // 函数执行完毕，temp 不再被引用
+  // GC 会自动回收这个对象
+}
+
+createTemp();  // temp 对象成为垃圾，等待回收
+```
+
+### 二、V8 的内存分代
+
+V8 将堆内存分为**新生代**和**老生代**，采用不同的 GC 算法。
+
+```
+┌─────────────────────────────────────────┐
+│           V8 堆内存 (Heap)               │
+├──────────────────┬──────────────────────┤
+│    新生代         │      老生代           │
+│   (New Space)    │    (Old Space)       │
+│                  │                      │
+│  • 小对象         │  • 存活时间长的对象    │
+│  • 生命周期短     │  • 大对象             │
+│  • Scavenge 算法  │  • Mark-Sweep 算法   │
+│                  │  • Mark-Compact 算法 │
+│  大小: 1-64MB    │  大小: 可扩展到 1GB+  │
+└──────────────────┴──────────────────────┘
+```
+
+**新生代（New Space）**
+- 存放生命周期较短的小对象
+- 使用 **Scavenge 算法**（复制算法）
+- 空间小（通常 1-64MB）
+- GC 频繁，但速度快
+
+**老生代（Old Space）**
+- 存放生命周期长或大对象
+- 使用 **Mark-Sweep-Compact 算法**（标记-清除-整理）
+- 空间大（可达 1GB 以上）
+- GC 频率低，但耗时较长
+
+### 三、垃圾回收算法
+
+#### 1️⃣ Scavenge 算法（新生代）
+
+**原理**：将内存分为 From 区和 To 区，复制存活对象到另一个区。
+
+```
+GC 前的 From 区          GC 后的 To 区
+┌─────────────────┐     ┌─────────────────┐
+│ obj1 (存活)     │     │ obj1 (复制)     │
+│ obj2 (垃圾)     │  ─▶ │ obj3 (复制)     │
+│ obj3 (存活)     │     │                 │
+│ obj4 (垃圾)     │     │                 │
+└─────────────────┘     └─────────────────┘
+```
+
+**工作流程：**
+
+```javascript
+// ========== Scavenge GC 流程 ==========
+
+// 1. 对象分配在 From 区
+const obj1 = { data: 'A' };  // From 区
+const obj2 = { data: 'B' };  // From 区
+
+// 2. GC 触发
+// - 从根对象（Root）开始标记
+// - 将存活对象复制到 To 区
+// - 清空 From 区
+
+// 3. From 和 To 区互换角色
+// 下一轮 GC 时，当前 To 区变为 From 区
+```
+
+**特点：**
+- ✅ 速度快：只处理存活对象
+- ✅ 无内存碎片：复制时紧凑排列
+- ❌ 空间浪费：只能使用一半内存
+
+#### 2️⃣ Mark-Sweep 算法（老生代 - 标记清除）
+
+**原理**：标记所有存活对象，清除未标记的对象。
+
+```
+标记阶段：
+Root → obj1 → obj2
+        ↓
+       obj3
+
+清除阶段：
+obj1 ✅ (存活)
+obj2 ✅ (存活)
+obj3 ✅ (存活)
+obj4 ❌ (未标记，清除)
+obj5 ❌ (未标记，清除)
+```
+
+**代码示例：**
+
+```javascript
+// ========== Mark-Sweep GC 流程 ==========
+
+// 1. 标记阶段（Mark）
+// 从 GC Root 开始遍历
+const root = {
+  user: { name: 'John' },
+  session: { id: 123 }
+};
+
+// 标记所有可达对象
+function mark(root) {
+  // 递归标记所有引用
+  if (root.user) root.user._marked = true;
+  if (root.session) root.session._marked = true;
+}
+
+// 2. 清除阶段（Sweep）
+// 释放未标记的对象
+function sweep(heap) {
+  heap.forEach(obj => {
+    if (!obj._marked) {
+      // 释放内存
+      free(obj);
+    }
+  });
+}
+
+// 3. 整理阶段（Compact）
+// 可选：整理内存碎片
+```
+
+**特点：**
+- ✅ 空间利用率高
+- ❌ 会产生内存碎片
+- ❌ 需要两次遍历（标记 + 清除）
+
+#### 3️⃣ Mark-Compact 算法（老生代 - 标记整理）
+
+**原理**：标记存活对象后，将它们向一端移动，消除内存碎片。
+
+```
+整理前：
+[✅][❌][✅][❌][✅][❌][✅][❌]
+
+整理后：
+[✅][✅][✅][✅][     自由空间     ]
+```
+
+**特点：**
+- ✅ 无内存碎片
+- ✅ 空间利用率高
+- ❌ 移动对象成本高
+
+### 四、GC 的触发时机
+
+#### 自动触发条件
+
+```javascript
+// ========== GC 触发场景 ==========
+
+// 1. 新生代空间不足
+const arr = [];
+for (let i = 0; i < 1000000; i++) {
+  arr.push({ index: i });  // 频繁创建对象
+  // 新生代满了 → 触发 Scavenge GC
+}
+
+// 2. 老生代空间不足
+const hugeArray = new Array(10000000).fill({ data: 'large' });
+// 老生代空间不足 → 触发 Mark-Sweep GC
+
+// 3. 定期检查
+// V8 会定期检查是否需要 GC
+```
+
+#### 手动触发 GC
+
+```javascript
+// ========== 手动触发 GC ==========
+
+// 方式1: 使用 global.gc()（需要 --expose-gc 参数）
+if (global.gc) {
+  global.gc();  // 手动触发垃圾回收
+  console.log('GC 已执行');
+}
+
+// 启动命令
+// node --expose-gc app.js
+
+// 方式2: 使用 v8 模块
+const v8 = require('v8');
+v8.writeHeapSnapshot();  // 生成堆快照
+
+// 方式3: 使用 process.memoryUsage() 监控
+function checkMemory() {
+  const usage = process.memoryUsage();
+  console.log('堆使用情况:', {
+    rss: `${Math.round(usage.rss / 1024 / 1024)}MB`,
+    heapTotal: `${Math.round(usage.heapTotal / 1024 / 1024)}MB`,
+    heapUsed: `${Math.round(usage.heapUsed / 1024 / 1024)}MB`,
+    external: `${Math.round(usage.external / 1024 / 1024)}MB`
+  });
+
+  // 堆使用超过 80% 时手动 GC
+  if (usage.heapUsed / usage.heapTotal > 0.8) {
+    global.gc && global.gc();
+  }
+}
+
+// 定期检查
+setInterval(checkMemory, 10000);
+```
+
+### 五、GC 性能优化
+
+#### 1. 减少对象创建
+
+```javascript
+// ❌ 频繁创建对象
+function process(items) {
+  items.forEach(item => {
+    const result = { ...item, processed: true };  // 每次都创建新对象
+    store(result);
+  });
+}
+
+// ✅ 复用对象
+function process(items) {
+  const result = {};
+  items.forEach(item => {
+    Object.assign(result, item, { processed: true });
+    store(result);
+  });
+}
+```
+
+#### 2. 避免内存泄漏
+
+```javascript
+// ❌ 全局变量持有对象
+const cache = {};
+
+function addUser(id, user) {
+  cache[id] = user;  // 永不释放
+}
+
+// ✅ 使用 WeakMap 或设置过期
+const cache = new Map();
+
+function addUser(id, user) {
+  cache.set(id, user);
+  setTimeout(() => cache.delete(id), 60000);  // 1分钟后删除
+}
+
+// ✅ 或者使用 WeakMap
+const cache = new WeakMap();
+
+function addUser(obj, metadata) {
+  cache.set(obj, metadata);
+  // obj 被回收时，metadata 自动释放
+}
+```
+
+#### 3. 使用对象池
+
+```javascript
+// ========== 对象池模式 ==========
+
+class ObjectPool {
+  constructor(createFn, resetFn, initialSize = 10) {
+    this.createFn = createFn;
+    this.resetFn = resetFn;
+    this.pool = [];
+
+    for (let i = 0; i < initialSize; i++) {
+      this.pool.push(createFn());
+    }
+  }
+
+  acquire() {
+    return this.pool.pop() || this.createFn();
+  }
+
+  release(obj) {
+    this.resetFn(obj);
+    this.pool.push(obj);
+  }
+}
+
+// 使用示例
+const bufferPool = new ObjectPool(
+  () => Buffer.allocUnsafe(1024),
+  (buf) => buf.fill(0),
+  100
+);
+
+function processData(data) {
+  const buffer = bufferPool.acquire();
+  // 使用 buffer 处理数据
+  buffer.write(data);
+  // ...
+  bufferPool.release(buffer);  // 归还到池中
+}
+```
+
+#### 4. 调整 V8 内存限制
+
+```bash
+# 调整新生代大小（单位：KB）
+node --max-new-space-size=64 app.js   # 64MB
+node --min-new-space-size=16 app.js   # 最小 16MB
+
+# 调整老生代大小（单位：MB）
+node --max-old-space-size=4096 app.js # 4GB
+
+# 查看内存使用
+node --trace-gc app.js                # 跟踪 GC
+node --trace-gc-verbose app.js        # 详细 GC 日志
+node --prof app.js                    # 生成性能分析
+```
+
+### 六、监控和调试
+
+#### 使用 Chrome DevTools
+
+```javascript
+// 生成堆快照
+const v8 = require('v8');
+
+// 方式1: 生成快照文件
+v8.writeHeapSnapshot('./heap-snapshot.heapsnapshot');
+
+// 方式2: 在代码中触发
+if (process.argv.includes('--heap-snapshot')) {
+  v8.writeHeapSnapshot();
+  console.log('堆快照已生成');
+}
+
+// 方式3: 使用 heapdump 模块
+const heapdump = require('heapdump');
+
+// 监听信号生成快照
+process.on('SIGUSR2', () => {
+  const filename = `/tmp/heapdump-${Date.now()}.heapsnapshot`;
+  heapdump.writeSnapshot(filename);
+  console.log(`堆快照已保存到: ${filename}`);
+});
+```
+
+#### 内存泄漏检测
+
+```javascript
+// ========== 内存泄漏检测脚本 ==========
+
+const v8 = require('v8');
+
+let snapshotCount = 0;
+
+function takeSnapshot(label = '') {
+  const filename = `./snapshot-${snapshotCount++}${label}.heapsnapshot`;
+  v8.writeHeapSnapshot(filename);
+  console.log(`📸 堆快照: ${filename}`);
+}
+
+// 使用示例
+function detectMemoryLeak() {
+  takeSnapshot('initial');
+
+  // 执行操作
+  const items = [];
+  for (let i = 0; i < 10000; i++) {
+    items.push({ id: i, data: 'leak' });
+  }
+
+  takeSnapshot('after-creation');
+
+  // 清理
+  items.length = 0;
+  global.gc && global.gc();  // 手动 GC
+
+  takeSnapshot('after-gc');
+}
+
+detectMemoryLeak();
+```
+
+### 七、常见 GC 问题
+
+#### 1. GC 频繁导致性能下降
+
+```javascript
+// 问题：频繁创建和销毁对象
+function render() {
+  const data = new Array(1000).fill(0);  // 每次渲染都创建
+  // ...
+  requestAnimationFrame(render);
+}
+
+// 优化：复用数组
+const data = new Array(1000).fill(0);
+function render() {
+  // 复用 data
+  requestAnimationFrame(render);
+}
+```
+
+#### 2. 老生代 GC 阻塞主线程
+
+```javascript
+// 问题：一次性处理大量数据
+function processLargeDataset() {
+  const dataset = new Array(10000000).fill({ data: 'large' });
+  // 可能触发 Full GC，阻塞主线程
+}
+
+// 优化：分批处理
+async function processLargeDataset() {
+  const batchSize = 10000;
+  for (let i = 0; i < 10000000; i += batchSize) {
+    const batch = new Array(batchSize).fill({ data: 'large' });
+    process(batch);
+    await setImmediate();  // 让事件循环有机会执行
+  }
+}
+```
+
+### 八、总结
+
+| 算法 | 使用区域 | 优点 | 缺点 |
+|------|---------|------|------|
+| **Scavenge** | 新生代 | 速度快、无碎片 | 空间利用率低（50%） |
+| **Mark-Sweep** | 老生代 | 空间利用率高 | 有内存碎片 |
+| **Mark-Compact** | 老生代 | 无碎片 | 移动成本高 |
+
+::: tip 优化建议
+1. **避免频繁创建对象**：使用对象池、复用对象
+2. **及时释放引用**：删除不再使用的属性、清空数组
+3. **监控内存使用**：使用 `process.memoryUsage()` 定期检查
+4. **调整内存参数**：根据应用特点调整 `--max-old-space-size`
+5. **生成堆快照**：使用 `v8.writeHeapSnapshot()` 分析内存泄漏
+:::
+
+**注意**：下一节（第17节）会详细讲解新生代如何晋升到老生代，本节重点理解 GC 的基本概念和算法。
+
+## 17. Node GC 新生代如何转变为老生代？
 
 > V8 引擎的垃圾回收机制将内存分为**新生代**（New Space）和**老生代**（Old Space）。
 
@@ -999,16 +1463,6 @@ let largeObj = new Buffer(32 * 1024);  // 32KB
 let hugeArray = new Array(100000);
 ```
 
-### GC 算法对比
-
-| 特性 | 新生代 (Scavenge) | 老生代 (Mark-Sweep-Compact) |
-|------|-------------------|------------------------------|
-| **算法** | 复制算法 | 标记-清除-整理 |
-| **速度** | 快（只处理活跃对象） | 慢（遍历整个堆） |
-| **空间** | 需要两倍空间（From/To） | 碎片化，需要整理 |
-| **适用** | 短命对象 | 长命对象、大对象 |
-| **GC 频率** | 高频 | 低频 |
-
 ### 晋升过程示意图
 
 ```
@@ -1082,53 +1536,11 @@ if (global.gc) {
 }
 ```
 
-### 性能优化建议
+::: tip 本节总结
+本节重点讲解**新生代如何晋升到老生代**，关于 GC 算法详解、性能优化等内容请查看**第16节：Nodejs 垃圾回收机制**。
 
-| 优化策略 | 说明 | 示例 |
-|---------|------|------|
-| **避免创建过多临时对象** | 减少新生代 GC 压力 | 使用对象池复用对象 |
-| **及时释放引用** | 帮助 GC 回收 | `obj = null` |
-| **避免大对象** | 大对象直接进入老生代，增加 Full GC 压力 | 分批处理大数据 |
-| **调整内存大小** | 根据应用特点调整 | `--max-old-space-size=4096` |
-| **监控 GC 指标** | 关注 GC 频率和耗时 | 使用 `--trace-gc` |
-
-```javascript
-// ========== 优化示例：对象池 ==========
-class ObjectPool {
-  constructor() {
-    this.pool = [];
-  }
-
-  get() {
-    return this.pool.pop() || { data: null };
-  }
-
-  release(obj) {
-    obj.data = null;  // 清空数据
-    this.pool.push(obj);  // 放回池中
-  }
-}
-
-const pool = new ObjectPool();
-
-// 使用对象池避免频繁创建销毁对象
-function processData() {
-  const obj = pool.get();
-  obj.data = "processing";
-  // ... 处理数据
-  pool.release(obj);  // 放回池中，而不是丢弃
-}
-```
-
-::: tip 调试 GC 问题
-```bash
-# 查看 GC 详细日志
-node --trace-gc --trace-gc-verbose app.js
-
-# 查看 GC 统计信息
-node --trace-gc app.js 2>&1 | grep "scavenge"
-
-# 使用 heapdump 快照分析内存
-node --heap-prof app.js
-```
+**晋升三个关键点：**
+1. **经历GC次数**（默认2次）- 对象在新生代存活越久，越可能晋升
+2. **To区内存不足** - 复制时空间不够，直接晋升
+3. **大对象直接分配** - 超过32KB的对象直接进老生代
 :::
