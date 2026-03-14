@@ -96,6 +96,16 @@ function MyComponent() {
   );
 }
 ```
+---
+
+### react 调用 setState 之后发生了什么
+
+1. React 调用 setState 之后，React 会将新的 state 和 props 传递给组件的 render 方法，然后 React 会生成新的 DOM 元素。
+2. React 会将新的 DOM 元素渲染到 DOM 中
+3. React 会将新的 DOM 元素与旧的 DOM 元素进行比较，并生成一个更新计划
+4. React 会将更新计划应用到旧的 DOM 元素上，从而实现更新。
+
+---
 
 ### useState 快照及累加问题
 
@@ -267,11 +277,11 @@ const updateCity = (city: string) => dispatch({ type: 'UPDATE_CITY', payload: ci
 
 这三个 Hook 解决的问题完全不同，可以用一句话区分：
 
-| Hook | 解决什么问题 | 执行时机 | 一句话概括 |
-|:---:|:---|:---|:---|
-| **useEffect** | 副作用处理 | **渲染后** | "渲染完做某事"（请求数据、修改 DOM） |
-| **useCallback** | 函数引用稳定 | **渲染时** | "保持函数身份不变"（避免子组件重渲染）|
-| **useMemo** | 计算结果缓存 | **渲染时** | "记住计算结果"（避免重复计算） |
+|      Hook       | 解决什么问题 | 执行时机   | 一句话概括                             |
+| :-------------: | :----------- | :--------- | :------------------------------------- |
+|  **useEffect**  | 副作用处理   | **渲染后** | "渲染完做某事"（请求数据、修改 DOM）   |
+| **useCallback** | 函数引用稳定 | **渲染时** | "保持函数身份不变"（避免子组件重渲染） |
+|   **useMemo**   | 计算结果缓存 | **渲染时** | "记住计算结果"（避免重复计算）         |
 
 ---
 
@@ -292,6 +302,7 @@ useEffect(() => {
 ```
 
 **关键点**：
+
 - 在渲染**之后**异步执行
 - 可以返回清理函数（用于取消订阅等）
 - 不阻塞渲染
@@ -338,25 +349,29 @@ function Parent() {
 
 ```js
 // ❌ 每次渲染都重新计算（即使 list 没变）
-const filteredData = dataList.filter(item => item.price > 100);
+const filteredData = dataList.filter((item) => item.price > 100);
 
 // ✅ 只在 dataList 变化时重新计算
 const filteredData = useMemo(() => {
   console.log('执行过滤...');
-  return dataList.filter(item => item.price > 100);
+  return dataList.filter((item) => item.price > 100);
 }, [dataList]);
 ```
 
 **使用场景**：
+
 - 昂贵的计算（排序、过滤、复杂运算）
 - 保持引用稳定（避免子组件重渲染）
 
 ```js
 // 场景：避免因对象引用变化导致子组件重渲染
-const style = useMemo(() => ({
-  fontSize: '16px',
-  color: theme.color
-}), [theme.color]); // theme.color 不变，style 对象引用就不变
+const style = useMemo(
+  () => ({
+    fontSize: '16px',
+    color: theme.color,
+  }),
+  [theme.color]
+); // theme.color 不变，style 对象引用就不变
 ```
 
 ---
@@ -365,14 +380,17 @@ const style = useMemo(() => ({
 
 ```js
 // 渲染后做事（异步）
-useEffect(() => { document.title = count }, [count]);
+useEffect(() => {
+  document.title = count;
+}, [count]);
 
 // 渲染时用（同步）
-useCallback(() => {}, [deps]);  // 缓存函数
-useMemo(() => value, [deps]);   // 缓存值
+useCallback(() => {}, [deps]); // 缓存函数
+useMemo(() => value, [deps]); // 缓存值
 ```
 
 **本质区别**：
+
 - `useEffect` = **副作用**（与渲染无关）
 - `useCallback` = **useMemo(fn, deps) 的语法糖**（缓存函数）
 - `useMemo` = **计算缓存**（性能优化）
@@ -454,7 +472,9 @@ Virtual DOM 是真实 DOM 的 JavaScript 对象表示，React 用它来提高渲
 
 // ✅ 使用 key
 <ul>
-  {items.map(item => <li key={item.id}>{item.name}</li>)}
+  {items.map((item) => (
+    <li key={item.id}>{item.name}</li>
+  ))}
 </ul>
 // React 通过 key 精确找到对应节点，只移动位置
 ```
@@ -475,19 +495,20 @@ Virtual DOM 是真实 DOM 的 JavaScript 对象表示，React 用它来提高渲
 
 ```js
 // ❌ 使用索引（不推荐）
-{items.map((item, index) => (
-  <li key={index}>{item.name}</li>
-))}
+{
+  items.map((item, index) => <li key={index}>{item.name}</li>);
+}
 
 // ✅ 使用唯一 ID（推荐）
-{items.map(item => (
-  <li key={item.id}>{item.name}</li>
-))}
+{
+  items.map((item) => <li key={item.id}>{item.name}</li>);
+}
 ```
 
 #### key 的作用原理
 
 React 使用 key 来：
+
 1. **识别节点**：判断节点是新增、移动还是删除
 2. **复用节点**：避免不必要的销毁和重建
 3. **保持状态**：确保组件状态正确关联
@@ -497,12 +518,12 @@ React 使用 key 来：
 function TodoList() {
   const [todos, setTodos] = useState([
     { id: 1, text: '学习 React', checked: false },
-    { id: 2, text: '写代码', checked: true }
+    { id: 2, text: '写代码', checked: true },
   ]);
 
   return (
     <ul>
-      {todos.map(todo => (
+      {todos.map((todo) => (
         <TodoItem key={todo.id} todo={todo} />
       ))}
     </ul>
@@ -516,9 +537,9 @@ function TodoList() {
 
 ```js
 // ❌ 问题：列表顺序变化时，状态会错乱
-{items.map((item, index) => (
-  <TodoItem key={index} item={item} />
-))}
+{
+  items.map((item, index) => <TodoItem key={index} item={item} />);
+}
 
 // 场景：删除第一项，第二项的 key 从 1 变成 0
 // React 会复用第一个组件，状态混乱
@@ -528,36 +549,38 @@ function TodoList() {
 
 ```js
 // ❌ 错误：key 必须唯一
-{items.map(item => (
-  <div key={item.type}>{item.name}</div>
-  // 如果多个 item 的 type 相同，key 就重复了
-))}
+{
+  items.map((item) => (
+    <div key={item.type}>{item.name}</div>
+    // 如果多个 item 的 type 相同，key 就重复了
+  ));
+}
 ```
 
 **3. 随机生成 key**
 
 ```js
 // ❌ 错误：每次渲染都变化
-{items.map(item => (
-  <div key={Math.random()}>{item.name}</div>
-  // 每次都创建新节点，失去 key 的意义
-))}
+{
+  items.map((item) => (
+    <div key={Math.random()}>{item.name}</div>
+    // 每次都创建新节点，失去 key 的意义
+  ));
+}
 ```
 
 #### 正确使用
 
 ```js
 // ✅ 推荐：使用稳定的唯一 ID
-{users.map(user => (
-  <UserCard key={user.id} user={user} />
-))}
+{
+  users.map((user) => <UserCard key={user.id} user={user} />);
+}
 
 // ✅ 组合 key（没有唯一 ID 时）
-{items.map((item, index) => (
-  <div key={`${item.type}-${index}`}>
-    {item.name}
-  </div>
-))}
+{
+  items.map((item, index) => <div key={`${item.type}-${index}`}>{item.name}</div>);
+}
 ```
 
 ---
@@ -597,11 +620,11 @@ const Child = React.memo(
 ```js
 function ProductList({ products, filter }) {
   // ❌ 每次渲染都重新计算
-  const filtered = products.filter(p => p.category === filter);
+  const filtered = products.filter((p) => p.category === filter);
 
   // ✅ 只在 products 或 filter 变化时计算
   const filtered = useMemo(() => {
-    return products.filter(p => p.category === filter);
+    return products.filter((p) => p.category === filter);
   }, [products, filter]);
 
   return <div>{filtered.map(/* ... */)}</div>;
@@ -632,9 +655,9 @@ const Child = React.memo(({ onClick }) => {
 
 ```js
 // ✅ 必须使用稳定的 key
-{items.map(item => (
-  <div key={item.id}>{item.name}</div>
-))}
+{
+  items.map((item) => <div key={item.id}>{item.name}</div>);
+}
 ```
 
 #### 5. 避免不必要的状态
@@ -686,15 +709,8 @@ import { FixedSizeList } from 'react-window';
 
 function VirtualList({ items }) {
   return (
-    <FixedSizeList
-      height={400}
-      itemCount={items.length}
-      itemSize={50}
-      width="100%"
-    >
-      {({ index, style }) => (
-        <div style={style}>{items[index].name}</div>
-      )}
+    <FixedSizeList height={400} itemCount={items.length} itemSize={50} width="100%">
+      {({ index, style }) => <div style={style}>{items[index].name}</div>}
     </FixedSizeList>
   );
 }
@@ -702,13 +718,13 @@ function VirtualList({ items }) {
 
 #### 性能优化总结
 
-| 优化方法 | 使用场景 | 注意事项 |
-|:---|:---|:---|
-| **React.memo** | 组件渲染昂贵，props 很少变化 | 只做浅比较，对象 props 要注意 |
-| **useMemo** | 昂贵计算、保持引用稳定 | 不要过度使用，计算本身也有成本 |
-| **useCallback** | 传递给优化过的子组件 | 配合 React.memo 使用 |
-| **懒加载** | 路由、大组件 | 首屏加载性能提升明显 |
-| **虚拟滚动** | 长列表（100+ 项） | 简单列表没必要 |
+| 优化方法        | 使用场景                     | 注意事项                       |
+| :-------------- | :--------------------------- | :----------------------------- |
+| **React.memo**  | 组件渲染昂贵，props 很少变化 | 只做浅比较，对象 props 要注意  |
+| **useMemo**     | 昂贵计算、保持引用稳定       | 不要过度使用，计算本身也有成本 |
+| **useCallback** | 传递给优化过的子组件         | 配合 React.memo 使用           |
+| **懒加载**      | 路由、大组件                 | 首屏加载性能提升明显           |
+| **虚拟滚动**    | 长列表（100+ 项）            | 简单列表没必要                 |
 
 ---
 
@@ -716,11 +732,11 @@ function VirtualList({ items }) {
 
 #### 核心区别
 
-| 特性 | 受控组件 | 非受控组件 |
-|:---|:---|:---|
-| **数据源** | React state | DOM |
-| **值更新** | 通过 setState | 直接操作 DOM |
-| **实时验证** | ✅ 支持 | ❌ 困难 |
+| 特性         | 受控组件           | 非受控组件             |
+| :----------- | :----------------- | :--------------------- |
+| **数据源**   | React state        | DOM                    |
+| **值更新**   | 通过 setState      | 直接操作 DOM           |
+| **实时验证** | ✅ 支持            | ❌ 困难                |
 | **使用场景** | 表单验证、动态表单 | 简单表单、集成第三方库 |
 
 #### 受控组件
@@ -732,12 +748,12 @@ function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    message: '',
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
@@ -749,17 +765,17 @@ function ContactForm() {
     <form onSubmit={handleSubmit}>
       <input
         name="name"
-        value={formData.name}  // ✅ 受控：值来自 state
+        value={formData.name} // ✅ 受控：值来自 state
         onChange={handleChange}
       />
       <input
         name="email"
-        value={formData.email}  // ✅ 受控
+        value={formData.email} // ✅ 受控
         onChange={handleChange}
       />
       <textarea
         name="message"
-        value={formData.message}  // ✅ 受控
+        value={formData.message} // ✅ 受控
         onChange={handleChange}
       />
       <button type="submit">提交</button>
@@ -769,6 +785,7 @@ function ContactForm() {
 ```
 
 **优点**：
+
 - ✅ 即时验证
 - ✅ 条件禁用/启用输入
 - ✅ 强制输入格式
@@ -793,11 +810,7 @@ function PasswordInput() {
 
   return (
     <div>
-      <input
-        type="password"
-        value={password}
-        onChange={handleChange}
-      />
+      <input type="password" value={password} onChange={handleChange} />
       {error && <span className="error">{error}</span>}
     </div>
   );
@@ -820,24 +833,18 @@ function ContactForm() {
     console.log({
       name: nameRef.current.value,
       email: emailRef.current.value,
-      message: messageRef.current.value
+      message: messageRef.current.value,
     });
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input
-        ref={nameRef}  // ✅ 非受控：通过 ref 操作
-        defaultValue="默认值"  // 注意：用 defaultValue
+        ref={nameRef} // ✅ 非受控：通过 ref 操作
+        defaultValue="默认值" // 注意：用 defaultValue
       />
-      <input
-        ref={emailRef}
-        type="email"
-      />
-      <textarea
-        ref={messageRef}
-        defaultValue=""
-      />
+      <input ref={emailRef} type="email" />
+      <textarea ref={messageRef} defaultValue="" />
       <button type="submit">提交</button>
     </form>
   );
@@ -845,6 +852,7 @@ function ContactForm() {
 ```
 
 **优点**：
+
 - ✅ 代码更简洁
 - ✅ 更少的 state
 - ✅ 集成第三方库（如日期选择器）
@@ -909,7 +917,7 @@ function Navbar({ user }) {
 }
 
 function UserMenu({ user }) {
-  return <span>{user.name}</span>;  // 终于用到了
+  return <span>{user.name}</span>; // 终于用到了
 }
 
 // ✅ 使用 Context
@@ -926,7 +934,7 @@ function App() {
 
 function UserMenu() {
   const user = useContext(UserContext);
-  return <span>{user.name}</span>;  // 直接获取
+  return <span>{user.name}</span>; // 直接获取
 }
 ```
 
@@ -973,9 +981,7 @@ function Header() {
 
   return (
     <header className={theme}>
-      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-        切换主题
-      </button>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>切换主题</button>
     </header>
   );
 }
@@ -983,11 +989,7 @@ function Header() {
 // 方式2：使用 Consumer（类组件）
 class Footer extends React.Component {
   render() {
-    return (
-      <ThemeContext.Consumer>
-        {({ theme }) => <footer className={theme}>Footer</footer>}
-      </ThemeContext.Consumer>
-    );
+    return <ThemeContext.Consumer>{({ theme }) => <footer className={theme}>Footer</footer>}</ThemeContext.Consumer>;
   }
 }
 ```
@@ -1003,7 +1005,7 @@ function App() {
   const [theme, setTheme] = useState('light');
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
   return (
@@ -1016,10 +1018,7 @@ function App() {
 function Button() {
   const { theme, toggleTheme } = useContext(ThemeContext);
   return (
-    <button
-      onClick={toggleTheme}
-      style={{ background: theme === 'light' ? '#fff' : '#333' }}
-    >
+    <button onClick={toggleTheme} style={{ background: theme === 'light' ? '#fff' : '#333' }}>
       切换主题
     </button>
   );
@@ -1034,11 +1033,7 @@ const AuthContext = createContext();
 function App() {
   const [user, setUser] = useState(null);
 
-  return (
-    <AuthContext.Provider value={{ user, setUser }}>
-      {user ? <Dashboard /> : <Login />}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, setUser }}>{user ? <Dashboard /> : <Login />}</AuthContext.Provider>;
 }
 
 function Login() {
@@ -1054,7 +1049,7 @@ const I18nContext = createContext();
 
 const translations = {
   en: { welcome: 'Welcome' },
-  zh: { welcome: '欢迎' }
+  zh: { welcome: '欢迎' },
 };
 
 function App() {
@@ -1095,7 +1090,7 @@ const CountContext = createContext();
 **2. 默认值只在没有 Provider 时生效**
 
 ```js
-const ThemeContext = createContext('light');  // 默认值
+const ThemeContext = createContext('light'); // 默认值
 
 function App() {
   // 没有 Provider，使用默认值
@@ -1103,7 +1098,7 @@ function App() {
 }
 
 function Header() {
-  const theme = useContext(ThemeContext);  // 'light'
+  const theme = useContext(ThemeContext); // 'light'
   return <div className={theme}>Header</div>;
 }
 ```
@@ -1121,19 +1116,25 @@ const value = useMemo(() => ({ theme, setTheme }), [theme]);
 
 #### Context vs Redux
 
-| 特性 | Context | Redux |
-|:---|:---|:---|
-| **复杂度** | 简单 | 较复杂 |
-| **学习曲线** | 低 | 高 |
-| **状态管理** | 基础 | 强大（中间件、时间旅行） |
-| **性能** | 可能重渲染较多 | 细粒度控制 |
-| **适用场景** | 小型应用、主题、用户信息 | 大型应用、复杂状态逻辑 |
+| 特性         | Context                  | Redux                    |
+| :----------- | :----------------------- | :----------------------- |
+| **复杂度**   | 简单                     | 较复杂                   |
+| **学习曲线** | 低                       | 高                       |
+| **状态管理** | 基础                     | 强大（中间件、时间旅行） |
+| **性能**     | 可能重渲染较多           | 细粒度控制               |
+| **适用场景** | 小型应用、主题、用户信息 | 大型应用、复杂状态逻辑   |
 
 **选择建议**：
+
 - 🎯 简单的全局配置（主题、语言） → **Context**
 - 🎯 复杂的状态管理（多个状态、异步逻辑） → **Redux / Zustand**
 
 ### Redux/Mobx 的核心概念
+
+1. React 调用 setState 之后，React 会将新的 state 和 props 传递给组件的 render 方法，然后 React 会生成新的 DOM 元素。
+2. React 会将新的 DOM 元素渲染到 DOM 中
+3. React 会将新的 DOM 元素与旧的 DOM 元素进行比较，并生成一个更新计划
+4. React 会将更新计划应用到旧的 DOM 元素上，从而实现更新。
 
 ::: right
 Redux 和 MobX 是 React 生态中最流行的状态管理库，它们采用了不同的状态管理哲学
@@ -1157,7 +1158,7 @@ const ADD_TODO = 'ADD_TODO';
 
 const addTodo = (text) => ({
   type: ADD_TODO,
-  payload: text
+  payload: text,
 });
 
 // 2. Reducer - 纯函数，根据 action 计算新 state
@@ -1167,11 +1168,7 @@ const todosReducer = (state = [], action) => {
       // ✅ 不可变更新：返回新对象
       return [...state, { id: Date.now(), text: action.payload, completed: false }];
     case 'TOGGLE_TODO':
-      return state.map(todo =>
-        todo.id === action.id
-          ? { ...todo, completed: !todo.completed }
-          : todo
-      );
+      return state.map((todo) => (todo.id === action.id ? { ...todo, completed: !todo.completed } : todo));
     default:
       return state;
   }
@@ -1220,7 +1217,7 @@ const todoSlice = createSlice({
       state.push({ id: Date.now(), text: action.payload, completed: false });
     },
     toggleTodo: (state, action) => {
-      const todo = state.find(t => t.id === action.payload);
+      const todo = state.find((t) => t.id === action.payload);
       if (todo) {
         todo.completed = !todo.completed;
       }
@@ -1248,13 +1245,10 @@ store.dispatch(addTodo('学习 RTK'));
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // 创建异步 thunk
-const fetchTodos = createAsyncThunk(
-  'todos/fetchTodos',
-  async () => {
-    const response = await fetch('/api/todos');
-    return response.json();
-  }
-);
+const fetchTodos = createAsyncThunk('todos/fetchTodos', async () => {
+  const response = await fetch('/api/todos');
+  return response.json();
+});
 
 const todoSlice = createSlice({
   name: 'todos',
@@ -1286,7 +1280,13 @@ function TodoList() {
   }, [dispatch]);
 
   if (status === 'loading') return <div>加载中...</div>;
-  return <ul>{items.map(todo => <li key={todo.id}>{todo.text}</li>)}</ul>;
+  return (
+    <ul>
+      {items.map((todo) => (
+        <li key={todo.id}>{todo.text}</li>
+      ))}
+    </ul>
+  );
 }
 ```
 
@@ -1322,7 +1322,7 @@ class TodoStore {
 
   // 2. Computed - 自动计算
   get unfinishedCount() {
-    return this.todos.filter(t => !t.completed).length;
+    return this.todos.filter((t) => !t.completed).length;
   }
 
   // 3. Action - 修改状态
@@ -1331,7 +1331,7 @@ class TodoStore {
   }
 
   toggleTodo(id) {
-    const todo = this.todos.find(t => t.id === id);
+    const todo = this.todos.find((t) => t.id === id);
     if (todo) {
       todo.completed = !todo.completed;
     }
@@ -1359,7 +1359,7 @@ class TodoStore {
   todos = observable([]);
 
   get unfinishedCount() {
-    return this.todos.filter(t => !t.completed).length;
+    return this.todos.filter((t) => !t.completed).length;
   }
 
   addTodo = action((text) => {
@@ -1367,7 +1367,7 @@ class TodoStore {
   });
 
   toggleTodo = action((id) => {
-    const todo = this.todos.find(t => t.id === id);
+    const todo = this.todos.find((t) => t.id === id);
     if (todo) {
       todo.completed = !todo.completed;
     }
@@ -1386,20 +1386,14 @@ const TodoList = observer(({ store }) => {
     <div>
       <h3>未完成: {store.unfinishedCount}</h3>
       <ul>
-        {store.todos.map(todo => (
+        {store.todos.map((todo) => (
           <li key={todo.id}>
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => store.toggleTodo(todo.id)}
-            />
+            <input type="checkbox" checked={todo.completed} onChange={() => store.toggleTodo(todo.id)} />
             {todo.text}
           </li>
         ))}
       </ul>
-      <button onClick={() => store.addTodo('新任务')}>
-        添加
-      </button>
+      <button onClick={() => store.addTodo('新任务')}>添加</button>
     </div>
   );
 });
@@ -1409,16 +1403,16 @@ const TodoList = observer(({ store }) => {
 
 #### Redux vs MobX 对比
 
-| 特性 | Redux | MobX |
-|:---|:---|:---|
-| **理念** | 单向数据流、函数式编程 | 响应式编程、面向对象 |
-| **状态可变性** | 不可变（immutable） | 可变（mutable） |
-| **代码风格** | 冗长但规范 | 简洁灵活 |
-| **学习曲线** | 陡峭 | 平缓 |
-| **性能** | 需要手动优化 | 自动优化 |
-| **调试工具** | 完善（Redux DevTools） | 相对简单 |
-| **类型支持** | TypeScript 支持好 | 需要额外配置 |
-| **样板代码** | 多 | 少 |
+| 特性           | Redux                  | MobX                 |
+| :------------- | :--------------------- | :------------------- |
+| **理念**       | 单向数据流、函数式编程 | 响应式编程、面向对象 |
+| **状态可变性** | 不可变（immutable）    | 可变（mutable）      |
+| **代码风格**   | 冗长但规范             | 简洁灵活             |
+| **学习曲线**   | 陡峭                   | 平缓                 |
+| **性能**       | 需要手动优化           | 自动优化             |
+| **调试工具**   | 完善（Redux DevTools） | 相对简单             |
+| **类型支持**   | TypeScript 支持好      | 需要额外配置         |
+| **样板代码**   | 多                     | 少                   |
 
 ##### 代码对比
 
@@ -1438,9 +1432,7 @@ function todosReducer(state = [], action) {
     case ADD_TODO:
       return [...state, { id: Date.now(), text: action.payload, completed: false }];
     case TOGGLE_TODO:
-      return state.map(todo =>
-        todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo
-      );
+      return state.map((todo) => (todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo));
     default:
       return state;
   }
@@ -1451,22 +1443,18 @@ const store = createStore(todosReducer);
 
 // 组件中使用
 function TodoList() {
-  const todos = useSelector(state => state.todos);
+  const todos = useSelector((state) => state.todos);
   const dispatch = useDispatch();
 
   return (
     <>
-      {todos.map(todo => (
+      {todos.map((todo) => (
         <div key={todo.id}>
           <span>{todo.text}</span>
-          <button onClick={() => dispatch(toggleTodo(todo.id))}>
-            Toggle
-          </button>
+          <button onClick={() => dispatch(toggleTodo(todo.id))}>Toggle</button>
         </div>
       ))}
-      <button onClick={() => dispatch(addTodo('New Todo'))}>
-        Add
-      </button>
+      <button onClick={() => dispatch(addTodo('New Todo'))}>Add</button>
     </>
   );
 }
@@ -1480,7 +1468,7 @@ class TodoStore {
   });
 
   toggleTodo = action((id) => {
-    const todo = this.todos.find(t => t.id === id);
+    const todo = this.todos.find((t) => t.id === id);
     if (todo) todo.completed = !todo.completed;
   });
 }
@@ -1489,17 +1477,13 @@ class TodoStore {
 const TodoList = observer(({ store }) => {
   return (
     <>
-      {store.todos.map(todo => (
+      {store.todos.map((todo) => (
         <div key={todo.id}>
           <span>{todo.text}</span>
-          <button onClick={() => store.toggleTodo(todo.id)}>
-            Toggle
-          </button>
+          <button onClick={() => store.toggleTodo(todo.id)}>Toggle</button>
         </div>
       ))}
-      <button onClick={() => store.addTodo('New Todo')}>
-        Add
-      </button>
+      <button onClick={() => store.addTodo('New Todo')}>Add</button>
     </>
   );
 });
@@ -1523,18 +1507,18 @@ const store = {
   cart: {
     items: [],
     total: 0,
-    discount: 0
+    discount: 0,
   },
   products: {
     list: [],
     filters: { category: null, priceRange: null },
-    sortBy: 'price'
+    sortBy: 'price',
   },
   user: {
     profile: null,
     orders: [],
-    preferences: {}
-  }
+    preferences: {},
+  },
 };
 ```
 
@@ -1552,7 +1536,7 @@ class FormStore {
   formData = observable({
     username: '',
     email: '',
-    password: ''
+    password: '',
   });
 
   errors = observable({});
@@ -1578,14 +1562,14 @@ import { create } from 'zustand';
 
 const useStore = create((set) => ({
   todos: [],
-  addTodo: (text) => set((state) => ({
-    todos: [...state.todos, { id: Date.now(), text, completed: false }]
-  })),
-  toggleTodo: (id) => set((state) => ({
-    todos: state.todos.map(todo =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    )
-  })),
+  addTodo: (text) =>
+    set((state) => ({
+      todos: [...state.todos, { id: Date.now(), text, completed: false }],
+    })),
+  toggleTodo: (id) =>
+    set((state) => ({
+      todos: state.todos.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)),
+    })),
 }));
 
 // 组件中使用
@@ -1594,7 +1578,7 @@ function TodoList() {
 
   return (
     <>
-      {todos.map(todo => (
+      {todos.map((todo) => (
         <div key={todo.id}>
           <span>{todo.text}</span>
           <button onClick={() => toggleTodo(todo.id)}>Toggle</button>
@@ -1607,8 +1591,9 @@ function TodoList() {
 ```
 
 ::: tip 现代状态管理推荐
+
 - **大型项目**：Redux Toolkit（官方推荐）
 - **中小型项目**：Zustand（简洁、轻量）
 - **快速原型**：MobX（灵活、简单）
 - **简单全局状态**：React Context（内置方案）
-:::
+  :::

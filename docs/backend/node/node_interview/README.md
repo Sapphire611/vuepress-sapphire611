@@ -31,25 +31,35 @@ sticky: 2
 
 [如何实现窗口透明背景(BrowserWindow transparent: true,frame: false, html-body-background: transparent;)](/frontend/electron/#如何实现窗口透明背景)
 
-[发生内存泄漏如何排查(Chromium DevTools-Memory-记录两个Snapshot-选择HeapSnapshot-comparison)](/frontend/electron/#发生内存泄漏如何排查)
+[发生内存泄漏如何排查(Chromium DevTools-Memory-记录两个 Snapshot-选择 HeapSnapshot-comparison)](/frontend/electron/#发生内存泄漏如何排查)
 
 #### 其他
 
-[Redux 核心概念（单一数据源、State只读、通过Reducer进行修改）](/frontend/react/#redux-mobx-的核心概念)
+[Redux 核心概念（单一数据源、State 只读、通过 Reducer 进行修改）](/frontend/react/#redux-mobx-的核心概念)
 
-[什么是类型断言(就是 as 而已)](/frontend/typescript/#_4-什么是类型断言)
+[Typescript 什么是类型断言(就是 as 而已)](/frontend/typescript/#_4-什么是类型断言)
 
 [JS 怎么实现深拷贝 （JSON.parse(JSON.stringify(obj)) / structuredClone(obj)）](#)
 
-[Nodejs 观察者模式](/backend/node/node/#_8-node-中的-eventemitter-是什么)
+[观察者模式(Nodejs = EventEmitter，js = addEventListener(或者自己封装 EventEmitter，js))](/backend/node/node/#_8-node-中的-eventemitter-是什么)
 
-[箭头函数和普通函数的区别（this 指向不同、不能作为构造函数、没有arguments、call、apply、bind、prototype）](#)
+[箭头函数和普通函数的区别（this 指向不同、不能作为构造函数、没有 arguments、call、apply、bind、prototype）](#)
 
-[自己封装 Ajax](#)
+[自己封装 Ajax](/frontend/interview/#ajax-是什么-如何手动封装一个-ajax)
 
-[flex 实现表格](#)
+[CSS flex 实现表格(flex-table 设置 max-width，table-row 设置 display:flex,table-cell 设置 flex: 1 均分宽度)](/frontend/html/#flex-实现表格布局)
 
-
+```html
+<div class="flex-table">
+  <!-- 表头行 -->
+  <div class="table-row table-header">
+    <div class="table-cell">ID</div>
+    <div class="table-cell">姓名</div>
+    <div class="table-cell">年龄</div>
+    <div class="table-cell">城市</div>
+  </div>
+</div>
+```
 
 ## UXN
 

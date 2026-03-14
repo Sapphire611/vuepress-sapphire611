@@ -1,14 +1,13 @@
 ---
-title: 前端面试题目整理
-date: 2025-09-22
+title: 前端面试题目相关
+date: 2026-03-14
 categories:
   - Frontend
 tags:
-  - vue
   - interview
+  - javascript
 sidebar: 'auto'
 publish: true
- 
 ---
 
 ## 👋 前端面试题目整理
@@ -17,44 +16,169 @@ publish: true
 来自 [Sapphire611](http://sapphire611.github.io)
 :::
 
-## Vue 路由传参
+## Ajax 是什么？如何手动封装一个 Ajax
+
+Ajax 是 `Asynchronous JavaScript and XML`（异步 JavaScript 和 XML）的缩写，它不是一种新技术，而是一种前端开发技术组合，核心是通过 `XMLHttpRequest（XHR）`对象（现代也常用 fetch）在不刷新整个页面的情况下，与服务器异步交换数据，实现页面局部更新。
 
 ```js
-// query 传递参数
-this.$router.push({ path: '/user', query: { id: 123, name: 'John' } })
-// 接收参数
-this.$route.query.id    // 123
-this.$route.query.name  // 'John'
+/**
+ * 封装 Ajax 请求函数
+ * @param {Object} options - 请求配置项
+ * @param {String} options.url - 请求地址
+ * @param {String} [options.method='GET'] - 请求方法（GET/POST）
+ * @param {Object} [options.data={}] - 请求参数
+ * @param {Number} [options.timeout=5000] - 超时时间（毫秒）
+ * @param {String} [options.contentType='application/x-www-form-urlencoded'] - 请求头Content-Type
+ * @param {Function} options.success - 请求成功回调
+ * @param {Function} options.error - 请求失败回调
+ */
+function ajax(options) {
+  // 初始化默认配置
+  const config = {
+    url: '',
+    method: 'GET',
+    data: {},
+    timeout: 5000,
+    contentType: 'application/x-www-form-urlencoded',
+    success: () => {},
+    error: () => {},
+  };
 
-// parms 路由配置
-{ path: '/user/:id', component: User }
-// 传递参数
-this.$router.push({ name: 'user', params: { id: 123 } })
-// 接收参数
-this.$route.params.id  // 123
+  // 合并用户配置与默认配置
+  Object.assign(config, options);
 
-
-//  Props 传参（路由配置） router.js
-{
-  path: '/user/:id',
-  name: 'UserDetail',
-  component: UserDetail,
-  props: true  // 关键配置
-}
-// 从A页面跳转到B页面
-methods: {
-  goToUserDetail() {
-    // 方式1：使用path + 实际参数值
-    this.$router.push('/user/123')
-    
-    // 方式2：使用name + params
-    this.$router.push({
-      name: 'UserDetail',
-      params: { id: 123 }
-    })
+  // 处理 GET 请求参数（拼接到 URL 后）
+  function handleGetParams(url, data) {
+    if (Object.keys(data).length === 0) return url;
+    const params = new URLSearchParams(data).toString();
+    return url.includes('?') ? `${url}&${params}` : `${url}?${params}`;
   }
+
+  // 处理 POST 请求参数（根据 Content-Type 格式化）
+  function handlePostData(data, contentType) {
+    if (contentType === 'application/json') {
+      return JSON.stringify(data);
+    } else {
+      return new URLSearchParams(data).toString();
+    }
+  }
+
+  // 创建 XHR 对象
+  const xhr = new XMLHttpRequest();
+
+  // 处理请求方法和 URL
+  const method = config.method.toUpperCase();
+  let url = config.url;
+  if (method === 'GET') {
+    url = handleGetParams(url, config.data);
+  }
+
+  // 初始化请求
+  xhr.open(method, url, true); // 第三个参数为 true 表示异步
+
+  // 设置请求头
+  if (method === 'POST') {
+    xhr.setRequestHeader('Content-Type', config.contentType);
+  }
+
+  // 设置超时时间
+  xhr.timeout = config.timeout;
+
+  // 监听响应状态变化
+  xhr.onreadystatechange = function () {
+    // readyState 为 4 表示请求完成
+    if (xhr.readyState === 4) {
+      // 状态码 200-299 表示请求成功
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          // 尝试解析 JSON 响应（前端常用）
+          const response = JSON.parse(xhr.responseText);
+          config.success(response);
+        } catch (e) {
+          // 解析失败则返回原始文本
+          config.success(xhr.responseText);
+        }
+      } else {
+        // 状态码异常触发错误回调
+        config.error({
+          status: xhr.status,
+          message: '请求失败，状态码异常',
+        });
+      }
+    }
+  };
+
+  // 监听超时事件
+  xhr.ontimeout = function () {
+    config.error({
+      status: 408,
+      message: `请求超时（${config.timeout}ms）`,
+    });
+    xhr.abort(); // 终止请求
+  };
+
+  // 监听网络错误
+  xhr.onerror = function () {
+    config.error({
+      status: 0,
+      message: '网络错误，请求失败',
+    });
+  };
+
+  // 发送请求
+  if (method === 'POST') {
+    const postData = handlePostData(config.data, config.contentType);
+    xhr.send(postData);
+  } else {
+    xhr.send(null); // GET 请求无请求体，传 null
+  }
+
+  // 返回 xhr 对象，支持手动终止请求等操作
+  return xhr;
 }
+
+// ---------------------- 使用示例 ----------------------
+// 1. GET 请求示例
+ajax({
+  url: '/api/user/list',
+  method: 'GET',
+  data: { page: 1, size: 10 },
+  success: (res) => {
+    console.log('GET 请求成功：', res);
+  },
+  error: (err) => {
+    console.error('GET 请求失败：', err);
+  },
+});
+
+// 2. POST 请求（JSON 格式）示例
+ajax({
+  url: '/api/user/add',
+  method: 'POST',
+  data: { name: '张三', age: 25 },
+  contentType: 'application/json',
+  success: (res) => {
+    console.log('POST 请求成功：', res);
+  },
+  error: (err) => {
+    console.error('POST 请求失败：', err);
+  },
+});
 ```
+
+### 封装思路讲解（面试时可口述）
+
+1. 配置默认值：避免用户不传配置导致报错，提升函数健壮性；
+
+2. 参数处理：GET 参数拼接到 URL，POST 参数根据 Content-Type 格式化（支持表单格式和 JSON 格式）；
+
+3. 异常处理：覆盖状态码异常、超时、网络错误等场景，让错误回调更实用；
+
+4. 异步特性：基于 XHR 原生异步机制，不阻塞主线程；
+
+5. 扩展性：返回 XHR 对象，支持手动终止请求（xhr.abort()）等扩展操作
+
+---
 
 ## Promise.all Vs Promise.allSettled
 
@@ -73,14 +197,14 @@ const promises = [
   Promise.resolve(1),
   Promise.reject(new Error('失败1')),
   Promise.resolve(3),
-  Promise.reject(new Error('失败2')) // 这个错误不会被捕获到
+  Promise.reject(new Error('失败2')), // 这个错误不会被捕获到
 ];
 
 Promise.all(promises)
-  .then(results => {
+  .then((results) => {
     console.log('成功:', results); // 不会执行
   })
-  .catch(error => {
+  .catch((error) => {
     console.log('捕获到错误:', error.message); // 输出: "失败1"
   });
 ```
@@ -94,82 +218,23 @@ Promise.all(promises)
 错误处理：可以获取所有 Promise 的最终状态
 
 示例：
+
 ```javascript
-const promises = [
-  Promise.resolve(1),
-  Promise.reject(new Error('失败1')),
-  Promise.resolve(3),
-  Promise.reject(new Error('失败2'))
-];
+const promises = [Promise.resolve(1), Promise.reject(new Error('失败1')), Promise.resolve(3), Promise.reject(new Error('失败2'))];
 
-Promise.allSettled(promises)
-  .then(results => {
-    console.log('所有结果:');
-    results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        console.log(`Promise ${index}: 成功 -`, result.value);
-      } else {
-        console.log(`Promise ${index}: 失败 -`, result.reason.message);
-      }
-    });
+Promise.allSettled(promises).then((results) => {
+  console.log('所有结果:');
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      console.log(`Promise ${index}: 成功 -`, result.value);
+    } else {
+      console.log(`Promise ${index}: 失败 -`, result.reason.message);
+    }
   });
-```
-## CSS 矩形旋转
-
-> transform: rotate(45deg);
-
-```html
-<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>矩形旋转示例</title>
-    <style>
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 80vh;
-      }
-
-      .rectangle {
-        width: 200px;
-        height: 100px;
-        background-color: #3498db;
-        border: 2px solid #2980b9;
-
-        /* 旋转45度 */
-        transform: rotate(45deg);
-
-        /* 可选：添加过渡效果 */
-        transition: transform 5s ease;
-
-        /* 确保旋转中心在元素中心 */
-        transform-origin: center;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-weight: bold;
-      }
-
-      /* 悬停时旋转到不同角度 */
-      .rectangle:hover {
-        transform: rotate(135deg);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="rectangle">旋转矩形</div>
-    </div>
-  </body>
-</html>
+});
 ```
 
-## Http 301、302、307 之间的区别
+### Http 301、302、307 之间的区别
 
 > 301 Moved Permanently (永久重定向):
 
@@ -308,15 +373,15 @@ const colors = {
 console.log(colors[RED]); // 输出: #FF0000
 ```
 
-### 10.csrf 是什么如何防范
+### csrf 是什么?如何防范
 
 > CSRF（Cross-Site Request Forgery），跨站点请求伪造，是一种网络攻击，它利用受害者已经在另一个网站上进行了身份验证的事实，伪造受害者的请求并发送给目标网站。攻击者通过 CSRF 攻击可以以受害者的身份执行未经授权的操作，例如更改密码、发送消息、或执行其他可能对用户数据和隐私产生影响的操作。
 
-#### 10.1 同源策略（Same-Origin Policy）：
+#### 同源策略（Same-Origin Policy）：
 
 > 同源策略是浏览器的一项安全机制，它防止一个网页中的 JavaScript 代码发送跨域请求。确保不在同一域的网站无法访问对方的数据，从而减少 CSRF 攻击的风险。
 
-#### 10.2 CSRF Token：
+#### CSRF Token：
 
 > 使用 CSRF Token 是防范 CSRF 攻击的一种常见方法。每个用户会话都生成一个唯一的 CSRF Token，该 Token 在用户提交请求时需要包含在请求中。
 
@@ -443,21 +508,6 @@ LinkedList.prototype.deleteNode = function (data) {
 删除特定节点的时间复杂度为 O(n)，因为需要遍历链表以找到要删除的节点。
 
 ---
-
-### react hook 的局限性
-
-> 1. 函数组件无法使用 class 组件的 state 属性。
-
-> 2. 函数组件无法使用生命周期方法。
-
-> 3. 函数组件无法使用 ref 属性。
-
-### react 调用 setState 之后发生了什么
-
-1. React 调用 setState 之后，React 会将新的 state 和 props 传递给组件的 render 方法，然后 React 会生成新的 DOM 元素。
-2. React 会将新的 DOM 元素渲染到 DOM 中
-3. React 会将新的 DOM 元素与旧的 DOM 元素进行比较，并生成一个更新计划
-4. React 会将更新计划应用到旧的 DOM 元素上，从而实现更新。
 
 ### 把 callback 改写成 Promise
 

@@ -705,48 +705,6 @@ Action
 通常用于处理业务逻辑，然后提交 mutation 来修改 state
 
 
-## 三栏布局
-
-三栏布局实现方案
-
-### Flexbox 方案
-
-```html
-<div class="container">
-  <div class="left">Left (200px)</div>
-  <div class="center">Center (自适应)</div>
-  <div class="right">Right (200px)</div>
-</div>
-```
-
-```css
-.container {
-  display: flex;
-  height: 100vh;
-}
-
-.left, .right {
-  flex: 0 0 200px; /* 不放大，不缩小，固定200px */
-  background: #f0f0f0;
-}
-
-.center {
-  flex: 1; /* 占据剩余空间 */
-  background: #e0e0e0;
-}
-```
-
-#### 水平垂直居中 Flexbox
-
-```css
-.container {
-  display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center;     /* 垂直居中 */
-  height: 100vh;           /* 需要明确高度 */
-}
-```
-
 ## 防抖(debounce) 和 节流(throttle)函数
 
 ### 防抖(debounce)函数实现
@@ -764,6 +722,7 @@ function debounce(fn) {
 }
 
 ```
+
 ### 节流(throttle)函数实现
 节流函数的作用是在规定的时间内，函数只会被执行一次。
 
@@ -812,3 +771,42 @@ userRef.value = '小红'
 console.log(user.name) // '小红'
 ```
 
+
+## Vue 路由传参
+
+```js
+// query 传递参数
+this.$router.push({ path: '/user', query: { id: 123, name: 'John' } })
+// 接收参数
+this.$route.query.id    // 123
+this.$route.query.name  // 'John'
+
+// parms 路由配置
+{ path: '/user/:id', component: User }
+// 传递参数
+this.$router.push({ name: 'user', params: { id: 123 } })
+// 接收参数
+this.$route.params.id  // 123
+
+
+//  Props 传参（路由配置） router.js
+{
+  path: '/user/:id',
+  name: 'UserDetail',
+  component: UserDetail,
+  props: true  // 关键配置
+}
+// 从A页面跳转到B页面
+methods: {
+  goToUserDetail() {
+    // 方式1：使用path + 实际参数值
+    this.$router.push('/user/123')
+    
+    // 方式2：使用name + params
+    this.$router.push({
+      name: 'UserDetail',
+      params: { id: 123 }
+    })
+  }
+}
+```
