@@ -1555,3 +1555,288 @@ function TodoList() {
 - **快速原型**：MobX（灵活、简单）
 - **简单全局状态**：React Context（内置方案）
   :::
+
+### ref 是什么？为什么需要 ref？
+
+**ref** 是 React 提供的一种访问 DOM 元素或组件实例的方式。
+
+:::tip 
+React 是数据驱动的，通常通过 state 和 props 来控制 UI。但有些场景需要**直接访问 DOM**，比如：聚焦输入框、播放视频、测量元素尺寸等。这时就需要 ref。
+:::
+
+#### ref 的三种创建方式
+
+**1. useRef Hook（推荐）**
+
+```tsx
+import { useRef } from 'react';
+
+function Form() {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    // 直接操作 DOM
+    inputRef.current?.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} placeholder="点击按钮聚焦" />
+      <button onClick={focusInput}>聚焦</button>
+    </div>
+  );
+}
+```
+
+**2. createRef（类组件）**
+
+```tsx
+class Form extends React.Component {
+  inputRef = React.createRef<HTMLInputElement>();
+
+  focusInput = () => {
+    this.inputRef.current?.focus();
+  };
+
+  render() {
+    return (
+      <div>
+        <input ref={this.inputRef} />
+        <button onClick={this.focusInput}>聚焦</button>
+      </div>
+    );
+  }
+}
+```
+
+**3. 回调 ref**
+
+```tsx
+function Form() {
+  let inputRef: HTMLInputElement | null = null;
+
+  const focusInput = () => {
+    inputRef?.focus();
+  };
+
+  return (
+    <div>
+      <input ref={(node) => (inputRef = node)} />
+      <button onClick={focusInput}>聚焦</button>
+    </div>
+  );
+}
+```
+
+#### ref 的常见使用场景
+
+```tsx
+function Examples() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
+
+  // 1️⃣ 聚焦输入框
+  const focus = () => inputRef.current?.focus();
+
+  // 2️⃣ 控制视频播放
+  const playVideo = () => videoRef.current?.play();
+  const pauseVideo = () => videoRef.current?.pause();
+
+  // 3️⃣ 获取元素尺寸
+  const getSize = () => {
+    const width = divRef.current?.offsetWidth;
+    const height = divRef.current?.offsetHeight;
+    console.log({ width, height });
+  };
+
+  // 4️⃣ 滚动到元素
+  const scrollTo = () => {
+    divRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} />
+      <button onClick={focus}>聚焦</button>
+
+      <video ref={videoRef} src="video.mp4" />
+      <button onClick={playVideo}>播放</button>
+
+      <div ref={divRef} style={{ height: '200px', overflow: 'auto' }}>
+        内容区域
+      </div>
+      <button onClick={scrollTo}>滚动到位置</button>
+    </div>
+  );
+}
+```
+
+#### ref VS state
+
+| 特性       | ref                         | state                    |
+| ---------- | --------------------------- | ------------------------ |
+| **更新**   | `ref.current = xxx`（立即） | `setState()`（异步重渲染） |
+| **读取**   | `ref.current`               | 直接读取 state           |
+| **触发渲染** | ❌ 不会触发                 | ✅ 会触发                |
+| **用途**   | 存储不触发渲染的数据        | 存储触发渲染的 UI 数据    |
+
+```tsx
+function Counter() {
+  const [count, setCount] = useState(0); // 会触发渲染
+  const renderCount = useRef(0); // 不会触发渲染
+
+  // ❌ 错误：用 ref 存储会导致不同步
+  const handleClick = () => {
+    renderCount.current += 1; // 不会触发重渲染，UI 不更新
+  };
+
+  // ✅ 正确：用 state 存储需要渲染的数据
+  const handleClick = () => {
+    setCount(count + 1); // 会触发重渲染，UI 更新
+  };
+
+  // ✅ ref 适合存储不需要渲染的数据
+  const logRenderCount = () => {
+    renderCount.current += 1;
+    console.log('渲染次数:', renderCount.current);
+  };
+
+  return <button onClick={handleClick}>点击</button>;
+}
+```
+
+#### ref 的注意事项
+
+```tsx
+// ❌ 错误：不要在渲染期间读取/写入 ref
+function Component() {
+  const ref = useRef(0);
+
+  // 错误：渲染期间修改 ref
+  ref.current = ref.current + 1;
+
+  // ✅ 正确：在事件或 useEffect 中修改
+  useEffect(() => {
+    ref.current = ref.current + 1;
+  }, []);
+
+  return <div>...</div>;
+}
+
+// ❌ 错误：ref 只能绑定到 DOM 元素
+function Parent() {
+  const ref = useRef(null);
+
+  // 如果 Child 是函数组件，ref 无法传递
+  return <Child ref={ref} />;
+}
+
+// ✅ 正确：使用 forwardRef
+const Child = React.forwardRef((props, ref) => {
+  return <input ref={ref} />;
+});
+```
+
+---
+
+### React.forwardRef 是什么
+
+**forwardRef** 是 React 提供的高阶组件，用于将 ref 从父组件传递到子组件的 DOM 元素。
+
+:::tip 为什么需要 forwardRef？
+
+默认情况下，React 组件无法直接接收 ref（ref 只能绑定到 DOM 元素或类组件实例）。forwardRef 解决了这个问题。
+:::
+
+#### 基本用法
+
+```tsx
+// ❌ 错误：ref 无法传递
+const MyInput = ({ value }: { value: string }) => {
+  return <input value={value} />;
+};
+
+// ✅ 正确：使用 forwardRef
+const MyInput = React.forwardRef<HTMLInputElement, { value: string }>(
+  (props, ref) => {
+    return <input ref={ref} value={props.value} />;
+  }
+);
+
+// 使用
+const inputRef = useRef<HTMLInputElement>(null);
+
+function App() {
+  const handleClick = () => {
+    inputRef.current?.focus(); // 可以访问 DOM
+  };
+
+  return (
+    <div>
+      <MyInput ref={inputRef} value="Hello" />
+      <button onClick={handleClick}>聚焦</button>
+    </div>
+  );
+};
+```
+
+#### forwardRef + useImperativeHandle
+
+将自定义方法暴露给父组件：
+
+```tsx
+const MyInput = React.forwardRef<
+  { focus: () => void; reset: () => void },
+  { value: string }
+>((props, ref) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current?.focus(),
+    reset: () => {
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
+    },
+  }));
+
+  return <input ref={inputRef} value={props.value} />;
+});
+
+// 父组件
+function App() {
+  const inputRef = useRef<{ focus: () => void; reset: () => void }>(null);
+
+  return (
+    <>
+      <MyInput ref={inputRef} value="Hello" />
+      <button onClick={() => inputRef.current?.focus()}>聚焦</button>
+      <button onClick={() => inputRef.current?.reset()}>重置</button>
+    </>
+  );
+}
+```
+
+#### 常见使用场景
+
+| 场景             | 示例                  |
+| ---------------- | --------------------- |
+| **表单组件**     | Input、Select 组件    |
+| **UI 组件库**    | Button、Modal 组件    |
+| **动画库**       | 暴露 play/pause 方法  |
+| **第三方封装**   | 封装原生 DOM 元素     |
+
+#### 注意事项
+
+```tsx
+// ❌ 避免：过度使用 forwardRef
+const Button = forwardRef<HTMLButtonElement>((props, ref) => {
+  return <button ref={ref}>点击</button>;
+});
+
+// ✅ 推荐：仅在需要访问 DOM 时使用
+const Button = ({ onClick }: { onClick: () => void }) => {
+  return <button onClick={onClick}>点击</button>;
+};
+```
