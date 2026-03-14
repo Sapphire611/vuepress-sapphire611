@@ -1,6 +1,6 @@
 ---
 title: 软考-中级软件设计师-数据结构
-date: 2024-7-22
+date: 2024-07-22
 categories:
   - Certificate
 tags:

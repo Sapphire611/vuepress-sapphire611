@@ -1,6 +1,6 @@
 ---
 title: 使用Jenkins自动化部署Vuepress项目
-date: 2022-1-5
+date: 2022-01-05
 categories:
  - Deploy
 tags:

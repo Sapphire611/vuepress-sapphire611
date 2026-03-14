@@ -1,6 +1,6 @@
 ---
 title: 5分钟速通 RabbitMQ
-date: 2025-8-4
+date: 2025-08-04
 categories:
   - Backend
 tags:

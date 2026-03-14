@@ -1,6 +1,6 @@
 ---
 title: 5分钟速通 Kafka
-date: 2025-8-5
+date: 2025-08-05
 categories:
   - Backend
 tags:

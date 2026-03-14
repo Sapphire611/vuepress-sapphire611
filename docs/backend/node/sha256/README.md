@@ -1,6 +1,6 @@
 ---
 title: Node.js SHA-256 加密方式
-date: 2024-4-23
+date: 2024-04-23
 categories:
   - backend
 tags:

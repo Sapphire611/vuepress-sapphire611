@@ -1,6 +1,6 @@
 ---
 title: AI 相关概念
-date: 2026-3-12
+date: 2026-03-12
 categories:
   - AI
 tags:

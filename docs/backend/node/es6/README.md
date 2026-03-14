@@ -1,6 +1,6 @@
 ---
 title: ECMAScript6 学习笔记
-date: 2022-2-14
+date: 2022-02-14
 categories:
   - Backend
   - Frontend

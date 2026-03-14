@@ -1,6 +1,6 @@
 ---
 title: 软考-中级软件设计师-程序设计语言
-date: 2024-5-23
+date: 2024-05-23
 categories:
   - Certificate
 tags:

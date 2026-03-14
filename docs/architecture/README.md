@@ -1,6 +1,6 @@
 ---
 title: 架构风格相关
-date: 2025-6-22
+date: 2025-06-22
 categories:
   - archietcture
 sidebar: 'auto'

@@ -1,6 +1,6 @@
 ---
 title: Mongodb hook
-date: 2023-8-29
+date: 2023-08-29
 categories:
   - Backend
 tags:

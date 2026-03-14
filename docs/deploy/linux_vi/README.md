@@ -1,6 +1,6 @@
 ---
 title: Linux Vi 操作图
-date: 2022-9-29
+date: 2022-09-29
 categories:
   - Deploy
 tags:

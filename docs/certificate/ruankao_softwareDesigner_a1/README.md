@@ -1,6 +1,6 @@
 ---
 title: 软考-中级软件设计师-计算机系统
-date: 2024-5-12
+date: 2024-05-12
 categories:
   - Certificate
 tags:

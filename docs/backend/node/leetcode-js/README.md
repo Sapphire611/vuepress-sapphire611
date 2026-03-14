@@ -1,6 +1,6 @@
 ---
 title: LeetCode (JS)
-date: 2026-3-12
+date: 2026-03-12
 categories:
   - Algorithm
 tags:

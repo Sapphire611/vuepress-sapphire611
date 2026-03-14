@@ -1,6 +1,6 @@
 ---
 title: MongoDB相关
-date: 2026-3-8
+date: 2026-03-08
 categories:
   - mongodb
   - interview

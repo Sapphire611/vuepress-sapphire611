@@ -1,6 +1,6 @@
 ---
 title: 使用JS调用OpenAI API
-date: 2023-2-18
+date: 2023-02-18
 categories:
   - Javascript
 tags:

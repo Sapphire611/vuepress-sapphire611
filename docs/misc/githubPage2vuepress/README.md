@@ -1,6 +1,6 @@
 ---
 title: 使用githubPages部署Vuepress项目
-date: 2022-1-19
+date: 2022-01-19
 categories:
  - Deploy
 tags:

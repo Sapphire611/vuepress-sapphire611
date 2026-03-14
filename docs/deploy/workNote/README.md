@@ -1,6 +1,6 @@
 ---
 title: linux 部署实战
-date: 2022-7-19
+date: 2022-07-19
 categories:
   - Deploy
 tags:

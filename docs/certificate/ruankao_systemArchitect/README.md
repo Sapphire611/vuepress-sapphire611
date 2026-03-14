@@ -1,6 +1,6 @@
 ---
 title: 软考-高级系统架构师-tips&notes
-date: 2022-9-27
+date: 2022-09-27
 categories:
   - Certificate
 tags:

@@ -1,6 +1,6 @@
 ---
 title: 软考-中级软件设计师-知识产权
-date: 2024-8-14
+date: 2024-08-14
 categories:
   - Certificate
 tags:

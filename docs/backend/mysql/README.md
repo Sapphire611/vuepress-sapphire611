@@ -1,6 +1,6 @@
 ---
-title: MYSQL相关
-date: 2026-3-3
+title: MYSQL 相关
+date: 2026-03-03
 categories:
   - sql
   - interview

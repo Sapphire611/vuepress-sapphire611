@@ -1,6 +1,6 @@
 ---
 title: MongoDB Shard Demo
-date: 2025-6-24
+date: 2025-06-24
 categories:
   - mongodb
   - shard

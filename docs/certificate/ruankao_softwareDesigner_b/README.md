@@ -1,6 +1,6 @@
 ---
 title: 软考-中级软件设计师-下午题
-date: 2024-5-
+date: 2024-05-01
 categories:
   - Certificate
 tags:

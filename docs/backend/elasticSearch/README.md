@@ -1,6 +1,6 @@
 ---
 title: ElasticSearch Demo
-date: 2025-7-14
+date: 2025-07-14
 categories:
   - elasticSearch
 sidebar: 'auto'

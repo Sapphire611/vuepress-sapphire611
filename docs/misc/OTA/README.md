@@ -1,6 +1,6 @@
 ---
 title: OTA 升级包/刷写脚本 交互流程
-date: 2026-3-10
+date: 2026-03-10
 categories:
   - misc
 tags:

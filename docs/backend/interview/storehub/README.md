@@ -1,7 +1,7 @@
 ---
 title: StoreHub Interview
 sidebar: auto
-date: 2026-3-9
+date: 2026-03-09
 categories:
   - Backend
 tags:

@@ -1,6 +1,6 @@
 ---
 title: 如何在 npm 上发布自己的包
-date: 2022-8-18
+date: 2022-08-18
 categories:
   - Javascript
 tags:

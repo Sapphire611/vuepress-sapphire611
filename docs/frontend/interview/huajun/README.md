@@ -1,7 +1,7 @@
 ---
 title: HuaJun Interview Notes
 sidebar: auto
-date: 2026-2-9
+date: 2026-02-09
 categories:
   - Frontend
 tags:

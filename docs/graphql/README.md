@@ -1,6 +1,6 @@
 ---
 title: 5分钟速通GraphQL
-date: 2025-7-15
+date: 2025-07-15
 categories:
   - graphql
 tags:
