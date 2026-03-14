@@ -12,14 +12,14 @@ publish: true
 sticky: 2
 ---
 
-### STICKY
+## STICKY
 
 [什么是 nodejs?](/backend/node/node/#_0-什么是-nodejs) /
 [nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) /
 [浏览器和 Node 中 事件循环区别](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别) /
 [防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
-### AltenChina(HP)
+## AltenChina(HP)
 
 #### Electron
 
