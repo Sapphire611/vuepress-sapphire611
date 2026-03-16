@@ -1,7 +1,7 @@
 ---
 title: Nodejs 后端常见面试题
 sidebar: auto
-date: 2026-03-12
+date: 2026-03-17
 categories:
   - Backend
 tags:
@@ -27,13 +27,13 @@ publish: true
 
 - prependListener 头部添加(unshift)，on、once、addListener 尾部添加(push)
 
-[实现一个 EventEmitter(创建一个类，并维护一个obj[arr])](/backend/node/node/#实现一个-eventemitter)
+[实现一个 EventEmitter(创建一个类，并维护一个 obj[arr])](/backend/node/node/#实现一个-eventemitter)
 
 ---
 
 #### Stream
 
-[说说对 Node 中 Stream 的理解？(source、dest、pipe、单位是Buffer)](/backend/node/node/#_9-说说对-node-中-stream-的理解)
+[说说对 Node 中 Stream 的理解？(source、dest、pipe、单位是 Buffer)](/backend/node/node/#_9-说说对-node-中-stream-的理解)
 
 [Node Stream 是什么？有哪些种类的 Stream？（读、写、双工 Duplex、转换 Transform = zlib）](/backend/node/node/#_10-node-stream-是什么-有哪些种类的-stream)
 
@@ -45,7 +45,7 @@ publish: true
 
 - 错误处理：默认 pipe 返回目标流，可以链式调用
 
-[什么是背压？highWaterMark有什么作用？](/backend/node/node/#_13-什么是背压-highwatermark有什么作用)
+[什么是背压？highWaterMark 有什么作用？](/backend/node/node/#_13-什么是背压-highwatermark有什么作用)
 
 ---
 
@@ -57,29 +57,28 @@ publish: true
 
 ### Buffer
 
-[什么是Buffer？为什么需要它？(继承自Uint8Array,用于二进制数据处理，创建后大小不可变)](/backend/node/node/#_14-什么是buffer-为什么需要它)
+[什么是 Buffer？为什么需要它？(继承自 Uint8Array,用于二进制数据处理，创建后大小不可变)](/backend/node/node/#_14-什么是buffer-为什么需要它)
 
 ---
 
-## Nest.js 框架
+## Nest.js 框架 (基于Express.js)
 
 [Nestjs 数据初始化的时机 (OnApplicationBootstrap)](/backend/node/node_frame/#nestjs-数据初始化的时机)
 
-
-[req/res 与 ExecutionContext 的核心区别(上下文可以获取Controller、路由、装饰器的元数据)](/backend/node/node_frame/#req-res-与-executioncontext-的核心区别)
+[req/res 与 ExecutionContext 的核心区别(上下文可以获取 Controller、路由、装饰器的元数据)](/backend/node/node_frame/#req-res-与-executioncontext-的核心区别)
 
 [Nest 守卫、拦截器、中间件 的区别](/backend/node/node_frame/#nest-守卫、拦截器、中间件-的区别)
 
 - 顺序：中间件 > 守卫 > 拦截器
 
 - 中间件无法获取上下文，可以修改，用于数据预处理，通过 AppModule.config 注册
-  
 - 守卫器可以获取上下文，不可以修改，用于角色、权限的验证，@UseGuards 使用
 
 - 拦截器可以获取上下文，可以修改，用于统一格式响应、异常映射、缓存处理，@UseInterceptors
 
----
+[Midway demo(Midway 基于Egg.js,Egg.js又基于Koa.js,擅长Serverless)](https://github1s.com/SimbaOvO/midway-mongoose-demo)
 
+---
 
 ### 数据库相关 Mongodb / Redis / Mysql / PostGreSql
 
@@ -130,13 +129,13 @@ publish: true
 
 [什么是 MVCC？(多版本并发控制，通过 undo log 实现读不加锁)](/backend/mysql/#_6-什么是-mvcc)
 
-[MySQL 慢查询如何优化？(explain 分析、索引优化、避免 select *、分页优化)](/backend/mysql/#_7-mysql-慢查询如何优化)
+[MySQL 慢查询如何优化？(explain 分析、索引优化、避免 select \*、分页优化)](/backend/mysql/#_7-mysql-慢查询如何优化)
 
 ---
 
 #### PostgreSQL
 
-[PostgreSQL 相比 MySQL 的优势？(更好的并发控制、支持 JSON和数组)](/backend/postgreSql/#_1-postgresql-相比-mysql-的优势)
+[PostgreSQL 相比 MySQL 的优势？(更好的并发控制、支持 JSON 和数组)](/backend/postgreSql/#_1-postgresql-相比-mysql-的优势)
 
 [什么是 MVCC？PostgreSQL 如何实现？(通过元组中的 xmin/xmax 实现)](/backend/postgreSql/#_2-什么是-mvcc-postgresql-如何实现)
 
@@ -144,14 +143,26 @@ publish: true
 
 ---
 
+## SQL 
+
+[UXN SQL 题目参考](/backend/sql/#uxn-sql-题目)
+
 ## Graphql 基础
 
 [GraphQL 核心概念（gql、Query Resolver、Mutation Resolver）](/graphql/#核心概念)
 
-[GraphQL 和 REST 有什么区别(允许前端自由选择字段，避免over-fetch)](/graphql/#常见面试题)
+[GraphQL 和 REST 有什么区别(允许前端自由选择字段，避免 over-fetch)](/graphql/#常见面试题)
 
 ### 其他
 
 [什么是微服务？使用微服务的优势/缺点有哪些？](/architecture/#架构风格-数据交互-相关)
 
 [k8s 基本概念、命令](https://k8s.easydoc.net/docs/dRiQjyTY/28366845/6GiNOzyZ/puf7fjYr)
+
+[什么是 控制反转 && 依赖注入](/architecture/#什么是-控制反转-依赖注入)
+
+[JWT 是什么,如何实现 JWT 鉴权机制](/architecture/#如何实现-jwt-鉴权机制)
+
+[什么是反向代理，如何配置？](/deploy/nginx/#什么是反向代理-如何配置)
+
+[什么是灰度发布 && 蓝绿部署？](/deploy/nginx/#什么是灰度发布-蓝绿部署)

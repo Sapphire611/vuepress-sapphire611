@@ -1,6 +1,6 @@
 ---
-title: AI 相关概念
-date: 2026-03-12
+title: AI Agent 相关
+date: 2026-03-16
 categories:
   - AI
 tags:
@@ -9,7 +9,123 @@ sidebar: 'auto'
 publish: true
 ---
 
-## AI 相关概念
+## AI Agent 相关
+
+### 大模型如何拥有记忆（如何记住之前的信息）
+
+- 实际上 AI 并没有记忆，只是每次聊天时，都把历史对话记录一起发出去而已，前端需要维护上下文。
+
+#### 短期记忆层：通过 `Store` 维护，保证当前对话上下文一致
+
+#### 中期记忆层: `localStorage` 中存储最近几轮的对话文章记录
+
+- 滑动窗口策略: 只保留最新的 N 条信息，更早的丢弃
+- 增量摘要：当对话超过 N 次，将最早的一部分信息，使用模型生成摘要，并存储。后续请求时，使用 `摘要+最近N条完整信息` 作为上下文
+
+```js
+[系统提示词 + 项目级记忆(比如 CLAUDE.md)] + [会话摘要: summary_1] + [最近N条完整消息] + [当前用户问题]
+```
+
+#### 长期记忆层：服务端存储
+
+- 存储绘画内容：后端为每个 `session` 生成唯一 id，并作为存储和检索的钥匙
+
+- 按需加载：前端初始化时，像后端请求最近的 N 条会话信息作为参考
+
+- 冷热分离：活跃的会话保存在 `Redis` 中，不活跃的保存在普通数据库中
+
+### CLAUDE.md 是什么？实现原理?
+
+`CLAUDE.md` 是 Anthropic 为 Claude Code（Claude 的命令行工具）设计的一种持久化记忆文件，Claude 每次启动时自动读取这个文件，从而"记住"你项目的各种规范、命令和注意事项
+
+```markdown
+# CLAUDE.md - 我的项目记忆文件
+
+## 项目概述
+
+这是一个 Next.js 电商应用，使用 Stripe 支付和 Prisma ORM
+
+## 代码规范
+
+- 使用 TypeScript 严格模式，禁止使用 `any`
+- 使用命名导出，不使用默认导出
+- 组件命名使用 PascalCase，自定义 Hook 使用 use 前缀
+
+## 常用命令
+
+- `npm run dev`: 启动开发服务器
+- `npm test`: 运行测试
+- `npm run lint`: 代码检查
+```
+
+#### 实现原理
+
+CLAUDE.md 的实现基于一个分层记忆系统，类似你之前了解的前端存储分层设计
+
+| 记忆层级       | 文件位置                       | 作用范围     | 类比                     |
+| -------------- | ------------------------------ | ------------ | ------------------------ |
+| **用户级记忆** | `~/.claude/CLAUDE.md`          | 所有项目     | 你的个人习惯（随身携带） |
+| **项目级记忆** | `./CLAUDE.md`（项目根目录）    | 当前项目     | 团队规范（家规）         |
+| **模块化规则** | `.claude/rules/*.md`           | 特定文件类型 | 专项说明书               |
+| **自动记忆**   | `.claude/projects/*/MEMORY.md` | 项目+用户    | 经验积累本               |
+
+#### 实现 demo
+
+```js
+// 简化版的实现原理
+// 当多个层级的记忆文件存在时，遵循就近原则：项目级覆盖用户级，模块化规则按需激活
+// 你之前的伪代码
+[系统提示词 + 项目级记忆(比如 Claude.md)] + [会话摘要] + [最近消息] + [当前问题]
+
+// 实际实现
+// 前端实现示例
+class AIChatWithMemory {
+    constructor(projectId) {
+        this.projectId = projectId;
+        this.projectMemory = null;
+        this.loadProjectMemory();
+    }
+
+    // 加载项目级记忆（相当于 CLAUDE.md）
+    async loadProjectMemory() {
+        // 可以从后端 API 获取项目的"记忆配置"
+        const response = await fetch(`/api/projects/${this.projectId}/memory`);
+        this.projectMemory = await response.json();
+        // 格式示例：
+        // {
+        //   "description": "电商项目，使用 React + Node.js",
+        //   "codeStyle": "使用 TypeScript，命名导出",
+        //   "apiDocs": "RESTful 风格，使用 /api/v1 前缀"
+        // }
+    }
+
+    // 构建发送给 AI 的消息
+    async sendMessage(userMessage, sessionContext) {
+        // 将项目记忆作为系统提示词的一部分
+        const messages = [
+            {
+                role: 'system',
+                content: this.formatProjectMemory()  // 注入项目级记忆
+            },
+            ...sessionContext.summary,  // 会话摘要
+            ...sessionContext.recent,   // 最近 N 条消息
+            { role: 'user', content: userMessage }
+        ];
+
+        return this.callAIAPI(messages);
+    }
+
+    formatProjectMemory() {
+        return `
+            项目信息：${this.projectMemory.description}
+            代码规范：${this.projectMemory.codeStyle}
+            API 规范：${this.projectMemory.apiDocs}
+
+            请在这些规范指导下回答用户问题。
+        `;
+    }
+}
+```
 
 ### 什么是 RAG
 
@@ -101,6 +217,7 @@ MCP 定义了标准化的方式让 AI 模型：
 #### 面试要点
 
 MCP 解决了 AI 应用的关键问题：
+
 - 如何让 AI 访问实时数据
 - 如何安全地执行操作
 - 如何扩展 AI 能力
@@ -130,7 +247,6 @@ MCP 解决了 AI 应用的关键问题：
 - 1 token ≈ 0.75 个英文单词或 2-3 个汉字
 - 影响计费和上下文窗口
 
-
 #### 2. AI 应用开发
 
 **Q: 如何处理 LLM 的上下文限制？**
@@ -154,12 +270,12 @@ MCP 解决了 AI 应用的关键问题：
 
 #### 向量数据库选择
 
-| 数据库 | 特点 | 适用场景 |
-|--------|------|----------|
-| ChromaDB | 轻量、易用 | 原型开发、小规模应用 |
+| 数据库   | 特点             | 适用场景             |
+| -------- | ---------------- | -------------------- |
+| ChromaDB | 轻量、易用       | 原型开发、小规模应用 |
 | Pinecone | 托管服务、高性能 | 生产环境、大规模应用 |
-| FAISS | 开源、高效 | 本地部署、成本敏感 |
-| Qdrant | 过滤支持好 | 需要复杂过滤查询 |
+| FAISS    | 开源、高效       | 本地部署、成本敏感   |
+| Qdrant   | 过滤支持好       | 需要复杂过滤查询     |
 
 #### 成本优化
 

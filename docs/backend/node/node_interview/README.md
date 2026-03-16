@@ -19,6 +19,18 @@ sticky: 2
 [浏览器和 Node 中 事件循环区别](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别) /
 [防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
+## Soloent
+
+[Electron GitLab CI (缓存 node_modules、自动化测试、交叉编译)](/frontend/electron/#ci-自动化测试)
+
+[Electron 多平台处理(配置文件分离、特定的应用行为(mac)、菜单和快捷键、渲染进程识别平台等)](/frontend/electron/#多平台处理差异)
+
+[Electron 如何实现遥测(监听用户的特定行为、收集错误信息、指标信息、用于改进产品)](/frontend/electron/#如何实现遥测)
+
+[大模型如何拥有记忆(并没有，只是通过维护上下文，将系统提示词+会话摘要+最近 N 轮对话+当前用户对话 合并发送)](/misc/AI/#大模型如何拥有记忆-如何记住之前的信息)
+
+[CLAUDE.md 是什么？实现原理是？(持久化记忆文件 用户级记忆+项目级记忆+模块化规则+自动记忆)](/misc/AI/#claude-md-是什么-实现原理)
+
 ## AltenChina(HP)
 
 #### Electron
@@ -71,21 +83,21 @@ sticky: 2
 
 ## FUXUN
 
-[MySQL 分布式事务是如何实现的？](/backend/mysql/#_8-mysql-分布式事务是如何实现的)
+[MySQL 分布式事务是如何实现的？(mysql=XA+2PC,XA_START、END、PREPARE、COMMIT、ROLLBACK)](/backend/mysql/#_8-mysql-分布式事务是如何实现的)
 
-[MongoDB 千万级数据如何导出，并在实际业务中操作？](/backend/mongodb/#_5-mongodb-千万级数据如何导出-并在实际业务中操作)
+[MongoDB 千万级数据如何导出，并在实际业务中操作？（后台 CRON 预聚合/实时需要优化聚合+索引）](/backend/mongodb/#_5-mongodb-千万级数据如何导出-并在实际业务中操作)
 
-[Docker Compose 如何指定网络 IP？](/deploy/docker/#docker-compose-如何指定网络-ip)
+[Docker Compose 如何指定网络 IP？(networks: 容器: ipv4_address)](/deploy/docker/#docker-compose-如何指定网络-ip)
 
 [Redis List 常用命令 (lrange k1 0 -1)](/backend/redis/#list-常用命令)
 
 [Redis Hash 常用命令 (hkeys k1)](/backend/redis/#hash-常用命令)
 
-[MongoDB ABC 联合索引，AB AC 是否生效？](/backend/mongodb/#_6-mongodb-设置了-abc-联合索引-那-ab-ac-之类的生效吗)
+[MongoDB ABC 联合索引，AB AC 是否生效？(最左前缀原则，AB 完全生效、AC 部分生效)](/backend/mongodb/#_6-mongodb-设置了-abc-联合索引-那-ab-ac-之类的生效吗)
 
-[MySQL 与 MongoDB 地理索引对比](/backend/mysql/#_11-mysql-与-mongodb-地理索引对比)
+[MySQL 与 MongoDB 地理索引对比（POINT, LINESTRING, POLYGON SPATIAL 索引 vs GeoJson 2d 索引,mongodb 原生支持 WGS84）](/backend/mysql/#_11-mysql-与-mongodb-地理索引对比)
 
-[Node GC 新生代如何转变为老生代？](/backend/node/node/#_16-node-gc-新生代如何转变为老生代)
+[Node GC 新生代如何转变为老生代？(通过晋升、经历 GC 次数、To 区内存不足、大对象直接分配)](/backend/node/node/#_17-node-gc-新生代如何转变为老生代)
 
 [js 原生数组头部插入删除 (unshift,shift)](#)
 
@@ -98,15 +110,15 @@ sticky: 2
 
 ## HUAWANG
 
-[计算属性 (computed) 和侦听器 (watch/watchEffect) 对比](/frontend/vue/#计算属性-computed-和侦听器-watch-watcheffect-对比)
+[计算属性 (computed) 和侦听器 (watch/watchEffect) 对比（前者有缓存值和返回，watch能获取旧值，watchEffect 优先级高+自动收集）](/frontend/vue/#计算属性-computed-和侦听器-watch-watcheffect-对比)
 
-[Vue2/3 的响应式原理](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
+[Vue2/3 的响应式原理 (Object.defineProperty vs Proxy)](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
 
-[toRef 什么时候使用](/frontend/vue/#toref-什么时候使用)
+[toRef 什么时候使用 (reactive > ref 可以. value)](/frontend/vue/#toref-什么时候使用)
 
-[type 和 interface 的区别](/frontend/typescript/#_2-type-和-interface-的区别)
+[type 和 interface 的区别  &/extends，interface支持声明合并且只能定义object](/frontend/typescript/#_2-type-和-interface-的区别)
 
-[any、unknown、never 的区别](/frontend/typescript/#_3-any、unknown、never-的区别)
+[any、unknown、never 的区别（any=放弃检查，unknown=类型安全的any，never=不可能）](/frontend/typescript/#_3-any、unknown、never-的区别)
 
 [> CommonJS 是运行时引入,ESM 是编译时静态分析 + 运行时执行](#)
 
@@ -122,7 +134,7 @@ sticky: 2
 
 ## CTrip
 
-[NestJS 数据初始化的时机](/backend/node/node_frame/#nestjs-数据初始化的时机)
+[NestJS 数据初始化的时机(OnApplicationBootstrap)](/backend/node/node_frame/#nestjs-数据初始化的时机)
 
 [Nestjs 全链路追踪方案](/backend/node/node_frame/#nestjs-全链路追踪方案)
 

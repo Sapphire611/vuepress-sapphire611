@@ -124,7 +124,7 @@ async function Page() {
 
 ---
 
-### 什么是 Hydration（水合）
+### 什么是 Hydration（水合）（SSR限定）
 
 **Hydration（水合）** 是将服务端渲染的静态 HTML"激活"为可交互的 React 应用的过程。
 
