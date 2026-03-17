@@ -14,10 +14,13 @@ sticky: 2
 
 ## STICKY
 
-[什么是 nodejs?](/backend/node/node/#_0-什么是-nodejs) /
-[nodejs 事件循环机制](/backend/node/node/#_7-node-js-事件循环机制) /
-[浏览器和 Node 中 事件循环区别](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别) /
-[防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
+[什么是 nodejs?(事件驱动、非阻塞 I/O)](/backend/node/node/#_0-什么是-nodejs)
+
+[nodejs 事件循环机制(timers >> I/O callback >> idle,prepare >> poll >> check >> close callback)](/backend/node/node/#_7-node-js-事件循环机制)
+
+[浏览器和 Node 中 事件循环区别浏览器和 Node 中 事件循环区别 (浏览器:每次循环处理一个宏任务后清空微任务队列](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别) 
+
+[防抖和节流函数(return function(...args),fn.apply(this,args))](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
 ## Soloent
 
@@ -124,25 +127,25 @@ sticky: 2
 
 ## CPIC
 
-[css-矩形旋转](/frontend/interview/#css-矩形旋转)
+[css-矩形旋转(transform: rotate(45deg))](/frontend/interview/#css-矩形旋转)
 
 [防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
-[Promise.all Vs Promise.allSettled](/frontend/interview/#promise-all-vs-promise-allsettled)
+[Promise.all Vs Promise.allSettled(all 只要有一个Promise拒绝就结束，只能返回第一个发生的错误，allSettled 一定会返回所有的结果)](/frontend/interview/#promise-all-vs-promise-allsettled)
 
-[Vue 路由传参](/frontend/interview/#vue-路由传参)
+[Vue 路由传参(this.$router.push/query/params)](/frontend/vue/#vue-路由传参)
 
 ## CTrip
 
 [NestJS 数据初始化的时机(OnApplicationBootstrap)](/backend/node/node_frame/#nestjs-数据初始化的时机)
 
-[Nestjs 全链路追踪方案](/backend/node/node_frame/#nestjs-全链路追踪方案)
+[Nestjs 全链路追踪方案(middleware生成追踪id，LoggerService封装，interceptor记录请求耗时 return next.handle().pipe(()=>{}))](/backend/node/node_frame/#nestjs-全链路追踪方案)
 
 ## DEEPSIGHT
 
 [浏览器的事件循环](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别)
 
-[VUE 响应式原理](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
+[VUE2/3 响应式原理](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
 
 ---
 
@@ -180,11 +183,11 @@ export class ModuleB {}
 
 [express 和 koa 中间件的区别(线性 / 洋葱圈)](/backend/node/node/#_1-koa-和-express-有哪些不同)
 
-[MySQL 和 MongoDB 的索引数据结构](/backend/sql/#mysql-和-mongodb-的索引数据结构)
+[MySQL 和 MongoDB 的索引数据结构(B+ Tree vs B Tree)](/backend/sql/#mysql-和-mongodb-的索引数据结构)
 
-[B 树 和 B+树](/backend/sql/#b-tree)
+[B 树(B-) 和 B+树(B树所有节点都存储数据，B+树只有叶子节点存储数据，相互链接，查询更稳定，效率更高)](/backend/sql/#b-tree)
 
-[Docker 常用的网络模式有哪些?](/deploy/docker/#docker-常用的网络模式有哪些)
+[Docker 常用的网络模式有哪些?(默认bridge、host直接用主机、none无网络)](/deploy/docker/#docker-常用的网络模式有哪些)
 
 [Nest 守卫、拦截器、中间件 的区别](/backend/node/node_frame/#nest-守卫、拦截器、中间件-的区别)
 

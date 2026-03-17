@@ -1,6 +1,6 @@
 ---
 title: Node 常用框架相关
-date: 2026-03-09
+date: 2026-03-17
 categories:
   - Backend
 tags:
@@ -21,19 +21,18 @@ publish: true
 
 [Nest.js](https://nestjs.com/)
 
-
 ### req/res 与 ExecutionContext 的核心区别
 
-| 特性             | `req` / `res` 对象                       | `ExecutionContext` (执行上下文)                            |
-| ---------------- | ---------------------------------------- | ---------------------------------------------------------- |
-| **来源**         | 底层框架（如 Express/Fastify）的原始对象 | NestJS 抽象层提供的上下文包装器                            |
-| **访问方式**     | 直接操作（如 `req.headers`）             | 通过方法链获取（如 `context.switchToHttp().getRequest()`） |
-| **功能范围**     | 仅限 HTTP 请求/响应的原始操作            | 包含路由、控制器、处理器等元信息                           |
-| **协议支持**     | 仅支持当前协议（如 HTTP）                | 支持 HTTP/WebSocket/RPC 等多协议统一接口                   |
-| **元数据访问**   | 无法访问 NestJS 装饰器元数据             | 可读取装饰器元数据（如 `@Roles()`）                        |
-| **控制器关联性** | 无关联                                   | 可获取当前控制器类和方法（`getClass()`/`getHandler()`）    |
-| **依赖注入**     | 无法使用 DI 容器                         | 可通过 `getModuleRef()` 动态解析依赖                       |
-| **推荐使用场景** | - 简单请求/响应操作<br>- 快速原型开发    | - 需要路由信息<br>- 多协议支持<br>- 权限控制等复杂逻辑     |
+| 特性             | `req` / `res` 对象                       | `ExecutionContext` (执行上下文)                               |
+| ---------------- | ---------------------------------------- | ------------------------------------------------------------- |
+| **来源**         | 底层框架（如 Express/Fastify）的原始对象 | NestJS 抽象层提供的上下文包装器                               |
+| **访问方式**     | 直接操作（如 `req.headers`）             | 通过方法链获取（如 `context.switchToHttp().getRequest()`）    |
+| **功能范围**     | 仅限 HTTP 请求/响应的原始操作            | 包含路由(Router)、控制器(Controller)、处理器(Handler)等元信息 |
+| **协议支持**     | 仅支持当前协议（如 HTTP）                | 支持 HTTP/WebSocket/RPC 等多协议统一接口                      |
+| **元数据访问**   | 无法访问 NestJS 装饰器元数据             | 可读取装饰器元数据（如 `@Roles()`）                           |
+| **控制器关联性** | 无关联                                   | 可获取当前控制器类和方法（`getClass()`/`getHandler()`）       |
+| **依赖注入**     | 无法使用 DI 容器                         | 可通过 `getModuleRef()` 动态解析依赖                          |
+| **推荐使用场景** | - 简单请求/响应操作<br>- 快速原型开发    | - 需要路由信息<br>- 多协议支持<br>- 权限控制等复杂逻辑        |
 
 ---
 
@@ -92,7 +91,7 @@ export class JwtAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization;
-    return token?.startsWith('Bearer ');  // 简化验证
+    return token?.startsWith('Bearer '); // 简化验证
   }
 }
 
@@ -113,14 +112,13 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class TransformInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle().pipe(
-      map(data => ({ success: true, data }))
-    );
+    return next.handle().pipe(map((data) => ({ success: true, data })));
   }
 }
 ```
 
 **注册方式：**
+
 ```ts
 // 方式1: 局部使用 - 装饰器
 @Controller('users')
@@ -132,9 +130,7 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
-  providers: [
-    { provide: APP_INTERCEPTOR, useClass: TransformInterceptor }
-  ],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: TransformInterceptor }],
 })
 export class AppModule {}
 ```
@@ -199,23 +195,30 @@ graph TD
 
 #### 生命周期钩子详解
 
-| 钩子 | 接口 | 触发时机 | 适用场景 | 异步支持 |
-|------|------|----------|----------|----------|
-| `OnModuleInit` | `onModuleInit()` | 所有模块依赖解析完成后，模块初始化时 | 初始化模块级数据、缓存预热、连接建立 | ✅ async/await |
-| `OnApplicationBootstrap` | `onApplicationBootstrap()` | 所有模块初始化完成后，应用启动前 | 全局配置加载、数据初始化、监听器启动 | ✅ async/await |
-| `OnModuleDestroy` | `onModuleDestroy()` | 应用关闭时（模块销毁前） | 清理模块资源、关闭连接、保存状态 | ✅ async/await |
-| `BeforeApplicationShutdown` | `beforeApplicationShutdown()` | 应用关闭信号触发后 | 清理任务队列、完成正在进行的工作 | ✅ async/await |
-| `OnApplicationShutdown` | `onApplicationShutdown()` | 应用关闭前（最后阶段） | 日志持久化、监控上报、最终清理 | ✅ async/await |
+| 钩子                        | 接口                          | 触发时机                             | 适用场景                             | 异步支持       |
+| --------------------------- | ----------------------------- | ------------------------------------ | ------------------------------------ | -------------- |
+| `OnModuleInit`              | `onModuleInit()`              | 所有模块依赖解析完成后，模块初始化时 | 初始化模块级数据、缓存预热、连接建立 | ✅ async/await |
+| `OnApplicationBootstrap`    | `onApplicationBootstrap()`    | 所有模块初始化完成后，应用启动前     | 全局配置加载、数据初始化、监听器启动 | ✅ async/await |
+| `OnModuleDestroy`           | `onModuleDestroy()`           | 应用关闭时（模块销毁前）             | 清理模块资源、关闭连接、保存状态     | ✅ async/await |
+| `BeforeApplicationShutdown` | `beforeApplicationShutdown()` | 应用关闭信号触发后                   | 清理任务队列、完成正在进行的工作     | ✅ async/await |
+| `OnApplicationShutdown`     | `onApplicationShutdown()`     | 应用关闭前（最后阶段）               | 日志持久化、监控上报、最终清理       | ✅ async/await |
 
 #### 代码示例
 
 ```ts
-import { Injectable, OnModuleInit, OnApplicationBootstrap, OnModuleDestroy, BeforeApplicationShutdown, OnApplicationShutdown } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  OnApplicationBootstrap,
+  OnModuleDestroy,
+  BeforeApplicationShutdown,
+  OnApplicationShutdown,
+} from '@nestjs/common';
 
 @Injectable()
 export class LifecycleService
-  implements OnModuleInit, OnApplicationBootstrap, OnModuleDestroy, BeforeApplicationShutdown, OnApplicationShutdown {
-
+  implements OnModuleInit, OnApplicationBootstrap, OnModuleDestroy, BeforeApplicationShutdown, OnApplicationShutdown
+{
   // 1️⃣ 模块初始化 - 适合连接数据库、Redis 等资源
   async onModuleInit() {
     console.log('📦 Module initialized');
@@ -271,16 +274,16 @@ bootstrap();
 
 #### 最佳实践
 
-| 场景 | 推荐钩子 | 说明 |
-|------|----------|------|
-| 数据库连接 | `OnModuleInit` | 确保依赖注入完成后再连接 |
-| Redis 连接 | `OnModuleInit` | 同上 |
-| 初始化数据/种子数据 | `OnApplicationBootstrap` | 确保所有服务都已初始化 |
-| 缓存预热 | `OnApplicationBootstrap` | 避免启动后首次请求慢 |
-| 定时任务启动 | `OnApplicationBootstrap` | 确保应用完全就绪 |
-| 关闭数据库连接 | `OnModuleDestroy` | 优先清理关键资源 |
-| 保存临时状态 | `BeforeApplicationShutdown` | 给予足够时间完成 |
-| 日志持久化 | `OnApplicationShutdown` | 最后阶段执行 |
+| 场景                | 推荐钩子                    | 说明                     |
+| ------------------- | --------------------------- | ------------------------ |
+| 数据库连接          | `OnModuleInit`              | 确保依赖注入完成后再连接 |
+| Redis 连接          | `OnModuleInit`              | 同上                     |
+| 初始化数据/种子数据 | `OnApplicationBootstrap`    | 确保所有服务都已初始化   |
+| 缓存预热            | `OnApplicationBootstrap`    | 避免启动后首次请求慢     |
+| 定时任务启动        | `OnApplicationBootstrap`    | 确保应用完全就绪         |
+| 关闭数据库连接      | `OnModuleDestroy`           | 优先清理关键资源         |
+| 保存临时状态        | `BeforeApplicationShutdown` | 给予足够时间完成         |
+| 日志持久化          | `OnApplicationShutdown`     | 最后阶段执行             |
 
 ---
 

@@ -67,7 +67,7 @@ CREATE TABLE products (
 ### 题目 1： 搜索出重复的 products
 
 ```sql
-SELECT name, COUNT(*) as重复次数
+SELECT name, COUNT(*) as repeat_time
 FROM products
 GROUP BY name
 HAVING COUNT(*) > 1;
