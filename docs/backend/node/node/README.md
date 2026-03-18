@@ -1513,3 +1513,86 @@ node --max-old-space-size=2048 your-app.js
 > 在 Node.js 中，主进程和子进程之间**不共享内存**。主进程和子进程是独立的进程，它们拥有自己的独立内存空间。这是操作系统级别的分离。
 
 当你在 Node.js 中创建子进程时，每个子进程都有自己的 JavaScript 执行环境和内存空间。这意味着主进程和子进程之间不能直接共享变量或数据，除非你明确地使用进程间通信（Inter-Process Communication，IPC）机制来实现数据传递，例如使用 `child_process` 模块的 `send()` 和 `on('message')` 方法。
+
+
+---
+
+### Node.js SHA-256 加密方式
+
+::: right
+来自 [Sapphire611](http://sapphire611.github.io)
+:::
+---
+
+#### 前端加密
+
+```js
+var file = $("#file_upload...")[0].files[0]; // 上传的文件
+if(!file) return;
+
+// 计算文件的SHA-256
+const arrayBuffer = await file.arrayBuffer() // 二进制数据,与字符编码关系不大
+const digestBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer)// 计算摘要buffer
+const digestArray = Array.from(new Uint8Array(digestBuffer))
+
+// 转换为16进制字符串
+const digestHex = digestArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+```
+
+#### 后端加密
+
+```js
+const sha256 = crypto.createHash('sha256').update(binaryStr,'utf-8').digest('hex') 
+// const sha256 = crypto.createHash('sha256').update(binaryStr,'ASCII').digest('hex') 
+```
+
+::: tip
+在计算文件的SHA-256哈希时，使用 `crypto.subtle.digest()` 方法，这通常涉及处理二进制数据。
+既然是二进制数据，默认编码通常与字符编码关系不大，因为二进制数据直接处理字节而不是字符。在这个上下文中，编码主要与将数据转换为字符串有关，例如为了显示或保存哈希值。
+
+当你提到字符编码时，可能是指将二进制哈希值转为字符串时的默认处理方式。
+通常在计算完SHA-256后，需要以特定的编码格式呈现结果，例如转换为十六进制（Hex）或Base64。
+:::
+
+::: warning
+```js
+const bytes = new Uint8Array(e.target.result) // [72, 101, 108, 108, 111]
+const length = bytes.byteLength
+for (let i = 0; i < length; i++) {
+    binaryStr += String.fromCharCode(bytes[i]) //二进制转换字符串,这是使用UTF-16转换的
+}
+
+const decoder = new TextDecoder("utf-8"); // 创建 UTF-8 解码器
+const binaryUtf8Str = decoder.decode(bytes); // 直接将二进制转换为'utf-8'字符串
+```
+::: 
+
+---
+
+### UTF-8 字节数计算函数
+
+> 在 JavaScript 中，字符串的长度和字节数之间的关系可能会因字符串中包含的字符而有所不同。由于 UTF-8 编码是一种变长编码，每个字符可能占用不同数量的字节。
+
+- 以下是一个简单的 JavaScript 函数，可以用于计算一个字符串在 UTF-8 编码下所占的字节数：
+
+```js
+function utf8ByteLength(str) {
+  let count = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+
+    if (code <= 0x7f) {
+      count += 1;
+    } else if (code <= 0x7ff) {
+      count += 2;
+    } else if (code <= 0xffff) {
+      count += 3;
+    } else if (code <= 0x10ffff) {
+      count += 4;
+    }
+  }
+
+  return count;
+}
+```
