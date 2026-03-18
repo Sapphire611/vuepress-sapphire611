@@ -110,3 +110,82 @@ x; // "a"
 y; // undefined
 z; // []
 ```
+
+### 列举 js 中数组遍历相关的方法
+
+1. for 循环
+
+```javascript
+const array = [1, 2, 3, 4, 5];
+for (let i = 0; i < array.length; i++) {
+  console.log(array[i]);
+}
+```
+
+2. for...of 循环：用于遍历可迭代对象，例如数组、字符串等。
+
+```javascript
+const array = [1, 2, 3, 4, 5];
+for (const item of array) {
+  console.log(item);
+}
+```
+
+3. forEach 方法：
+
+```javascript
+const array = [1, 2, 3, 4, 5];
+array.forEach((item) => {
+  console.log(item);
+});
+```
+
+4. map 方法：返回一个新的数组，其中包含对原始数组每个元素进行处理后的结果。
+
+```javascript
+const array = [1, 2, 3, 4, 5];
+const newArray1 = array.map((item) => item * 2);
+console.log(newArray);
+```
+
+5. filter 方法：返回一个新的数组，其中包含满足特定条件的原始数组元素。
+
+```javascript
+const array = [1, 2, 3, 4, 5];
+const newArray2 = array.filter((item) => item > 2);
+console.log(newArray);
+```
+
+6. reduce 方法：通过对原始数组的累积计算，返回一个单一的值。
+
+> 回调函数（callback function）：这是一个用于处理数组元素的函数，它接受四个参数：累加器（accumulator）、当前值（current value）、当前索引（current index）和原始数组（array）。回调函数在每个数组元素上被调用，可以执行任意操作并返回一个值，该值将作为下一次迭代的累加器的值
+
+> 初始累加器的值（initial accumulator value）：这是可选的参数，指定初始的累加器的值。如果未提供该参数，则将使用数组的第一个元素作为初始累加器的值，并从数组的第二个元素开始迭代。
+
+```javascript
+const array = [1, 2, 3, 4, 5];
+const sum = array.reduce((accumulator, currentValue) => accumulator + currentValue);
+console.log(sum);
+```
+
+### 列举几个 es6 以后的新特性
+
+1. 块级作用域（Block Scope）：通过使用 let 和 const 关键字，引入了块级作用域，使得变量和常量的作用域仅限于定义它们的块内部。
+
+2. 箭头函数（Arrow Functions）：使用 => 语法定义函数，可以更简洁地编写函数表达式，并自动绑定函数体内的 this 值。
+
+3. 解构赋值（Destructuring Assignment）：可以从数组或对象中快速提取值，并将它们分配给变量，以便进行更方便的赋值操作。
+
+4. 默认参数（Default Parameters）：在函数定义中，可以为参数设置默认值，当调用函数时没有提供该参数时，将使用默认值。
+
+5. 模板字面量（Template Literals）：使用反引号 包围的字符串，可以包含变量、表达式和换行符，并使用 ${} 语法进行插值。
+
+6. 扩展运算符（Spread Operator）：通过使用 ... 语法，可以将数组或对象在函数调用、数组字面量或对象字面量中展开，使其元素或属性被拆分成独立的项。
+
+7. 类和模块（Classes and Modules）：引入了类和模块的概念，可以更简洁地定义和组织对象的行为和结构。
+
+8. async/await（Promises）：引入了 Promise 对象，用于处理异步操作，使得异步代码更易于编写和管理。
+
+9. for...of 循环（For...of Loop）：提供了一种简单的遍历数组、字符串和其他可迭代对象的方式。
+
+10 模块化导入和导出（Module Import and Export）：通过 import 和 export 关键字，支持模块化的文件导入和导出，方便代码的组织和复用。

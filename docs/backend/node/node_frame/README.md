@@ -287,6 +287,26 @@ bootstrap();
 
 ---
 
+### Nestjs 如何解决模块之间循环依赖的问题
+
+使用forwardRef()
+
+```ts
+// module-a.module.ts
+@Module({
+  imports: [forwardRef(() => ModuleB)],
+})
+export class ModuleA {}
+
+// module-b.module.ts
+@Module({
+  imports: [forwardRef(() => ModuleA)],
+})
+export class ModuleB {}
+```
+
+---
+
 ### Nestjs 全链路追踪方案
 
 - 1. 核心文件结构

@@ -276,3 +276,43 @@ fetch(url).then((res) => res.json() as User)
 // 4. 精确类型
 ['a', 'b'] as const
 ```
+
+### 5. 用 ts 实现多态，父类 animal，子类 cat 和 dog，包含 name 属性，实现 say 方法
+
+```ts
+class Animal {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  say(): void {
+    console.log('Animal says...');
+  }
+}
+
+class Cat extends Animal {
+  say(): void {
+    console.log('Meow!');
+  }
+}
+
+class Dog extends Animal {
+  say(): void {
+    console.log('Woof!');
+  }
+}
+
+// 多态性的应用
+const animals: Animal[] = [new Cat('Tom'), new Dog('Max'), new Cat('Kitty')];
+
+animals.forEach((animal) => {
+  console.log(`Name: ${animal.name}`);
+  animal.say();
+  console.log('------------------');
+});
+
+// yarn add global ts-node typescript
+// npx ts-node test.ts
+```

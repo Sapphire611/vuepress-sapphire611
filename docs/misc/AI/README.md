@@ -11,6 +11,266 @@ publish: true
 
 ## AI Agent 相关
 
+### 什么是 LangChain？
+
+**LangChain** 是一个开源框架，用于开发由大型语言模型（LLM）驱动的应用程序。它提供了一套工具和抽象，帮助开发者轻松构建 LLM 应用，包括聊天机器人、智能代理、文档问答系统等。
+
+#### 核心特点
+
+- **模块化设计**：提供可组合的组件和接口
+- **链式调用**：支持将多个组件串联形成复杂的处理流程
+- **多 LLM 支持**：兼容 OpenAI、Anthropic、Hugging Face 等多种 LLM
+- **数据集成**：内置与各种数据源的集成能力
+- **记忆管理**：提供对话历史和上下文记忆功能
+
+#### LangChain 核心组件
+
+##### 1. Models（模型）
+- **LLMs**：大语言模型，输入文本输出文本
+- **Chat Models**：聊天模型，支持消息格式（系统、用户、助手消息）
+- **Embeddings**：文本嵌入模型，用于向量化和语义搜索
+
+```typescript
+import { ChatOpenAI } from '@langchain/openai';
+
+const chatModel = new ChatOpenAI({
+  modelName: 'gpt-4',
+  temperature: 0.7
+});
+```
+
+##### 2. Prompts（提示词）
+- **Prompt Templates**：提示词模板，支持变量插值
+- **Few-shot Examples**：少样本示例
+- **Output Parsers**：输出解析器，结构化 LLM 输出
+
+```typescript
+import { PromptTemplate } from '@langchain/core/prompts';
+
+const prompt = PromptTemplate.fromTemplate(
+  '请用{style}的风格回答以下问题：{question}'
+);
+
+const formattedPrompt = await prompt.format({
+  style: '幽默',
+  question: '什么是 LangChain？'
+});
+```
+
+##### 3. Chains（链）
+- **LLMChain**：基础链，结合提示词和模型
+- **Sequential Chain**：顺序链，按顺序执行多个链
+- **Router Chain**：路由链，根据输入动态选择执行路径
+
+```typescript
+import { LLMChain } from 'langchain/chains';
+import { ChatOpenAI } from '@langchain/openai';
+import { PromptTemplate } from '@langchain/core/prompts';
+
+const llm = new ChatOpenAI({ temperature: 0.9 });
+const prompt = PromptTemplate.fromTemplate('讲一个关于{topic}的笑话');
+
+const chain = new LLMChain({ llm, prompt });
+const result = await chain.call({ topic: '程序员' });
+```
+
+##### 4. Agents（代理）
+- **ReAct Agent**：推理+行动代理
+- **OpenAI Functions Agent**：基于 OpenAI 函数调用的代理
+- **Custom Agents**：自定义代理
+
+**Agent 核心概念：**
+- **Tools**：代理可使用的工具集合
+- **Tool Executor**：工具执行器
+- **Agent Executor**：代理执行器，管理代理运行循环
+
+```typescript
+import { initializeAgentExecutorWithOptions } from 'langchain/agents';
+import { SerpAPI } from 'langchain/tools';
+import { Calculator } from 'langchain/tools/calculator';
+
+const tools = [new SerpAPI(), new Calculator()];
+const executor = await initializeAgentExecutorWithOptions(tools, llm, {
+  agentType: 'zero-shot-react-description',
+  verbose: true
+});
+
+const result = await executor.call({
+  input: '北京今天的温度加上25等于多少？'
+});
+```
+
+##### 5. Memory（记忆）
+- **Buffer Memory**：缓冲记忆，保存所有对话历史
+- **Summary Memory**：摘要记忆，自动生成对话摘要
+- **Conversation Buffer Window Memory**：窗口记忆，只保留最近的 K 轮对话
+- **Vector Store Memory**：向量存储记忆，基于语义相似度检索历史
+
+```typescript
+import { BufferMemory } from 'langchain/memory';
+
+const memory = new BufferMemory({
+  memoryKey: 'chat_history',
+  returnMessages: true
+});
+
+await memory.saveContext({
+  input: '我叫张三'
+}, {
+  output: '你好张三，很高兴认识你！'
+});
+
+const history = await memory.loadMemoryVariables({});
+```
+
+##### 6. Retrievers（检索器）
+- **Vector Store Retriever**：向量存储检索器
+- **BM25 Retriever**：关键词检索器
+- **Multi Query Retriever**：多查询检索器
+- **Ensemble Retriever**：集成检索器
+
+```typescript
+import { HNSWLib } from '@langchain/community/vectorstores/hnswlib';
+import { OpenAIEmbeddings } from '@langchain/openai';
+
+const vectorStore = await HNSWLib.fromTexts(
+  ['LangChain 是一个 LLM 开发框架', 'React 是一个前端框架'],
+  [],
+  new OpenAIEmbeddings()
+);
+
+const retriever = vectorStore.asRetriever(2); // 返回最相关的2个结果
+const results = await retriever.getRelevantDocuments('什么是 LangChain');
+```
+
+#### LangChain Expression Language (LCEL)
+
+LCEL 是 LangChain 的新一代声明式链语言，提供：
+- **流式处理**：支持流式输出
+- **并行执行**：自动并行化独立步骤
+- **类型检查**：完整的 TypeScript 支持
+- **异步原生**：基于 async/await
+
+```typescript
+import { ChatOpenAI } from '@langchain/openai';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableSequence } from '@langchain/core/runnables';
+
+const model = new ChatOpenAI();
+
+const prompt = PromptTemplate.fromTemplate(
+  '将以下内容翻译成{language}：{text}'
+);
+
+const chain = RunnableSequence.from([
+  prompt,
+  model
+]);
+
+const result = await chain.invoke({
+  language: '英语',
+  text: '你好，世界'
+});
+```
+
+#### 实际应用场景
+
+##### 文档问答系统（RAG）
+结合检索和生成，基于文档内容回答问题
+
+```typescript
+// 1. 加载文档
+import { TextLoader } from 'langchain/document_loaders/fs/text';
+const loader = new TextLoader('document.txt');
+const documents = await loader.load();
+
+// 2. 文本分块
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+const splitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 1000,
+  chunkOverlap: 200
+});
+const splits = await splitter.splitDocuments(documents);
+
+// 3. 向量化存储
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
+import { OpenAIEmbeddings } from '@langchain/openai';
+const vectorStore = await MemoryVectorStore.fromDocuments(
+  splits,
+  new OpenAIEmbeddings()
+);
+
+// 4. 创建检索链
+import { RetrievalQAChain } from 'langchain/chains';
+const chain = RetrievalQAChain.fromLLM(
+  model,
+  vectorStore.asRetriever()
+);
+
+const answer = await chain.call({ query: '文档的主要内容是什么？' });
+```
+
+##### 聊天机器人
+具有记忆功能的对话系统
+
+```typescript
+import { ConversationChain } from 'langchain/chains';
+import { BufferMemory } from 'langchain/memory';
+
+const chatChain = new ConversationChain({
+  llm: model,
+  memory: new BufferMemory()
+});
+
+const response1 = await chatChain.call({
+  input: '我喜欢编程，特别是 Python'
+});
+
+const response2 = await chatChain.call({
+  input: '我刚才说我喜欢什么？'
+});
+// Bot 会记得之前的对话内容
+```
+
+#### 面试常见问题
+
+**Q1: LangChain 与直接调用 OpenAI API 有什么区别？**
+
+LangChain 提供了更高层的抽象，支持链式调用、记忆管理、工具集成等复杂功能，而直接调用 API 需要手动管理上下文、提示词编排等细节。
+
+**Q2: 如何优化 LangChain 应用的性能？**
+
+- 使用流式处理减少首字延迟
+- 使用缓存避免重复调用
+- 批量处理嵌入操作
+- 选择合适的向量存储和索引策略
+
+**Q3: LangChain 的 Memory 组件有哪些类型？如何选择？**
+
+- **Buffer Memory**：适用于短对话，完整保存历史
+- **Summary Memory**：适用于长对话，压缩历史为摘要
+- **Window Memory**：适用于需要限制上下文长度的场景
+- **Vector Store Memory**：适用于需要语义检索历史的场景
+
+**Q4: 如何处理 LangChain 中的错误和重试？**
+
+LangChain 内置了重试机制，可以配置：
+
+```typescript
+const chain = new LLMChain({
+  llm: model,
+  prompt,
+  timeout: 30000,
+  maxRetries: 3
+});
+```
+
+**Q5: LCEL 与传统 Chains 的区别？**
+
+LCEL 提供更灵活的组合方式、更好的类型安全、原生支持流式处理，是 LangChain 推荐的新一代开发范式。
+
+
+
 ### 大模型如何拥有记忆（如何记住之前的信息）
 
 - 实际上 AI 并没有记忆，只是每次聊天时，都把历史对话记录一起发出去而已，前端需要维护上下文。

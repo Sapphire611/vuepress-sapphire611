@@ -63,7 +63,7 @@ PONG # 看到这个就代表成功了
 
 ### Redis 基本操作
 
-### Key 常用命令
+#### Key 常用命令
 
 ```shell
 keys *
@@ -84,7 +84,7 @@ flushdb # 清空当前数据库
 flushall # 清空所有数据库
 ```
 
-### String 常用命令
+#### String 常用命令
 
 ```shell
 set k1 111
@@ -112,7 +112,7 @@ incrby k1 10 # +10
 decrby k1 10 # -10
 ```
 
-### list 常用命令
+#### list 常用命令
 
 ```shell
 lpush / rpush k1 v1 k2 v2 ...
@@ -133,7 +133,7 @@ lrem k1 2 "value1" # 从k1左边删除2个value1
 lset k1 1 "value2" # 将k1中下标为1的值替换成“value2”
 ```
 
-### Set 常用命令
+#### Set 常用命令
 
 ```shell
 sadd set1 v1 v2 v3
@@ -158,7 +158,7 @@ sunion k1 k2 # 并集
 sdiff k1 k2 # 差集
 ```
 
-### Hash 常用命令
+#### Hash 常用命令
 
 ```shell
 hset user id 611
@@ -177,7 +177,7 @@ hincrby user age 10 # user.age += 10
 hsetnx user wife sara # 只有没有此属性，才能设置成功
 ```
 
-### ZSet 常用命令
+#### ZSet 常用命令
 
 ```shell
 
@@ -207,7 +207,7 @@ ZRANK top user2
 
 #### 面试必知的重要配置项
 
-```conf
+```bash
 # ==================================== 网络配置 ====================================
 
 # 绑定 IP，默认只允许本机访问
@@ -345,7 +345,7 @@ publish channel1 hello #Terminal 2
 
 ## 什么是缓存穿透/击穿/雪崩？如何解决？
 
-### 缓存穿透
+#### 缓存穿透
 
 **定义**：查询一个不存在的数据，缓存和数据库都没有，导致每次请求都打到数据库
 
@@ -358,7 +358,7 @@ publish channel1 hello #Terminal 2
 SET user:999 "null" EX 60  # 缓存 60 秒
 ```
 
-### 缓存击穿
+#### 缓存击穿
 
 **定义**：某个热点 key 过期时，大量并发请求同时访问这个 key，导致数据库压力瞬间激增
 
@@ -373,7 +373,7 @@ SET lock:key "1" NX EX 10  # 获取锁
 DEL lock:key  # 释放锁
 ```
 
-### 缓存雪崩
+#### 缓存雪崩
 
 **定义**：大量 key 在同一时间集中过期，或者 Redis 宕机，导致大量请求直接打到数据库
 
@@ -1065,3 +1065,124 @@ async function scheduledTaskWithRedlock() {
 - 适应任务执行时间不确定的场景
 - 防止因任务超时导致的锁失效
 - 即使任务执行时间远超轮询间隔也不会重复执行
+
+### 如何使用 redis 实现简单的消息队列？
+
+> 要使用 Redis 实现简单的消息队列，你可以借助 Redis 的列表数据结构来实现。
+
+> 以下是一个基本的示例，展示如何使用 Redis 来创建一个简单的消息队列：
+
+> DaoyouLun: 实现消息队列长度为 5
+
+```js
+const Redis = require('ioredis');
+const client = new Redis(6379, '127.0.0.1');
+
+async function send(msg) {
+  const cur = await client.llen('test_queue');
+  console.log(cur); // 设置消息队列上限为5
+
+  if (cur > 5) {
+    console.error('size more than 5');
+    return;
+  }
+  await client.lpush('test_queue', msg);
+}
+
+async function poll() {
+  try {
+    const message = await client.rpop('test_queue');
+    if (message) {
+      console.debug(message);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  process.nextTick(poll);
+}
+
+poll();
+
+async function main() {
+  await send('111');
+  await send('222');
+  await send('333');
+  await send('444');
+  await send('555');
+  await send('666');
+}
+
+main();
+```
+
+### 用 redis 实现一个分数排行榜，并从中查找前十名的数据
+
+```bash
+zadd leaderboard 100 PlayerA
+zadd leaderboard 80 PlayerB
+zadd leaderboard 120 PlayerC
+zrevrange leaderboard 0 9 WITHSCORES
+```
+
+```js
+const redis = require('ioredis');
+const client = redis.createClient();
+
+// 添加成员和分数到排行榜
+function addMemberToLeaderboard(member, score) {
+  client.zadd('leaderboard', score, member, (err, reply) => {
+    if (err) {
+      console.error('Failed to add member to leaderboard:', err);
+    } else {
+      console.log('Member added to leaderboard:', member);
+    }
+  });
+}
+
+// 获取排行榜前十名的数据
+function getTopTenFromLeaderboard() {
+  client.zrevrange('leaderboard', 0, 9, 'WITHSCORES', (err, results) => {
+    if (err) {
+      console.error('Failed to get top ten from leaderboard:', err);
+    } else {
+      console.debug(results);
+      // [
+      //     'PlayerL', '123',     'PlayerI',
+      //     '122',     'PlayerF', '121',
+      //     'PlayerC', '120',     'PlayerJ',
+      //     '103',     'PlayerG', '102',
+      //     'PlayerD', '101',     'PlayerA',
+      //     '100',     'PlayerK', '83',
+      //     'PlayerH', '82'
+      //   ]
+      console.log('Top ten from leaderboard:');
+      for (let i = 0; i < results.length; i += 2) {
+        const member = results[i];
+        const score = results[i + 1];
+        console.log(`${i / 2 + 1}. Member: ${member}, Score: ${score}`);
+      }
+    }
+  });
+}
+
+// 示例添加成员和分数到排行榜
+addMemberToLeaderboard('PlayerA', 100);
+addMemberToLeaderboard('PlayerB', 80);
+addMemberToLeaderboard('PlayerC', 120);
+
+addMemberToLeaderboard('PlayerD', 101);
+addMemberToLeaderboard('PlayerE', 81);
+addMemberToLeaderboard('PlayerF', 121);
+
+addMemberToLeaderboard('PlayerG', 102);
+addMemberToLeaderboard('PlayerH', 82);
+addMemberToLeaderboard('PlayerI', 122);
+
+addMemberToLeaderboard('PlayerJ', 103);
+addMemberToLeaderboard('PlayerK', 83);
+addMemberToLeaderboard('PlayerL', 123);
+
+// 查询排行榜前十名的数据
+getTopTenFromLeaderboard();
+```

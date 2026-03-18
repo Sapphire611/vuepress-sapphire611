@@ -18,9 +18,11 @@ sticky: 2
 
 [nodejs 事件循环机制(timers >> I/O callback >> idle,prepare >> poll >> check >> close callback)](/backend/node/node/#_7-node-js-事件循环机制)
 
-[浏览器和 Node 中 事件循环区别浏览器和 Node 中 事件循环区别 (浏览器:每次循环处理一个宏任务后清空微任务队列](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别) 
+[浏览器和 Node 中 事件循环区别浏览器和 Node 中 事件循环区别 (浏览器:每次循环处理一个宏任务后清空微任务队列](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别)
 
 [防抖和节流函数(return function(...args),fn.apply(this,args))](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
+
+[手写装饰器(className, methodName, originalMethod,return function (...args) )](/frontend/interview/#手写装饰器)
 
 ## Soloent
 
@@ -113,15 +115,15 @@ sticky: 2
 
 ## HUAWANG
 
-[计算属性 (computed) 和侦听器 (watch/watchEffect) 对比（前者有缓存值和返回，watch能获取旧值，watchEffect 优先级高+自动收集）](/frontend/vue/#计算属性-computed-和侦听器-watch-watcheffect-对比)
+[计算属性 (computed) 和侦听器 (watch/watchEffect) 对比（前者有缓存值和返回，watch 能获取旧值，watchEffect 优先级高+自动收集）](/frontend/vue/#计算属性-computed-和侦听器-watch-watcheffect-对比)
 
 [Vue2/3 的响应式原理 (Object.defineProperty vs Proxy)](/frontend/vue/#vue的响应式原理是如何实现的-请描述object-defineproperty和proxy的区别及其优缺点)
 
 [toRef 什么时候使用 (reactive > ref 可以. value)](/frontend/vue/#toref-什么时候使用)
 
-[type 和 interface 的区别  &/extends，interface支持声明合并且只能定义object](/frontend/typescript/#_2-type-和-interface-的区别)
+[type 和 interface 的区别 &/extends，interface 支持声明合并且只能定义 object](/frontend/typescript/#_2-type-和-interface-的区别)
 
-[any、unknown、never 的区别（any=放弃检查，unknown=类型安全的any，never=不可能）](/frontend/typescript/#_3-any、unknown、never-的区别)
+[any、unknown、never 的区别（any=放弃检查，unknown=类型安全的 any，never=不可能）](/frontend/typescript/#_3-any、unknown、never-的区别)
 
 [> CommonJS 是运行时引入,ESM 是编译时静态分析 + 运行时执行](#)
 
@@ -131,7 +133,7 @@ sticky: 2
 
 [防抖和节流函数](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
-[Promise.all Vs Promise.allSettled(all 只要有一个Promise拒绝就结束，只能返回第一个发生的错误，allSettled 一定会返回所有的结果)](/frontend/interview/#promise-all-vs-promise-allsettled)
+[Promise.all Vs Promise.allSettled(all 只要有一个 Promise 拒绝就结束，只能返回第一个发生的错误，allSettled 一定会返回所有的结果)](/frontend/interview/#promise-all-vs-promise-allsettled)
 
 [Vue 路由传参(this.$router.push/query/params)](/frontend/vue/#vue-路由传参)
 
@@ -139,7 +141,7 @@ sticky: 2
 
 [NestJS 数据初始化的时机(OnApplicationBootstrap)](/backend/node/node_frame/#nestjs-数据初始化的时机)
 
-[Nestjs 全链路追踪方案(middleware生成追踪id，LoggerService封装，interceptor记录请求耗时 return next.handle().pipe(()=>{}))](/backend/node/node_frame/#nestjs-全链路追踪方案)
+[Nestjs 全链路追踪方案(middleware 生成追踪 id，LoggerService 封装，interceptor 记录请求耗时 return next.handle().pipe(()=>{}))](/backend/node/node_frame/#nestjs-全链路追踪方案)
 
 ## DEEPSIGHT
 
@@ -155,29 +157,15 @@ sticky: 2
 
 ## YIKA
 
-- Redis 缓存续期问题（计划任务时间大于轮询时间时，双重缓存/缓存续期）
+[redis 计划任务时间大于轮询时间时怎么处理(双重缓存/缓存续期)](/backend/redis/#计划任务时间大于轮询时间时怎么处理)
 
 [prisma 和 typeorm 区别](/backend/node/node_frame/#orm-的选型)
 
-- NestJS 解决循环依赖的问题(forwardRef)
-
-```ts
-// module-a.module.ts
-@Module({
-  imports: [forwardRef(() => ModuleB)],
-})
-export class ModuleA {}
-
-// module-b.module.ts
-@Module({
-  imports: [forwardRef(() => ModuleA)],
-})
-export class ModuleB {}
-```
+[NestJS 解决循环依赖的问题(forwardRef)](/backend/node/node_frame/#nestjs-如何解决模块之间循环依赖的问题)
 
 [Nest 守卫、拦截器、中间件 的区别](/backend/node/node_frame/#nest-守卫、拦截器、中间件-的区别)
 
-[手写装饰器](/frontend/interview/#手写装饰器)
+[手写装饰器(className, methodName, originalMethod,return function (...args) )](/frontend/interview/#手写装饰器)
 
 ## SHANGHAI LONGYI
 
@@ -185,15 +173,15 @@ export class ModuleB {}
 
 [MySQL 和 MongoDB 的索引数据结构(B+ Tree vs B Tree)](/backend/sql/#mysql-和-mongodb-的索引数据结构)
 
-[B 树(B-) 和 B+树(B树所有节点都存储数据，B+树只有叶子节点存储数据，相互链接，查询更稳定，效率更高)](/backend/sql/#b-tree)
+[B 树(B-) 和 B+树(B 树所有节点都存储数据，B+树只有叶子节点存储数据，相互链接，查询更稳定，效率更高)](/backend/sql/#b-tree)
 
-[Docker 常用的网络模式有哪些?(默认bridge、host直接用主机、none无网络)](/deploy/docker/#docker-常用的网络模式有哪些)
+[Docker 常用的网络模式有哪些?(默认 bridge、host 直接用主机、none 无网络)](/deploy/docker/#docker-常用的网络模式有哪些)
 
 [Nest 守卫、拦截器、中间件 的区别](/backend/node/node_frame/#nest-守卫、拦截器、中间件-的区别)
 
 ---
 
-[算法题:非递减数列](/backend/node/leetcode-js/#_665-非递减数列)
+[665. 非递减数列](/backend/node/leetcode-js/#_665-非递减数列)
 
 [简答题:微信登陆数据流向](/architecture/#微信扫码登录全流程-前后端数据流向)
 
@@ -225,25 +213,7 @@ export class ModuleB {}
 
 ## ShuRui
 
-### 1. Node 和 Ajax 有什么区别？
-
-> Node.js 和 Ajax 是两个不同的概念。
-
-- Node.js 是一个基于 JavaScript 的运行时环境，用于在服务器端运行 JavaScript 代码。它使得开发者能够使用 JavaScript 编写服务器端应用程序，并提供了一系列的内置模块和扩展库，用于简化服务器端应用程序的开发。
-
-- Ajax 是一种基于 JavaScript 和 XML（或 JSON）的技术，用于实现客户端和服务器端之间的异步通信。Ajax 可以在不刷新整个页面的情况下更新部分页面内容，从而提高了网站的响应速度和用户体验。Ajax 主要是在客户端使用的技术，通过浏览器内置的 **XMLHttpRequest** 对象来实现与服务器端的异步通信。
-
-> 因此，Node.js 和 Ajax 是两个不同的概念。Node.js 主要是用于在服务器端运行 JavaScript 代码，而 Ajax 主要是用于在客户端和服务器端之间进行异步通信。
-
 [Node Stream 是什么？有哪些种类的 Stream？](/backend/node/node/#_10-node-stream-是什么-有哪些种类的-stream)
-
-### 3. fs.readFile() 和 fs.createReadStream() 有什么区别？
-
-| 区别     | fs.readFile()          | fs.createReadStream()                    |
-| -------- | ---------------------- | ---------------------------------------- |
-| 读取到   | 全部读取到内存         | 分成一系列小块（缓冲区），逐块读取和处理 |
-| 适用于   | 较小的文件或数据       | 大型文件或数据集                         |
-| callback | 作为回调函数的参数返回 | 通过监听完成读取操作                     |
 
 ---
 
@@ -251,477 +221,35 @@ export class ModuleB {}
 
 [Mysql 查询学生三门科目总分最高的 前三名](/backend/sql/#mysql-查询学生三门科目总分最高的-前三名)
 
-## 心悦互娱
+## XINYUE
 
-### 1. 如何使用 nodejs 读取一个本地文件？
+[fs.readFile() 和 fs.createReadStream() 有什么区别？](/backend/node/node/#_2-fs-readfile-和-fs-createreadstream-有什么区别)
 
-> **fs.readFile** 是一个异步方法，它接受一个回调函数作为参数，当文件读取完成时，回调函数会被调用。这种方式适合在非阻塞的情况下执行文件读取操作，不会阻止后续代码的执行。
+[如何使用 nodejs 读取一个本地文件](/backend/node/node/#_18-如何使用-nodejs-读取一个本地文件)
 
-> **fs.readFileSync** 是一个同步方法，它会阻塞当前线程，直到文件读取完成。这意味着在文件读取完成之前，程序无法执行其他操作。因此，通常不建议在主线程中使用同步方法，特别是在服务器端应用中，因为它可能导致性能问题和阻塞。
+[如何做到创建 nodejs 集群并做到不中断重启](/backend/node/node/#_19-如何做到创建-nodejs-集群并做到不中断重启)
 
-> **fs.promises.readFile** 是一个异步 Promise 方法，它返回一个 Promise 对象，允许您使用 async/await 或 Promise 链式调用来处理文件读取操作。这种方式在异步编程中更加方便和可读，不会阻塞主线程。
+[mongo 扣减库存时如何保证原子一致性](/backend/mongodb/#_7-mongo-扣减库存时如何保证原子一致性)
 
-### 3. 如何做到创建 nodejs 集群并做到不中断重启？
+[请写出符合下列要求的 mongodb 查询语句](/backend/mongodb/#_8-请写出符合下列要求的-mongodb-查询语句)
 
-```js
-const cluster = require('cluster');
-const http = require('http');
-const numCPUs = require('os').cpus().length;
+[如何使用 redis 实现简单的消息队列](/backend/redis/#如何使用-redis-实现简单的消息队列)
 
-if (cluster.isMaster) {
-  console.log(`主进程 ${process.pid} 正在运行`);
+[用 redis 实现一个分数排行榜，并从中查找前十名的数据(zadd board 100 Player1, zrevrange board 0 9 WITHSCORES)](/backend/redis/#用-redis-实现一个分数排行榜-并从中查找前十名的数据)
 
-  // 创建子进程
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+[列举 js 中数组遍历相关的方法](/backend/node/es6/#列举-js-中数组遍历相关的方法)
 
-  // 监听子进程退出事件
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`子进程 ${worker.process.pid} 停止运行`);
-    // 重启子进程
-    cluster.fork();
-  });
-} else {
-  // 在子进程中创建 HTTP 服务器
-  http
-    .createServer((req, res) => {
-      res.writeHead(200);
-      res.end('Hello, World!');
-    })
-    .listen(8000);
+[列举几个 es6 以后的新特性](/backend/node/es6/#列举几个-es6-以后的新特性)
 
-  console.log(`子进程 ${process.pid} 正在运行`);
-}
-```
-
-### 5. mongo 扣减库存时如何保证原子一致性？
-
-> 这里使用 mongoose 的版本
-
-```js
-const session = await mongoose.startSession();
-session.startTransaction();
-
-try {
-  // 在 session 中执行操作
-  await InventoryModel.updateOne({ _id: productId, quantity: { $gte: quantity } }, { $inc: { quantity: -quantity } }, { session });
-
-  await RecordModel.create(
-    {
-      productId: productId,
-      quantity: -quantity,
-      timestamp: new Date(),
-    },
-    { session }
-  );
-
-  await session.commitTransaction();
-  session.endSession();
-} catch (error) {
-  await session.abortTransaction();
-  session.endSession();
-  throw error;
-}
-```
-
-### 6.请写出符合下列要求的 mongodb 查询语句:
-
-> 查询表 user 中，name 是 abc，且 age 大于 30 岁或小于等于 10 岁的数据，跳过 100 条数据之后的 50 条数据，按年龄逆序排列，并仅返回 name 和 age 两个字段
-
-```js
-const query = await User.find({
-  name: 'abc',
-  $or: [{ age: { $gt: 30 } }, { age: { $lte: 10 } }],
-})
-  .skip(100)
-  .limit(50)
-  .sort({ age: -1 })
-  .select('name age');
-```
-
-```js
-const oprs = [
-  {
-    $match: {
-      name: 'abc',
-      $or: [{ age: { $gt: 30 } }, { age: { $lte: 10 } }],
-    },
-  },
-  { $sort: { age: -1 } },
-  { $skip: 100 },
-  { $limit: 50 },
-  { $project: { name: 1, age: 1 } },
-];
-
-await User.aggregate(oprs);
-```
-
-### 7. 如何使用 redis 实现简单的消息队列？
-
-> 要使用 Redis 实现简单的消息队列，你可以借助 Redis 的列表数据结构来实现。
-
-> 以下是一个基本的示例，展示如何使用 Redis 来创建一个简单的消息队列：
-
-> DaoyouLun: 实现消息队列长度为 5
-
-```js
-const Redis = require('ioredis');
-const client = new Redis(6379, '127.0.0.1');
-
-async function send(msg) {
-  const cur = await client.llen('test_queue');
-  console.log(cur); // 设置消息队列上限为5
-
-  if (cur > 5) {
-    console.error('size more than 5');
-    return;
-  }
-  await client.lpush('test_queue', msg);
-}
-
-async function poll() {
-  try {
-    const message = await client.rpop('test_queue');
-    if (message) {
-      console.debug(message);
-    }
-  } catch (err) {
-    console.error(err);
-  }
-
-  process.nextTick(poll);
-}
-
-poll();
-
-async function main() {
-  await send('111');
-  await send('222');
-  await send('333');
-  await send('444');
-  await send('555');
-  await send('666');
-}
-
-main();
-```
-
-### 8.用 redis 实现一个分数排行榜，并从中查找前十名的数据
-
-```bash
-zadd leaderboard 100 PlayerA
-zadd leaderboard 80 PlayerB
-zadd leaderboard 120 PlayerC
-zrevrange leaderboard 0 9 WITHSCORES
-```
-
-```js
-const redis = require('ioredis');
-const client = redis.createClient();
-
-// 添加成员和分数到排行榜
-function addMemberToLeaderboard(member, score) {
-  client.zadd('leaderboard', score, member, (err, reply) => {
-    if (err) {
-      console.error('Failed to add member to leaderboard:', err);
-    } else {
-      console.log('Member added to leaderboard:', member);
-    }
-  });
-}
-
-// 获取排行榜前十名的数据
-function getTopTenFromLeaderboard() {
-  client.zrevrange('leaderboard', 0, 9, 'WITHSCORES', (err, results) => {
-    if (err) {
-      console.error('Failed to get top ten from leaderboard:', err);
-    } else {
-      console.debug(results);
-      // [
-      //     'PlayerL', '123',     'PlayerI',
-      //     '122',     'PlayerF', '121',
-      //     'PlayerC', '120',     'PlayerJ',
-      //     '103',     'PlayerG', '102',
-      //     'PlayerD', '101',     'PlayerA',
-      //     '100',     'PlayerK', '83',
-      //     'PlayerH', '82'
-      //   ]
-      console.log('Top ten from leaderboard:');
-      for (let i = 0; i < results.length; i += 2) {
-        const member = results[i];
-        const score = results[i + 1];
-        console.log(`${i / 2 + 1}. Member: ${member}, Score: ${score}`);
-      }
-    }
-  });
-}
-
-// 示例添加成员和分数到排行榜
-addMemberToLeaderboard('PlayerA', 100);
-addMemberToLeaderboard('PlayerB', 80);
-addMemberToLeaderboard('PlayerC', 120);
-
-addMemberToLeaderboard('PlayerD', 101);
-addMemberToLeaderboard('PlayerE', 81);
-addMemberToLeaderboard('PlayerF', 121);
-
-addMemberToLeaderboard('PlayerG', 102);
-addMemberToLeaderboard('PlayerH', 82);
-addMemberToLeaderboard('PlayerI', 122);
-
-addMemberToLeaderboard('PlayerJ', 103);
-addMemberToLeaderboard('PlayerK', 83);
-addMemberToLeaderboard('PlayerL', 123);
-
-// 查询排行榜前十名的数据
-getTopTenFromLeaderboard();
-```
-
-### 9.和他人在同一个 git 分支开发，在本地开发好一个功能后，如何提交并上传服务器可以尽可能的减少冲突并保留完整提交历史，列举使用的命令或操作
-
-```bash
-git stash # 保存当前工作区
-git pull # 拉取远程分支
-git stash apply # 恢复工作区
-git add . # 添加修改
-git commit -m 'xxx' # 提交修改
-git push # 推送到远程分支
-```
-
-### 10.列举 js 中数组遍历相关的方法
-
-1. for 循环
-
-```javascript
-const array = [1, 2, 3, 4, 5];
-for (let i = 0; i < array.length; i++) {
-  console.log(array[i]);
-}
-```
-
-2. for...of 循环：用于遍历可迭代对象，例如数组、字符串等。
-
-```javascript
-const array = [1, 2, 3, 4, 5];
-for (const item of array) {
-  console.log(item);
-}
-```
-
-3. forEach 方法：
-
-```javascript
-const array = [1, 2, 3, 4, 5];
-array.forEach((item) => {
-  console.log(item);
-});
-```
-
-4. map 方法：返回一个新的数组，其中包含对原始数组每个元素进行处理后的结果。
-
-```javascript
-const array = [1, 2, 3, 4, 5];
-const newArray1 = array.map((item) => item * 2);
-console.log(newArray);
-```
-
-5. filter 方法：返回一个新的数组，其中包含满足特定条件的原始数组元素。
-
-```javascript
-const array = [1, 2, 3, 4, 5];
-const newArray2 = array.filter((item) => item > 2);
-console.log(newArray);
-```
-
-6. reduce 方法：通过对原始数组的累积计算，返回一个单一的值。
-
-> 回调函数（callback function）：这是一个用于处理数组元素的函数，它接受四个参数：累加器（accumulator）、当前值（current value）、当前索引（current index）和原始数组（array）。回调函数在每个数组元素上被调用，可以执行任意操作并返回一个值，该值将作为下一次迭代的累加器的值
-
-> 初始累加器的值（initial accumulator value）：这是可选的参数，指定初始的累加器的值。如果未提供该参数，则将使用数组的第一个元素作为初始累加器的值，并从数组的第二个元素开始迭代。
-
-```javascript
-const array = [1, 2, 3, 4, 5];
-const sum = array.reduce((accumulator, currentValue) => accumulator + currentValue);
-console.log(sum);
-```
-
-### 11.列举几个 es6 以后的新特性
-
-1. 块级作用域（Block Scope）：通过使用 let 和 const 关键字，引入了块级作用域，使得变量和常量的作用域仅限于定义它们的块内部。
-
-2. 箭头函数（Arrow Functions）：使用 => 语法定义函数，可以更简洁地编写函数表达式，并自动绑定函数体内的 this 值。
-
-3. 解构赋值（Destructuring Assignment）：可以从数组或对象中快速提取值，并将它们分配给变量，以便进行更方便的赋值操作。
-
-4. 默认参数（Default Parameters）：在函数定义中，可以为参数设置默认值，当调用函数时没有提供该参数时，将使用默认值。
-
-5. 模板字面量（Template Literals）：使用反引号 包围的字符串，可以包含变量、表达式和换行符，并使用 ${} 语法进行插值。
-
-6. 扩展运算符（Spread Operator）：通过使用 ... 语法，可以将数组或对象在函数调用、数组字面量或对象字面量中展开，使其元素或属性被拆分成独立的项。
-
-7. 类和模块（Classes and Modules）：引入了类和模块的概念，可以更简洁地定义和组织对象的行为和结构。
-
-8. async/await（Promises）：引入了 Promise 对象，用于处理异步操作，使得异步代码更易于编写和管理。
-
-9. for...of 循环（For...of Loop）：提供了一种简单的遍历数组、字符串和其他可迭代对象的方式。
-
-10 模块化导入和导出（Module Import and Export）：通过 import 和 export 关键字，支持模块化的文件导入和导出，方便代码的组织和复用。
-
-### 12.将两个数组的元素合并并去重
-
-```js
-const array1 = [1, 2, 3];
-const array2 = [2, 3, 4];
-
-// 将两个数组合并
-const mergedArray = [...array1, ...array2];
-
-// 去重
-const uniqueArray = [...new Set(mergedArray)];
-
-console.log(uniqueArray);
-```
-
-### 13.列举几个处理异步请求嵌套的方法
-
-```js
-// 嵌套回调函数处理异步请求
-asyncRequest1((err, res) => {
-  asyncRequest2(() => {
-    asyncRequest3(() => {
-      console.log('All requests completed.');
-    });
-  });
-});
-
-function asyncRequest3() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log('Async Request 3 Completed');
-      resolve();
-    }, 1000);
-  });
-}
-
-// 使用 Promise 链式调用处理异步请求
-asyncRequest1()
-  .then(() => asyncRequest2())
-  .then(() => asyncRequest3())
-  .then(() => {
-    console.log('All requests completed.');
-  });
-
-// 使用 async/await 处理异步请求
-async function nestedAsyncRequests() {
-  await asyncRequest1();
-  await asyncRequest2();
-  await asyncRequest3();
-
-  console.log('All requests completed.');
-}
-
-// 使用 Promise.all 并行处理异步请求
-Promise.all([asyncRequest1(), asyncRequest2(), asyncRequest3()]).then((results) => {
-  console.log('All requests completed.');
-  console.log('Results:', results);
-});
-```
-
-### 14. 用 ts 实现多态，父类 animal，子类 cat 和 dog，包含 name 属性，实现 say 方法
-
-```ts
-class Animal {
-  name: string;
-
-  constructor(name: string) {
-    this.name = name;
-  }
-
-  say(): void {
-    console.log('Animal says...');
-  }
-}
-
-class Cat extends Animal {
-  say(): void {
-    console.log('Meow!');
-  }
-}
-
-class Dog extends Animal {
-  say(): void {
-    console.log('Woof!');
-  }
-}
-
-// 多态性的应用
-const animals: Animal[] = [new Cat('Tom'), new Dog('Max'), new Cat('Kitty')];
-
-animals.forEach((animal) => {
-  console.log(`Name: ${animal.name}`);
-  animal.say();
-  console.log('------------------');
-});
-
-// yarn add global ts-node typescript
-// npx ts-node test.ts
-```
-
-### 15.如何不使用第三个变量来交换两个数的值?
-
-```js
-let a = 10;
-let b = 5;
-
-a = a + b; // 将 a 的值与 b 相加，结果赋给 a
-b = a - b; // 用新的 a 值减去原始的 b 值，结果赋给 b
-a = a - b; // 用新的 a 值减去新的 b 值，结果赋给 a
-
-console.log(a); // 输出 5
-console.log(b); // 输出 10
-```
-
-```js
-let a = 10;
-let b = 5;
-
-a = a ^ b; // 对 a 和 b 进行位异或操作，结果赋给 a
-b = a ^ b; // 用新的 a 值与原始的 b 值进行位异或操作，结果赋给 b
-a = a ^ b; // 用新的 a 值与新的 b 值进行位异或操作，结果赋给 a
-
-console.log(a); // 输出 5
-console.log(b); // 输出 10
-```
-
-### 17.现有 1000 个苹果，10 个盒子，问各个盒子内应该分别放入多少个苹果，才能使得用户要买任意 1 至 1000 之间的一个苹果数，都可以给他
-
-> (卖的时候是整个盒子卖，不能拆盒子的包装)。
-
-```js
-盒子1（第1位）放入1个苹果。
-盒子2（第2位）放入2个苹果。
-盒子3（第3位）放入4个苹果。
-盒子4（第4位）放入8个苹果。
-盒子5（第5位）放入16个苹果。
-盒子6（第6位）放入32个苹果。
-盒子7（第7位）放入64个苹果。
-盒子8（第8位）放入128个苹果。
-盒子9（第9位）放入256个苹果。
-盒子10（第10位）放入475个苹果（剩余的苹果数量）。
-```
+[用 ts 实现多态，父类 animal，子类 cat 和 dog，包含 name 属性，实现 say 方法](/frontend/typescript/#_5-用-ts-实现多态-父类-animal-子类-cat-和-dog-包含-name-属性-实现-say-方法)
 
 ---
 
-## KeLuoDa
+## CAROTA
 
-### 2. node 设置使用内存大小
+[node 如何设置使用内存大小](/backend/node/node/#_20-node-如何设置使用内存大小)
 
-> 默认为 4GB，不同机器可能有不同
-
-```bash
-node --max-old-space-size=2048 your-app.js
-```
+[Node 主进程和子进程是否共享内存](/backend/node/node/#_21-node-主进程和子进程是否共享内存)
 
 ### 3. 如何预防 XSS 攻击？
 
@@ -788,11 +316,6 @@ HTTPS 证书认证过程:
 
 > 总之，HTTP 是一种不安全的协议，而 HTTPS 使用加密和数字证书来保护通信的安全性和真实性。 PKI 是 HTTPS 的基础，用于验证和加密通信。
 
-### 5. 主进程和子进程是否共享内存？
-
-> 在 Node.js 中，主进程和子进程之间**不共享内存**。主进程和子进程是独立的进程，它们拥有自己的独立内存空间。这是操作系统级别的分离。
-
-当你在 Node.js 中创建子进程时，每个子进程都有自己的 JavaScript 执行环境和内存空间。这意味着主进程和子进程之间不能直接共享变量或数据，除非你明确地使用进程间通信（Inter-Process Communication，IPC）机制来实现数据传递，例如使用 `child_process` 模块的 `send()` 和 `on('message')` 方法。
 
 ## ZStack
 
