@@ -251,224 +251,33 @@ sticky: 2
 
 [Node 主进程和子进程是否共享内存](/backend/node/node/#_21-node-主进程和子进程是否共享内存)
 
-### 3. 如何预防 XSS 攻击？
 
-> 👀 预防跨站脚本攻击（XSS）是构建安全 web 应用程序的重要一环。XSS 攻击的目标是向网页注入恶意脚本，以便攻击者可以窃取用户的信息或执行恶意操作。以下是一些防止 XSS 攻击的最佳实践：
+[如何预防 XSS 攻击](/frontend/interview/#如何预防-xss-攻击)
 
-1. 输入验证和过滤：
-
-对于所有用户输入的数据，包括表单输入、URL 参数和 cookie，都要进行验证和过滤。只允许预期的、合法的字符和数据通过。
-
-2. 转义输出
-   在将用户输入显示在网页上之前，确保对其进行适当的转义。这可以通过编程语言的内置函数或模板引擎来完成，以确保任何用户输入都不会被解释为代码。使用安全的 HTML、CSS 和 JavaScript 输出编码方法，
-
-```js
-如 htmlspecialchars()、encodeURIComponent(),md5() 等。
-```
-
-3. 内容安全策略 (CSP)：
-   配置 CSP 头，限制浏览器加载和执行的内容。CSP 可以阻止内联脚本和其他不受信任的内容，减少 XSS 攻击的风险。
-   在 HTTP 头中包含 Content-Security-Policy 来启用 CSP。
-
-```js
-Content-Security-Policy: same-origin // 只允许加载同源的资源
-Content-Security-Policy: default-src 'self' www.example.com // 只允许加载同源的资源和 www.example.com 域名下的资源
-Content-Security-Policy: script-src 'none'
-```
-
-### 4. http 和 https 的区别？证书认证过程？pki？
-
-|          | http | https |
-| -------- | ---- | ----- |
-| 传输协议 | 明文 | 加密  |
-| 默认端口 | 80   | 443   |
-| 证书     | 无   | 有    |
-
-HTTPS 证书认证过程:
-
-1. 服务器端证书生成:
-   服务器管理员生成一个证书请求（CSR），其中包含服务器的公钥。
-   证书请求被发送到受信任的证书颁发机构（CA）。
-
-2. 证书颁发机构认证:
-   CA 验证证书请求的合法性，并验证服务器所有者的身份。
-   CA 签发包含服务器公钥的数字证书，并使用 CA 的私钥进行签名。
-
-3. 服务器配置证书:
-   服务器收到 CA 签发的证书后，将其配置到服务器上。
-
-4. 客户端验证:
-   当客户端连接到服务器时，服务器会返回证书。
-   客户端的浏览器会验证证书的有效性，包括检查 CA 的签名和证书是否在有效期内。
-   如果证书有效，客户端会生成一个随机的对称密钥，然后使用服务器的公钥加密它，并将其发送回服务器。
-   建立安全通信:
-
-::: tip
-服务器使用其私钥解密客户端发送的随机密钥。
-从此刻起，客户端和服务器之间的通信都使用这个共享的对称密钥进行加密和解密。
-:::
-
-#### 公钥基础设施（PKI）:
-
-- PKI 是一种广泛用于加密和认证的体系结构。它包括证书颁发机构（CA）和数字证书，用于确保安全通信。PKI 的基本原理是使用非对称加密，其中每个实体（如服务器或用户）都有一对公钥和私钥。私钥是保密的，而公钥可以公开使用。CA 颁发数字证书，用于验证公钥的真实性和身份。
-
-- 在 HTTPS 中，PKI 用于确保服务器的身份，并协助在客户端和服务器之间建立加密通信。通过 CA 颁发的数字证书，客户端可以验证服务器的身份，从而确保它正在与预期的安全服务器通信。
-
-> 总之，HTTP 是一种不安全的协议，而 HTTPS 使用加密和数字证书来保护通信的安全性和真实性。 PKI 是 HTTPS 的基础，用于验证和加密通信。
-
+[http 和 https 的区别？证书认证过程？pki？](/frontend/interview/#http-和-https-的区别-证书认证过程-pki)
 
 ## ZStack
 
-[1. Node.js 事件循环机制](/backend/node/node/#_7-node-js-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E6%9C%BA%E5%88%B6)
+[Node.js 事件循环机制](/backend/node/node/#_7-node-js-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E6%9C%BA%E5%88%B6)
 
-[2. useMemo / useCallback / useEffect 三者区别](/frontend/react/#_1-react-中-usememo-usecallback-useeffect-三者区别)
+[useMemo / useCallback / useEffect 三者区别](/frontend/react/#_1-react-中-usememo-usecallback-useeffect-三者区别)
 
-#### 3. 什么是 $facet
-
-> `$facet` 是 MongoDB 聚合管道（aggregation pipeline）中的一个阶段，它允许你在一个聚合管道中执行多个独立的子聚合，并将它们的结果整合到一个单一的文档中。
-
-```json
-{
-  $facet: {
-    "outputField1": [ <stage1>, <stage2>, ... ],
-    "outputField2": [ <stage3>, <stage4>, ... ],
-    // 更多输出字段和子聚合阶段
-  }
-}
-
-```
-
-```json
-{
-  "$facet": {
-    "salesByAgent": [{ "$sort": { "totalSales": -1 } }, { "$limit": 5 }],
-    "totalSales": [{ "$group": { "_id": null, "total": { "$sum": "$totalSales" } } }]
-  }
-}
-```
+[什么是 $facet](/backend/mongodb/#_9-什么是-facet)
 
 ## DAOYOUYUN
 
-### 1. 什么是 node.js
+[什么是 nodejs?(事件驱动、非阻塞 I/O)](/backend/node/node/#_0-什么是-nodejs)
 
-- Node.js 是一个开源的 JavaScript 运行环境，它允许开发者在服务器端运行 JavaScript 代码。它是建立在`Chrome V8` JavaScript 引擎之上的，并且提供了一系列的库和工具，使开发者能够轻松地构建高性能的网络应用程序。
+[nodejs 事件循环机制(timers >> I/O callback >> idle,prepare >> poll >> check >> close callback)](/backend/node/node/#_7-node-js-事件循环机制)
 
-- 关键词 `事件驱动` `非阻塞I/O模型` `轻量` `高性能` `跨平台`
+[浏览器和 Node 中 事件循环区别浏览器和 Node 中 事件循环区别 (浏览器:每次循环处理一个宏任务后清空微任务队列](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别)
 
-### [2. Node.js 事件循环机制](/backend/node/node/#_7-node-js-%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E6%9C%BA%E5%88%B6)
+[什么是泛型?](/frontend/typescript/#_1-什么是泛型)
 
-### [3. 宏任务 / 微任务](/backend/node/node/#_11-宏任务-微任务)
+[防抖和节流函数(return function(...args),fn.apply(this,args))](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
-### 4. 范型
+[如何 做 http 缓存](/frontend/interview/#如何-做-http-缓存)
 
-> 泛型提供了一种抽象的方式，允许你在不知道具体数据类型的情况下编写通用的算法、数据结构或函数，以适用于不同的数据类型，同时保持类型安全
+[TCP / UDP](/frontend/interview/#tcp-udp)
 
-```ts
-function identity<T>(value: T): T {
-  return value;
-}
-
-let result = identity('Hello, TypeScript'); // result的类型为string
-```
-
-节流技术确保在一定时间内执行函数的频率受到限制，无论触发频率如何。例如，你可以设置一个函数每隔一定时间执行一次，而不管触发事件的频率。节流通常用于减少事件处理的频率，以防止过多的计算或请求。
-
-示例（使用 Node.js 的 setInterval 函数实现节流）：
-
-```js
-function throttle(func, delay) {
-  let canCall = true;
-  return function (...args) {
-    if (canCall) {
-      func.apply(this, args);
-      canCall = false;
-      setTimeout(() => {
-        canCall = true;
-      }, delay);
-    }
-  };
-}
-
-const throttledFunction = throttle(() => {
-  console.log('Throttled function called');
-}, 1000);
-
-// 调用throttledFunction，但只有在每隔1秒后才能再次执行
-throttledFunction();
-```
-
-> 无论是防抖还是节流，都可以在 Node.js 中使用，以限制函数调用的频率，从而更好地控制资源的使用或事件的触发。这些技术在前端开发中经常用于优化性能和提高用户体验，也可以在后端应用程序中处理类似的情况。
-
-### 6. 如何 做 http 缓存
-
-> HTTP 缓存是一种用于提高网站性能和减少服务器负载的技术。通过将资源（如网页、图像、样式表和脚本）缓存在客户端浏览器或中间代理服务器上，可以减少重复的请求，从而加快页面加载速度。以下是实施 HTTP 缓存的一般步骤：
-
-1. 设置 HTTP 头部：
-   在 HTTP 响应头部中设置缓存相关的 HTTP 头部是实施 HTTP 缓存的第一步。以下是常用的 HTTP 头部：
-
-```bash
-Cache-Control：这个头部用于指定缓存策略。常见的指令包括：
-  max-age=<seconds>：定义资源在客户端缓存中的最大存活时间（秒）。
-  s-maxage=<seconds>：与max-age类似，但仅适用于共享缓存（例如代理服务器）。
-  public：指示响应可以被任何缓存存储。
-  private：指示响应只能被单个用户的私有缓存存储。
-  no-store：禁止缓存，每次请求都必须从服务器获取最新资源。
-  no-cache：缓存资源需要经过重新验证，即需要与服务器确认资源是否过期。
-Expires：定义资源的过期日期，是一个HTTP日期时间格式。
-ETag：给每个资源分配一个唯一的标识符，服务器可以使用它来验证资源是否发生了变化。
-Last-Modified：资源的最后修改日期，也用于验证资源是否发生了变化。
-```
-
-### 7. TCP / UDP
-
-|        | TCP                        | UDP            |
-| ------ | -------------------------- | -------------- |
-| 安全性 | 可靠性                     | 不可靠         |
-| 连接   | 有，双向，流控制和拥塞控制 | 无连接，低开销 |
-| 适用于 | 可靠性要求高               | 实时应用       |
-
-### 8. 算法题目
-
-1. 求 x 的 n 次方, 不能用 Math.pow(x,n)
-
-```js
-const pow = (x, n) => {
-  if (n === 0) return 1;
-
-  return x * pow(x, n - 1);
-};
-```
-
-2. 手写 arr.flat() ,
-
-```js
-const arr = [
-  [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-  ],
-  [
-    [11, 12, 13],
-    [14, 15, 16],
-    [17, 18, 19],
-  ],
-  [
-    [21, 22, 23],
-    [24, 25, 26],
-    [27, 28, 29],
-  ],
-];
-
-const myflat = (arr) => {
-  let result = [];
-  for (const each of arr) {
-    if (Array.isArray(each)) result = result.concat(myflat(each));
-    else result.push(each);
-  }
-  return result;
-};
-
-const flattenedArr = myflat(arr);
-console.log(flattenedArr);
-```
+[算法题目](/frontend/interview/#算法题目)

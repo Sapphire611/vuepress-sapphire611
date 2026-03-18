@@ -574,3 +574,27 @@ const oprs = [
 
 await User.aggregate(oprs);
 ```
+
+### 9. 什么是 $facet
+
+> `$facet` 是 MongoDB 聚合管道（aggregation pipeline）中的一个阶段，它允许你在一个聚合管道中执行多个独立的子聚合，并将它们的结果整合到一个单一的文档中。
+
+```json
+{
+  "$facet": {
+    "outputField1": [ <stage1>, <stage2>, ... ],
+    "outputField2": [ <stage3>, <stage4>, ... ],
+    // 更多输出字段和子聚合阶段
+  }
+}
+
+```
+
+```json
+{
+  "$facet": {
+    "salesByAgent": [{ "$sort": { "totalSales": -1 } }, { "$limit": 5 }],
+    "totalSales": [{ "$group": { "_id": null, "total": { "$sum": "$totalSales" } } }]
+  }
+}
+```
