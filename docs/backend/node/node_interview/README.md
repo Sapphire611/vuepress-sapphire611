@@ -18,7 +18,7 @@ sticky: 2
 
 [nodejs 事件循环机制(timers >> I/O callback >> idle,prepare >> poll >> check >> close callback)](/backend/node/node/#_7-node-js-事件循环机制)
 
-[浏览器和 Node 中 事件循环区别浏览器和 Node 中 事件循环区别 (浏览器:每次循环处理一个宏任务后清空微任务队列](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别)
+[浏览器和 Node 中 事件循环区别 (浏览器:每次循环处理一个宏任务后清空微任务队列](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别)
 
 [防抖和节流函数(return function(...args),fn.apply(this,args))](/frontend/vue/#防抖-debounce-和-节流-throttle-函数)
 
@@ -53,6 +53,8 @@ sticky: 2
 #### 其他
 
 [Redux 核心概念（单一数据源、State 只读、通过 Reducer 进行修改）](/frontend/react/#redux-mobx-的核心概念)
+
+- VueX 单一数据源、State只读、通过 Mutation 修改，通过 dispatch 触发
 
 [Typescript 什么是类型断言(就是 as 而已)](/frontend/typescript/#_4-什么是类型断言)
 
@@ -270,7 +272,7 @@ sticky: 2
 
 [nodejs 事件循环机制(timers >> I/O callback >> idle,prepare >> poll >> check >> close callback)](/backend/node/node/#_7-node-js-事件循环机制)
 
-[浏览器和 Node 中 事件循环区别浏览器和 Node 中 事件循环区别 (浏览器:每次循环处理一个宏任务后清空微任务队列](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别)
+[浏览器和 Node 中 事件循环区别 (浏览器:每次循环处理一个宏任务后清空微任务队列](/backend/node/node/#_3-浏览器和-node-中-事件循环有什么区别)
 
 [什么是泛型?](/frontend/typescript/#_1-什么是泛型)
 
