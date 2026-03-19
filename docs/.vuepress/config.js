@@ -53,43 +53,14 @@ module.exports = {
       socialLinks: [
         // 信息栏展示社交信息
         { icon: 'reco-github', link: 'https://github.com/sapphire611' },
-        // { icon: 'reco-bilibili', link: 'https://space.bilibili.com/17383192' },
-        // {
-        //   icon: 'reco-zhihu',
-        //   link: 'https://www.zhihu.com/people/liu-li-yi-30'
-        // }
       ]
     },
-    record: '沪ICP备2021035470号-1',
-    recordLink: 'https://beian.miit.gov.cn/',
     startYear: '2021',
     // author: "Sapphire611",
     codeTheme: 'tomorrow' // default 'tomorrow'
   },
 
   plugins: [
-    // [
-    //   'meting',
-    //   {
-    //     meting: {
-    //       server: 'netease',
-    //       type: 'playlist',
-    //       mid: '367284177'
-    //     },
-    //     aplayer: {
-    //       lrcType: 3
-    //     }
-    //   }
-    // ],
-    [
-      'vuepress-plugin-sponsor',
-      {
-        theme: 'simple',
-        alipay: '/img/alipay.png',
-        wechat: '/img/wechat.png',
-        duration: 2000
-      }
-    ],
     ['autometa', autometa_options],
     [
       'sitemap',
@@ -98,18 +69,7 @@ module.exports = {
         // 排除无实际内容的页面
         exclude: ['/404.html']
       }
-    ],
-    // ['vuepress-plugin-baidu-autopush'],
-    // ['ribbon'],
-  //   ["sakura", {
-  //     num: 20,  // 默认数量
-  //     show: true, //  是否显示
-  //     zIndex: -1,   // 层级
-  //     img: {
-  //       replace: false,  // false 默认图 true 换图 需要填写httpUrl地址
-  //       httpUrl: '...'     // 绝对路径
-  //     }     
-  // }]
+    ]
   ],
 
   configureWebpack: {
