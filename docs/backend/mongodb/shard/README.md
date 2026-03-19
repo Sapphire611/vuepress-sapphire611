@@ -3,7 +3,6 @@ title: MongoDB Shard Demo
 date: 2025-06-24
 categories:
   - mongodb
-  - shard
 sidebar: 'auto'
 publish: true
 ---

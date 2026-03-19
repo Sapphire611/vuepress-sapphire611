@@ -2,8 +2,7 @@
 title: SQL 相关
 date: 2026-03-12
 categories:
-  - archietcture
-  - interview
+  - sql
 sidebar: 'auto'
 publish: true
 ---
