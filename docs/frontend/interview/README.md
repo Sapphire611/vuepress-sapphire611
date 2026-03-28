@@ -1,6 +1,6 @@
 ---
 title: 前端面试题目相关
-date: 2026-03-14
+date: 2026-03-28
 categories:
   - Frontend
 tags:
@@ -15,6 +15,134 @@ publish: true
 :::right
 来自 [Sapphire611](http://sapphire611.github.io)
 :::
+
+## 浏览器有哪些线程，分别有什么作用？
+
+> 浏览器是多进程多线程架构，一个浏览器标签页通常包含以下主要线程：
+
+### 1. GUI 渲染线程（GUI Rendering Thread）
+
+**职责**：
+- 负责渲染浏览器界面，解析 HTML、CSS
+- 构建 DOM 树和 RenderObject 树
+- 布局（Layout）和绘制（Paint）
+- 重排（Reflow）和重绘（Repaint）
+
+**特点**：
+- GUI 渲染线程与 JavaScript 引擎线程是**互斥**的
+- 当 JS 引擎执行时，GUI 线程会被挂起
+- GUI 更新会被保存在队列中，等 JS 引擎空闲时立即执行
+
+### 2. JavaScript 引擎线程（JS Engine Thread）
+
+**职责**：
+- 负责解析和执行 JavaScript 代码
+- 处理 V8 引擎（Chrome）或其他 JS 引擎的任务
+- 执行栈（Execution Stack）管理
+
+**特点**：
+- 单线程执行，遵循事件循环机制
+- 与 GUI 渲染线程互斥，长时间运行会阻塞页面渲染
+- 只有一个主线程，但可以通过 Web Workers 创建子线程
+
+### 3. 事件触发线程（Event Trigger Thread）
+
+**职责**：
+- 管理事件循环（Event Loop）
+- 将异步任务的回调函数推入任务队列（Task Queue）
+- 监听用户交互事件（click、input 等）
+
+**特点**：
+- 当事件触发时，将回调函数放入任务队列
+- 等待 JS 引擎线程空闲时执行
+- 管理宏任务队列（Macro Task Queue）和微任务队列（Micro Task Queue）
+
+### 4. 定时器线程（Timer Thread）
+
+**职责**：
+- 负责处理 `setTimeout`、`setInterval` 等定时器
+- 计时完成后将回调函数推入任务队列
+
+**特点**：
+- 定时器指定的延时并**不准确**，只是最小延时时间
+- 实际执行时间取决于 JS 引擎线程是否空闲
+- 嵌套调用 setTimeout 时，最小间隔为 4ms（HTML5 标准）
+
+```javascript
+setTimeout(() => {
+  console.log('定时器回调');
+}, 1000);
+
+// 实际执行时间可能 > 1000ms，取决于主线程是否阻塞
+```
+
+### 5. 异步 HTTP 请求线程（Async HTTP Request Thread）
+
+**职责**：
+- 处理 XMLHttpRequest、fetch 等网络请求
+- 监听网络请求的状态变化
+- 请求完成后将回调函数推入任务队列
+
+**特点**：
+- 专门用于处理异步网络请求
+- 请求成功或失败后，通知事件触发线程将回调放入任务队列
+- 不会阻塞主线程
+
+```javascript
+// 异步请求由 HTTP 请求线程处理
+fetch('/api/data')
+  .then(response => response.json())
+  .then(data => {
+    // 回调函数被放入任务队列，等待主线程执行
+    console.log(data);
+  });
+```
+
+### 6. 事件循环机制（Event Loop）
+
+浏览器的事件循环流程：
+
+```javascript
+console.log('1. 开始');
+
+setTimeout(() => {
+  console.log('2. setTimeout 宏任务');
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log('3. Promise 微任务');
+});
+
+console.log('4. 结束');
+
+// 执行顺序：1 → 4 → 3 → 2
+// 主线程代码先执行 → 微任务 → 宏任务
+```
+
+::: tip 线程协作总结
+1. **JS 引擎线程**执行同步代码
+2. **异步操作**（定时器、网络请求、事件监听）由对应线程处理
+3. 异步完成后，**事件触发线程**将回调推入任务队列
+4. **事件循环**机制确保任务按顺序执行：主线程 → 微任务 → 宏任务
+:::
+
+### 浏览器进程与线程的关系
+
+| 进程类型 | 主要职责 | 包含的线程 |
+|---------|---------|-----------|
+| 浏览器主进程 | 界面显示、用户交互、资源管理 | 主线程、IO 线程 |
+| 渲染进程 | 页面渲染、脚本执行 | GUI 线程、JS 引擎线程、事件触发线程等 |
+| GPU 进程 | 图形处理 | GPU 线程 |
+| 网络进程 | 网络资源加载 | 网络 IO 线程 |
+| 插件进程 | 运行浏览器插件 | 插件线程 |
+
+::: warning 面试要点
+- **JS 为什么是单线程**：避免 DOM 操作冲突（多线程同时修改 DOM 会导致不可预期结果）
+- **Web Workers**：可以创建子线程执行计算密集型任务，但子线程不能操作 DOM
+- **线程互斥原因**：JS 可以修改 DOM，如果 GUI 线程和 JS 线程同时运行会导致渲染不一致
+:::
+
+---
 
 ## Ajax 是什么？如何手动封装一个 Ajax
 
